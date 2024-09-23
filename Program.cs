@@ -51,9 +51,7 @@ builder.Services.AddTransient<ExternalKeyUtils>();
 builder.Services.AddCors(options => {
     options.AddPolicy(MyCors, builder => 
     {
-        builder.WithOrigins("http://localhost:5120", "http://localhost:5113", "http://localhost:7064")
-                .WithHeaders("content-type")
-                .WithMethods("GET", "POST");
+        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
 });
 
