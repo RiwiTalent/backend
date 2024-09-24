@@ -15,7 +15,6 @@ namespace RiwiTalent.Models
         public DateTime Created_At { get; set; }
         public string? UUID { get; set; }
         public List<Coder>? Coders { get; set; }
-
         public List<ExternalKey>? ExternalKeys { get; set; }
     }
 }

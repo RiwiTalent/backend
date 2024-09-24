@@ -46,6 +46,9 @@ namespace RiwiTalent.Services.Repository
 
             string RealObjectId = _service.RevertObjectIdUUID(guid);
 
+            if(RealObjectId.ToString() == objectId.ToString())
+                Console.WriteLine("Es igual");
+
             Console.WriteLine($"el objectId del grupo es: {RealObjectId}");
 
 
@@ -84,11 +87,21 @@ namespace RiwiTalent.Services.Repository
         {
             try
             {
-                var searchGroup = await _mongoCollection.Find(group => group.UUID == gruopCoder.UUID).FirstOrDefaultAsync();
+                var searchGroup = await _mongoCollection.Find(group => group.Name == gruopCoder.Name).FirstOrDefaultAsync();
 
                 if(searchGroup == null)
                 {
-                    throw new Exception($"Id is invalid");
+                    throw new Exception($"Name is invalid");
+                }
+
+                
+                if(!string.IsNullOrEmpty(searchGroup.UUID))
+                {
+                    Console.WriteLine("The group has UUID");
+                }
+                else
+                {
+                    throw new Exception("The group hasn't valid UUID");
                 }
 
                 if(searchGroup.ExternalKeys != null && searchGroup.ExternalKeys.Any())
@@ -129,7 +142,7 @@ namespace RiwiTalent.Services.Repository
         {
             var filterCoder = Builders<Coder>.Filter.Eq(coder => coder.Id, id);
             var updateStatusAndRelation = Builders<Coder>.Update.Combine(
-                Builders<Coder>.Update.Set(coder => coder.Status, Status.Inactive.ToString()),
+                Builders<Coder>.Update.Set(coder => coder.Status, Status.Active.ToString()),
                 Builders<Coder>.Update.Set(coder => coder.GroupId, null)
             );
 
@@ -145,6 +158,7 @@ namespace RiwiTalent.Services.Repository
                 Id = groups.Id.ToString(),
                 Name = groups.Name,
                 Description = groups.Description,
+                Status = groups.Status,
                 Created_At = groups.Created_At,
                 ExternalKeys = groups.ExternalKeys
             });

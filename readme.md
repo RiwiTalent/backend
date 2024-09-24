@@ -67,6 +67,13 @@ dotnet watch
 
 SOA (Arquitectura Orientada a Servicios)
 
+## Commits
+- En este proyecto se utilizaron buenas practicas **Conventional Commits** para dar un flujo adecuado de las caracteristicas desarrolladas:
+  - `feat`: para nuevas características.
+  - `fix`: para correcciones de errores.
+  - `docs`: para cambios en la documentación.
+  - `style`: para cambios en el estilo del código (formato, sangrías, etc.).
+  - `refactor`: para refactorización de código sin cambios funcionales.
 
 ## Endpoints de la API
 

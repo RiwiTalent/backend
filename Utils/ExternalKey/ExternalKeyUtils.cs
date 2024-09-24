@@ -22,7 +22,7 @@ namespace RiwiTalent.Utils.ExternalKey
 
             for(int i = 12; i < 16; i++)
             {
-                UUIDBytes[i] = 0;
+                UUIDBytes[i] = 1;
             }
 
             return new Guid(UUIDBytes);
@@ -52,22 +52,29 @@ namespace RiwiTalent.Utils.ExternalKey
         {
 
             string UUID = guid.ToString();
+            ObjectId objectId = ObjectId.GenerateNewId();
 
             List<string> ObjectIdUUID = new List<string>();
+            List<string> ObjectIdContains = new List<string>();
 
 
             foreach (var uuid in UUID)
             {
                 ObjectIdUUID.Add(uuid.ToString());
+
             }
 
-            string result = string.Join("", ObjectIdUUID).Replace("-", "");
-
-            //we valdiate the lenght
-            if(result.Length > 24)
+            if(ObjectIdUUID.Count > 0)
             {
-                result = result.Remove(result.Length - 8);
+                foreach (var match in objectId.ToString())
+                {
+                    ObjectIdContains.Add(match.ToString());
+                }
             }
+
+            
+
+            string result = string.Join("", ObjectIdContains).Replace("-", "");
 
             return result;
         }
