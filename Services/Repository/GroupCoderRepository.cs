@@ -46,6 +46,9 @@ namespace RiwiTalent.Services.Repository
 
             string RealObjectId = _service.RevertObjectIdUUID(guid);
 
+            if(RealObjectId.ToString() == objectId.ToString())
+                Console.WriteLine("Es igual");
+
             Console.WriteLine($"el objectId del grupo es: {RealObjectId}");
 
 
