@@ -87,11 +87,21 @@ namespace RiwiTalent.Services.Repository
         {
             try
             {
-                var searchGroup = await _mongoCollection.Find(group => group.UUID == gruopCoder.UUID).FirstOrDefaultAsync();
+                var searchGroup = await _mongoCollection.Find(group => group.Name == gruopCoder.Name).FirstOrDefaultAsync();
 
                 if(searchGroup == null)
                 {
-                    throw new Exception($"Id is invalid");
+                    throw new Exception($"Name is invalid");
+                }
+
+                
+                if(!string.IsNullOrEmpty(searchGroup.UUID))
+                {
+                    Console.WriteLine("The group has UUID");
+                }
+                else
+                {
+                    throw new Exception("The group hasn't valid UUID");
                 }
 
                 if(searchGroup.ExternalKeys != null && searchGroup.ExternalKeys.Any())
