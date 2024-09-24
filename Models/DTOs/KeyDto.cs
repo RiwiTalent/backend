@@ -8,5 +8,6 @@ namespace RiwiTalent.Models.DTOs
     public class KeyDto
     {
         public string? Key { get; set; }
+        public string? Name { get; set; }
     }
 }
