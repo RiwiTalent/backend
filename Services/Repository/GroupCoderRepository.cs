@@ -158,6 +158,7 @@ namespace RiwiTalent.Services.Repository
                 Id = groups.Id.ToString(),
                 Name = groups.Name,
                 Description = groups.Description,
+                Status = groups.Status,
                 Created_At = groups.Created_At,
                 ExternalKeys = groups.ExternalKeys
             });
