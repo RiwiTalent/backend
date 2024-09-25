@@ -1,9 +1,9 @@
 using FluentValidation;
-using RiwiTalent.Models;
+using RiwiTalent.Models.DTOs;
 
 namespace RiwiTalent.Validators
 {
-    public class CoderValidator : AbstractValidator<Coder>
+    public class CoderValidator : AbstractValidator<CoderDto>
     {
         public CoderValidator()
         {
@@ -18,7 +18,7 @@ namespace RiwiTalent.Validators
         }
 
         //validations
-        public class CoderFirstNameRule : AbstractValidator<Coder>
+        public class CoderFirstNameRule : AbstractValidator<CoderDto>
         {
             public CoderFirstNameRule()
             {
@@ -28,7 +28,7 @@ namespace RiwiTalent.Validators
             }
         }
         
-        public class CoderSecondNameRule : AbstractValidator<Coder>
+        public class CoderSecondNameRule : AbstractValidator<CoderDto>
         {
             public CoderSecondNameRule()
             {
@@ -37,7 +37,7 @@ namespace RiwiTalent.Validators
             }
         }
 
-        public class CoderFirstLastNameRule : AbstractValidator<Coder>
+        public class CoderFirstLastNameRule : AbstractValidator<CoderDto>
         {
             public CoderFirstLastNameRule()
             {
@@ -46,7 +46,7 @@ namespace RiwiTalent.Validators
             }
         }
 
-        public class CoderSecondLastNameRule : AbstractValidator<Coder>
+        public class CoderSecondLastNameRule : AbstractValidator<CoderDto>
         {
             public CoderSecondLastNameRule()
             {
@@ -55,7 +55,7 @@ namespace RiwiTalent.Validators
             }
         }
 
-        public class CoderEmailRule : AbstractValidator<Coder>
+        public class CoderEmailRule : AbstractValidator<CoderDto>
         {
             public CoderEmailRule()
             {
@@ -84,7 +84,7 @@ namespace RiwiTalent.Validators
         //     }
         // }
 
-        public class CoderAgeRule : AbstractValidator<Coder>
+        public class CoderAgeRule : AbstractValidator<CoderDto>
         {
             public CoderAgeRule()
             {

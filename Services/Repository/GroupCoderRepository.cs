@@ -83,11 +83,11 @@ namespace RiwiTalent.Services.Repository
             return (groupCoder.Id, guid);
         }
 
-        public async Task<KeyDto> SendToken(GruopCoder gruopCoder, string key)
+        public async Task<KeyDto> SendToken(GruopCoder groupCoder, string key)
         {
             try
             {
-                var searchGroup = await _mongoCollection.Find(group => group.Name == gruopCoder.Name).FirstOrDefaultAsync();
+                var searchGroup = await _mongoCollection.Find(group => group.Name == groupCoder.Name).FirstOrDefaultAsync();
 
                 if(searchGroup == null)
                 {

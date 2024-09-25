@@ -22,8 +22,10 @@ namespace RiwiTalent.Services.Repository
             _mapper = mapper;
         }
 
-        public void Add(Coder coder)
+        public void Add(CoderDto coderDto)
         {
+            // Mapeo de CoderDto a Coder
+            var coder = _mapper.Map<Coder>(coderDto);
             _mongoCollection.InsertOne(coder);
 
         }

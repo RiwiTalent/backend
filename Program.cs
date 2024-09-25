@@ -42,7 +42,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //Validator
 builder.Services.AddTransient<IValidator<UserDto>, UserDtoValidator>();
 builder.Services.AddTransient<IValidator<GroupDto>, GroupCoderValidator>();
-builder.Services.AddTransient<IValidator<Coder>, CoderValidator>();
+builder.Services.AddTransient<IValidator<CoderDto>, CoderValidator>();
 
 
 builder.Services.AddTransient<ExternalKeyUtils>();
