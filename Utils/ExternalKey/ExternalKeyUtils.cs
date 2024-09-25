@@ -47,7 +47,7 @@ namespace RiwiTalent.Utils.ExternalKey
 
         }
 
-        //revertir UUID
+        //revert UUID, in case of that need it
         public string RevertObjectIdUUID(Guid guid)
         {
 
