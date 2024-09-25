@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using RiwiTalent.Models.Enums;
 using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.App.Controllers
@@ -11,10 +12,10 @@ namespace RiwiTalent.App.Controllers
             _coderStatusHistoryRepository = coderStatusHistoryRepository;
         }
 
-        //get all coders
+        //get all process history statues
         [HttpGet]
-        [Route("riwitalent/coderstatushistory")]
-        public async Task<IActionResult> Get()
+        [Route("riwitalent/historyStatus")]
+        public async Task<IActionResult> GetAllHistory()
         {
             if(!ModelState.IsValid)
             {
@@ -23,7 +24,7 @@ namespace RiwiTalent.App.Controllers
 
             try
             {
-                var coders = await _coderStatusHistoryRepository.GetCodersStatus();
+                var coders = await _coderStatusHistoryRepository.GetCodersHistoryStatus();
                 return Ok(coders);
             }
             catch (Exception ex)
@@ -33,27 +34,29 @@ namespace RiwiTalent.App.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("riwitalent/groupCoders/{id}")]
-        public async Task<IActionResult> GetByGroupId(string id)
-        {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(RiwiTalent.Utils.Exceptions.StatusError.CreateBadRequest());
-            }
+        /*
+            Permite listar los coders de un grupo segun el estado, ya sea agrupado o en 
+            proceso
+        */
+        // [HttpGet]
+        // [Route("riwitalent/groupCodersHistory/{groupId}")]
+        // public async Task<IActionResult> GetByGroupId(string groupId, [FromQuery] Status status)
+        // {
+        //     if(!ModelState.IsValid)
+        //     {
+        //         return BadRequest(RiwiTalent.Utils.Exceptions.StatusError.CreateBadRequest());
+        //     }
 
-            try
-            {
-                var coders = await _coderStatusHistoryRepository.GetCompanyGroupedCoders(id);
-                return Ok(coders);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                throw;
-            }
-        }
-
-
+        //     try
+        //     {
+        //         var coders = await _coderStatusHistoryRepository.GetCompanyCoders(groupId, status);
+        //         return Ok(coders);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        //         throw;
+        //     }
+        // }
     }
 }

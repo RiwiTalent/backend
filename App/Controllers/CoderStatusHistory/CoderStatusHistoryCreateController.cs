@@ -36,8 +36,8 @@ namespace RiwiTalent.App.Controllers.Coders
         // }
 
         [HttpPost]
-        [Route("riwitalent/addcodersgroup")]
-        public IActionResult AddCodersToGroup(CoderGroupDto coderGroup)
+        [Route("riwitalent/addCodersGroup")]
+        public IActionResult AddCodersToGroup([FromBody] CoderGroupDto coderGroup)
         {
             try
             {
@@ -52,8 +52,8 @@ namespace RiwiTalent.App.Controllers.Coders
         }
 
         [HttpPost]
-        [Route("riwitalent/updatecodersselected")]
-        public async Task<IActionResult> AddSelectedCoders(CoderGroupDto coderGroup)
+        [Route("riwitalent/updateCodersSelected")]
+        public async Task<IActionResult> AddSelectedCoders([FromBody] CoderGroupDto coderGroup)
         {
             try
             {

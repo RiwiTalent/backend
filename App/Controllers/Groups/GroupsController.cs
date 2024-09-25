@@ -45,7 +45,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //Get coders by group
         [HttpGet]
-        [Route("riwitalent/group/{name}/")]
+        [Route("riwitalent/group/{name}")]
         public async Task<IActionResult> GetCodersByGroup(string name)
         {
             try

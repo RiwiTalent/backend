@@ -103,7 +103,7 @@ namespace RiwiTalent.Services.Repository
         public async Task UpdateCodersSelected(CoderGroupDto coderGroup)
         {
             await UpdateCodersProcess(coderGroup, Status.Selected);
-            var coders = await _mongoCollection.Find(x => x.GroupId == coderGroup.GruopId && x.Status == Status.Grouped.ToString())
+            var coders = await _mongoCollection.Find(x => x.GroupId == coderGroup.GroupId && x.Status == Status.Grouped.ToString())
                 .ToListAsync();
 
             await UpdateCodersProcess(coders, Status.Active);
@@ -136,17 +136,11 @@ namespace RiwiTalent.Services.Repository
                 var existCoder = await _mongoCollection.Find(coder => coder.Id == coderId).FirstOrDefaultAsync();
                 
                 if(existCoder is null)
-                {
                     throw new Exception($"{Error}");
-                }
 
-                // TASK: Se deberia de hacer un automapper
-                existCoder.GroupId = coderGroup.GruopId;
-                existCoder.Status = status.ToString();
+                existCoder = UpdateCoderInfo(existCoder, status, coderGroup.GroupId);
 
-                // var coderMap = _mapper.Map(coderDto, existCoder);
                 var filter = Builders<Coder>.Filter.Eq(x => x.Id, coderId);
-                // var update = filter.Eq(coder => coder.Id, coderMap.Id);
 
                 await _mongoCollection.ReplaceOneAsync(filter, existCoder);
             }
@@ -157,24 +151,17 @@ namespace RiwiTalent.Services.Repository
             for (int i = 0; i < coders.Count; i++)
             {
                 Coder existCoder = coders[i];
-                // var existCoder = await _mongoCollection.Find(coder => coder.Id == coderId).FirstOrDefaultAsync();
                 
                 if(existCoder is null)
-                {
                     throw new Exception($"{Error}");
-                }
 
                 // TASK: Se deberia de hacer un automapper
                 // existCoder.GroupId = "";
-                existCoder.Status = status.ToString();
+                existCoder = UpdateCoderInfo(existCoder, status, existCoder.GroupId);
 
-                // var coderMap = _mapper.Map(coderDto, existCoder);
                 var filter = Builders<Coder>.Filter.Eq(x => x.Id, existCoder.Id);
-                // var update = filter.Eq(coder => coder.Id, coderMap.Id);
-
                 await _mongoCollection.ReplaceOneAsync(filter, existCoder);
             }
-
         }
 
         public async Task<IEnumerable<Coder>> GetCodersByGroup(string name)
@@ -200,6 +187,23 @@ namespace RiwiTalent.Services.Repository
             {
                 throw new ApplicationException($"Error al obtener los coders del grupo '{name}'", ex);
             }
+        }
+
+        private Coder UpdateCoderInfo(Coder coder, Status status, string groupId)
+        {
+            if(status.Equals(Status.Active))
+            {
+                coder.GroupId = "";
+                coder.Status = Status.Active.ToString();
+            }
+
+            if(status.Equals(Status.Selected) || status.Equals(Status.Grouped))
+            {
+                coder.GroupId = groupId;
+                coder.Status = status.ToString();
+            }
+
+            return coder;
         }
     }
 }

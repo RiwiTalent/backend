@@ -7,7 +7,7 @@ namespace RiwiTalent.Models.DTOs
   {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string GruopId { get; set; }
+    public string GroupId { get; set; }
     public List<string> CoderList {get; set;}
   }
 }
