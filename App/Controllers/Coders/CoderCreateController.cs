@@ -1,6 +1,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Models;
+using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.App.Controllers.Coders
@@ -8,8 +9,8 @@ namespace RiwiTalent.App.Controllers.Coders
     public class CoderCreateController : Controller
     {
         private readonly ICoderRepository _coderRepository;
-        private readonly IValidator<Coder> _coderValidator;
-        public CoderCreateController(ICoderRepository coderRepository, IValidator<Coder> coderValidator)
+        private readonly IValidator<CoderDto> _coderValidator;
+        public CoderCreateController(ICoderRepository coderRepository, IValidator<CoderDto> coderValidator)
         {
             _coderRepository = coderRepository;
             _coderValidator = coderValidator;
@@ -18,18 +19,18 @@ namespace RiwiTalent.App.Controllers.Coders
         //Endpoint
         [HttpPost]
         [Route("riwitalent/createcoders")]
-        public IActionResult Post([FromBody] Coder coder)
+        public IActionResult Post([FromBody] CoderDto coderDto)
         {
 
 
-            if(coder == null)
+            if(coderDto == null)
             {
                 return BadRequest(Utils.Exceptions.StatusError.CreateBadRequest());
             }
 
 
             //validations with FluentValidation
-            var ValidationResult = _coderValidator.Validate(coder);
+            var ValidationResult = _coderValidator.Validate(coderDto);
 
             if(!ValidationResult.IsValid)
             {
@@ -38,7 +39,7 @@ namespace RiwiTalent.App.Controllers.Coders
 
             try
             {
-                _coderRepository.Add(coder);
+                _coderRepository.Add(coderDto);
                 return Ok("The coder has been created successfully");
             }
             catch (Exception ex)

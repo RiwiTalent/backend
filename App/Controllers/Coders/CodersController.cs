@@ -110,7 +110,50 @@ namespace RiwiTalent.App.Controllers
                 throw;
             }
         }
-        
-        
+
+
+        //Get coder by skill tecnical
+        [HttpGet]
+        [Route("RiwiTalent/skill/coder")]
+        public async Task<IActionResult> GetCodersBySkill([FromQuery] List<string> skill)
+        {
+            try
+            {
+                var coders = await _coderRepository.GetCodersBySkill(skill);
+                if (coders is null || !coders.Any())
+                {
+                    return NotFound("No hay coder con esos lenguajes.");
+                }
+
+                return Ok(coders);
+            }
+            catch (Exception ex)
+            {
+                
+                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            
+        }
+
+        //Get coder by language level in english
+        [HttpGet]
+        [Route("RiwiTalent/coder/{language}/level")]
+        public async Task<IActionResult> GetCodersByLanguage([FromQuery] string level, string language = "English")
+        {
+            try
+            {
+                var coders = await _coderRepository.GetCodersBylanguage(level);
+                if (coders is null || !coders.Any())
+                {
+                    return NotFound("No hay coder con ese nivel de idioma.");
+                }
+                return Ok(coders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
+            }
+        }
     }
 }

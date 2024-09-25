@@ -59,7 +59,7 @@ namespace RiwiTalent.App.Controllers.Groups
                 var coder = await _coderRepository.GetCodersByGroup(name);
                 if (coder == null || !coder.Any())
                 {  
-                    return NotFound($"No existe coders por el grupo '{name}'.");
+                    return NotFound($"Este grupo aùn no tiene coders '{name}'.");
                 }
                 return Ok(coder);
             }
@@ -72,16 +72,19 @@ namespace RiwiTalent.App.Controllers.Groups
         //obtener el uuid y revertirlo
         [HttpPost]
         [Route("riwitalent/uuid")]
-        public async Task<IActionResult> GetUUID([FromQuery] string id, [FromQuery] string key)
+        public async Task<IActionResult> GetUUID([FromQuery] string user, [FromQuery] string key)
         {
             try
             {
 
-                var groupCoder = new GruopCoder { UUID = id};
+                var groupCoder = new GruopCoder { Name = user};
 
 
-                await _groupRepository.SendToken(groupCoder, key);
-                return Ok("you've access");
+                var result = await _groupRepository.SendToken(groupCoder, key);
+                
+                if(result != null)
+                    return Ok(new {Message = "you've access", GroupName = groupCoder.Name });
+                return NotFound("Access denied"); 
             }
             catch(Exception ex)
             {

@@ -1,9 +1,9 @@
 using FluentValidation;
-using RiwiTalent.Models;
+using RiwiTalent.Models.DTOs;
 
 namespace RiwiTalent.Validators
 {
-    public class CoderValidator : AbstractValidator<Coder>
+    public class CoderValidator : AbstractValidator<CoderDto>
     {
         public CoderValidator()
         {
@@ -12,13 +12,13 @@ namespace RiwiTalent.Validators
             Include(new CoderFirstLastNameRule());
             Include(new CoderSecondLastNameRule());
             Include(new CoderEmailRule());
-            Include(new CoderPhotoRule());
+            // Include(new CoderPhotoRule());
             Include(new CoderAgeRule());
-            Include(new CoderCvRule());
+            // Include(new CoderCvRule());
         }
 
         //validations
-        public class CoderFirstNameRule : AbstractValidator<Coder>
+        public class CoderFirstNameRule : AbstractValidator<CoderDto>
         {
             public CoderFirstNameRule()
             {
@@ -28,7 +28,7 @@ namespace RiwiTalent.Validators
             }
         }
         
-        public class CoderSecondNameRule : AbstractValidator<Coder>
+        public class CoderSecondNameRule : AbstractValidator<CoderDto>
         {
             public CoderSecondNameRule()
             {
@@ -37,7 +37,7 @@ namespace RiwiTalent.Validators
             }
         }
 
-        public class CoderFirstLastNameRule : AbstractValidator<Coder>
+        public class CoderFirstLastNameRule : AbstractValidator<CoderDto>
         {
             public CoderFirstLastNameRule()
             {
@@ -46,7 +46,7 @@ namespace RiwiTalent.Validators
             }
         }
 
-        public class CoderSecondLastNameRule : AbstractValidator<Coder>
+        public class CoderSecondLastNameRule : AbstractValidator<CoderDto>
         {
             public CoderSecondLastNameRule()
             {
@@ -55,7 +55,7 @@ namespace RiwiTalent.Validators
             }
         }
 
-        public class CoderEmailRule : AbstractValidator<Coder>
+        public class CoderEmailRule : AbstractValidator<CoderDto>
         {
             public CoderEmailRule()
             {
@@ -66,25 +66,25 @@ namespace RiwiTalent.Validators
             }
         }
 
-        public class CoderPhotoRule : AbstractValidator<Coder>
-        {
-            public CoderPhotoRule()
-            {
-                RuleFor(coder => coder.Photo).NotEmpty()
-                                             .WithMessage("The field Photo can't be empty")
-                                             .Must(ValidImageFormat)
-                                             .WithMessage("The image must be a valid format (png, jpg, jpeg)");
-            }
+        // public class CoderPhotoRule : AbstractValidator<Coder>
+        // {
+        //     public CoderPhotoRule()
+        //     {
+        //         RuleFor(coder => coder.Photo).NotEmpty()
+        //                                      .WithMessage("The field Photo can't be empty")
+        //                                      .Must(ValidImageFormat)
+        //                                      .WithMessage("The image must be a valid format (png, jpg, jpeg)");
+        //     }
 
-            public bool ValidImageFormat(string Photo)
-            {
-                var AllowFormat = new[] { "png", "jpg", "jpeg" };
-                var Extension = Path.GetExtension(Photo)?.ToLower();
-                return AllowFormat.Contains(Extension);
-            }
-        }
+        //     public bool ValidImageFormat(string Photo)
+        //     {
+        //         var AllowFormat = new[] { "png", "jpg", "jpeg" };
+        //         var Extension = Path.GetExtension(Photo)?.ToLower();
+        //         return AllowFormat.Contains(Extension);
+        //     }
+        // }
 
-        public class CoderAgeRule : AbstractValidator<Coder>
+        public class CoderAgeRule : AbstractValidator<CoderDto>
         {
             public CoderAgeRule()
             {
@@ -93,32 +93,32 @@ namespace RiwiTalent.Validators
             }
         }
 
-        public class CoderCvRule : AbstractValidator<Coder>
-        {
-            public CoderCvRule()
-            {
-                RuleFor(coder => coder.Cv).NotEmpty()
-                                           .WithMessage("The field Cv is required")
-                                           .Must(ValidCvFormat)
-                                           .WithMessage("The Cv format valid is (pdf)")
-                                           .Must(SizeCv)
-                                           .WithMessage("The PDF file size must be less than 300KB.");
-            }
+        // public class CoderCvRule : AbstractValidator<Coder>
+        // {
+        //     public CoderCvRule()
+        //     {
+        //         RuleFor(coder => coder.Cv).NotEmpty()
+        //                                    .WithMessage("The field Cv is required")
+        //                                    .Must(ValidCvFormat)
+        //                                    .WithMessage("The Cv format valid is (pdf)")
+        //                                    .Must(SizeCv)
+        //                                    .WithMessage("The PDF file size must be less than 300KB.");
+        //     }
 
-            public bool ValidCvFormat(string CurriculumVitae)
-            {
-                var AllowCv = new[] { "pdf" };
-                var Extension = Path.GetExtension(CurriculumVitae)?.ToLower();
-                return AllowCv.Contains(Extension);
-            }
+        //     public bool ValidCvFormat(string CurriculumVitae)
+        //     {
+        //         var AllowCv = new[] { "pdf" };
+        //         var Extension = Path.GetExtension(CurriculumVitae)?.ToLower();
+        //         return AllowCv.Contains(Extension);
+        //     }
 
-            public bool SizeCv(string Size)
-            {
-                //we realize calc to convert KB at Bytes
-                const int MaxFileSize = 300 * 1024;
-                var fileInfo = new FileInfo(Size);
-                return fileInfo.Length <= MaxFileSize;
-            }
-        }
+        //     public bool SizeCv(string Size)
+        //     {
+        //         //we realize calc to convert KB at Bytes
+        //         const int MaxFileSize = 300 * 1024;
+        //         var fileInfo = new FileInfo(Size);
+        //         return fileInfo.Length <= MaxFileSize;
+        //     }
+        // }
     }
 }

@@ -42,7 +42,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //Validator
 builder.Services.AddTransient<IValidator<UserDto>, UserDtoValidator>();
 builder.Services.AddTransient<IValidator<GroupDto>, GroupCoderValidator>();
-builder.Services.AddTransient<IValidator<Coder>, CoderValidator>();
+builder.Services.AddTransient<IValidator<CoderDto>, CoderValidator>();
 
 
 builder.Services.AddTransient<ExternalKeyUtils>();
@@ -51,9 +51,7 @@ builder.Services.AddTransient<ExternalKeyUtils>();
 builder.Services.AddCors(options => {
     options.AddPolicy(MyCors, builder => 
     {
-        builder.WithOrigins("http://localhost:5120", "http://localhost:5113", "http://localhost:7064")
-                .WithHeaders("content-type")
-                .WithMethods("GET", "POST");
+        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
 });
 
@@ -96,12 +94,8 @@ builder.Services.AddAuthentication(option => {
 var app = builder.Build();
 
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

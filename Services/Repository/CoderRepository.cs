@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models;
@@ -21,8 +22,10 @@ namespace RiwiTalent.Services.Repository
             _mapper = mapper;
         }
 
-        public void Add(Coder coder)
+        public void Add(CoderDto coderDto)
         {
+            // Mapeo de CoderDto a Coder
+            var coder = _mapper.Map<Coder>(coderDto);
             _mongoCollection.InsertOne(coder);
 
         }
@@ -126,6 +129,43 @@ namespace RiwiTalent.Services.Repository
             var update = Builders<Coder>.Update.Set(c => c.Status, Status.Active.ToString());
             _mongoCollection.UpdateOne(filter, update);
         }
+        
+        
+        public async Task<List<Coder>> GetCodersBySkill(List<string> skill)
+        {
+            try
+            {
+                var filter = new List<FilterDefinition<Coder>>(); //Defino una variable en la cual ingreso a un listado de lenguajes
+                foreach (var language in skill) //Hago un foreach para recorrer todos los lenguajes de programacion y de esta forma verificar que el coder lo tiene
+                {
+                    var languageFilter = Builders<Coder>.Filter.ElemMatch(c => c.Skills, s => s.Language_Programming == language);
+                    filter.Add(languageFilter); //Cada que voy obteniendo coders con las skills los añado a languageFilter 
+                }
+
+                var combinedFilter = Builders<Coder>.Filter.And(filter); //Luego junto las variables filter y langugeFilter para luego returnarlo
+                
+                return await _mongoCollection.Find(combinedFilter).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("No hay coder con esos lenguajes.");
+            }
+        }
+
+        public async Task<List<Coder>> GetCodersBylanguage([FromQuery]string level)
+        {
+            try
+            {
+                var filter = Builders<Coder>.Filter.Eq(c => c.LanguageSkills.Language_Level, level); //Busco language_Level dentro de LanguageSkills y creo el filtrado
+                return await _mongoCollection.Find(filter).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                
+                throw new ApplicationException("Ocurrió un error al obtener el coder", ex);
+                
+             }
+         }
 
         private async Task UpdateCodersProcess(CoderGroupDto coderGroup, Status status)
         {
