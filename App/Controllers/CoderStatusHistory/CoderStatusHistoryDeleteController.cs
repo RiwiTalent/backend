@@ -1,28 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
-    public class DeleteCoderGroupController : Controller
+    public class GroupDeleteController : Controller
     {
-        private readonly IGroupCoderRepository _groupRepository;
-        public DeleteCoderGroupController(IGroupCoderRepository groupRepository)
+        private readonly ICoderStatusHistoryRepository _coderStatusHistoryRepository;
+        public GroupDeleteController(ICoderStatusHistoryRepository coderStatusHistoryRepository)
         {
-            _groupRepository = groupRepository;
+            _coderStatusHistoryRepository = coderStatusHistoryRepository;
         }
 
         //endpoint
         [HttpDelete]
-        [Route("riwitalent/{id:length(24)}/deletecodergroup")]
+        [Route("riwitalent/{id:length(24)}/deleteCoderGroup")]
         public async Task<IActionResult> DeleteCoder(string id)
         {
             try
             {
-                await _groupRepository.DeleteCoderGroup(id);
+                await _coderStatusHistoryRepository.DeleteCoderGroup(id);
                 return NoContent();
             }
             catch (Exception ex)

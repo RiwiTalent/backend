@@ -1,4 +1,7 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using RiwiTalent.Models.DTOs;
 using RiwiTalent.Models.Enums;
 using RiwiTalent.Services.Interface;
 
@@ -13,6 +16,13 @@ namespace RiwiTalent.App.Controllers
         }
 
         //get all process history statues
+        /*
+            {
+                {"jose", "celsia", "grouped"},
+                {"laura", "celsia", "selected"}
+                {"Omar", "", "Active"}
+            }
+        */
         [HttpGet]
         [Route("riwitalent/historyStatus")]
         public async Task<IActionResult> GetAllHistory()
@@ -25,6 +35,55 @@ namespace RiwiTalent.App.Controllers
             try
             {
                 var coders = await _coderStatusHistoryRepository.GetCodersHistoryStatus();
+                return Ok(coders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("riwitalent/historyStatus/coder/{id}")]
+        public async Task<IActionResult> GetCoderHistory(string id)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(RiwiTalent.Utils.Exceptions.StatusError.CreateBadRequest());
+            }
+
+            try
+            {
+                var coders = await _coderStatusHistoryRepository.GetCoderHistoryById(id);
+
+                // JsonSerializerOptions options = new()
+                // {
+                //     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                // };
+
+                // string forecastJson = JsonSerializer.Serialize<CoderHistoryDto>(coders, options);
+                return Ok(coders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("riwitalent/historyStatus/group/{id}")]
+        public async Task<IActionResult> GetGroupHistory(string id)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(RiwiTalent.Utils.Exceptions.StatusError.CreateBadRequest());
+            }
+
+            try
+            {
+                var coders = await _coderStatusHistoryRepository.GetGroupHistoryById(id);
                 return Ok(coders);
             }
             catch (Exception ex)

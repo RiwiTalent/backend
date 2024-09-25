@@ -138,16 +138,16 @@ namespace RiwiTalent.Services.Repository
 
         
 
-        public async Task DeleteCoderGroup(string id)
-        {
-            var filterCoder = Builders<Coder>.Filter.Eq(coder => coder.Id, id);
-            var updateStatusAndRelation = Builders<Coder>.Update.Combine(
-                Builders<Coder>.Update.Set(coder => coder.Status, Status.Active.ToString()),
-                Builders<Coder>.Update.Set(coder => coder.GroupId, null)
-            );
+        // public async Task DeleteCoderGroup(string id)
+        // {
+        //     var filterCoder = Builders<Coder>.Filter.Eq(coder => coder.Id, id);
+        //     var updateStatusAndRelation = Builders<Coder>.Update.Combine(
+        //         Builders<Coder>.Update.Set(coder => coder.Status, Status.Active.ToString()),
+        //         Builders<Coder>.Update.Set(coder => coder.GroupId, null)
+        //     );
 
-            await _mongoCollectionCoder.UpdateOneAsync(filterCoder, updateStatusAndRelation);
-        }
+        //     await _mongoCollectionCoder.UpdateOneAsync(filterCoder, updateStatusAndRelation);
+        // }
 
         public async Task<IEnumerable<GroupCoderDto>> GetGroupCoders()
         {
@@ -172,7 +172,8 @@ namespace RiwiTalent.Services.Repository
 
             if(group == null)
             {
-                throw new Exception(Error);
+                return null;
+                // throw new Exception(Error);
             }
 
             var coders = await _mongoCollectionCoder.Find(x => x.GroupId == groupId)

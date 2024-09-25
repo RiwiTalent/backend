@@ -12,7 +12,7 @@ namespace RiwiTalent.Services.Interface
         Task<KeyDto> SendToken(GruopCoder groupCoder, string key);
         Task<GroupInfoDto> GetGroupInfoById(string groupId);
         Task Update(GroupCoderDto groupCoderDto);
-        Task DeleteCoderGroup(string id);
+        // Task DeleteCoderGroup(string id);
         Task<bool> GroupExistByName(string name);
     }
 }

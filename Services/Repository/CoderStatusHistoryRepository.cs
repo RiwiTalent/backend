@@ -15,20 +15,76 @@ namespace RiwiTalent.Services.Repository
     private readonly IMongoCollection<CoderStatusHistory> _mongoCollection;
     private readonly IMapper _mapper;
     private readonly ICoderRepository _coderRepository;
+    private readonly IGroupCoderRepository _groupRepository;
 
-    public CoderStatusHistoryRepository(MongoDbContext context, IMapper mapper, ICoderRepository coderRepository)
+    public CoderStatusHistoryRepository
+    (
+      MongoDbContext context,
+      IMapper mapper,
+      ICoderRepository coderRepository,
+      IGroupCoderRepository groupRepository
+    )
     {
       _mongoCollection = context.CoderStatusHistories;
       _mapper = mapper;
       _coderRepository = coderRepository;
+      _groupRepository = groupRepository;
     }
 
-    public async Task<IEnumerable<CoderStatusHistory>> GetCoderHistoryById(string coderId)
+    public async Task<CoderHistoryDto> GetCoderHistoryById(string coderId)
     {
       List<CoderStatusHistory> coderHistory = await _mongoCollection.Find(x => x.IdCoder == coderId)
         .ToListAsync();
 
-      return coderHistory;
+
+      Coder coder = await _coderRepository.GetCoderId(coderId);
+
+      CoderHistoryDto historyCoder = new CoderHistoryDto()
+      {
+        Name = coder.FirstName,
+        GroupList = new List<Details>()
+      };
+
+      foreach(CoderStatusHistory history in coderHistory)
+      {
+        GroupInfoDto groupCoder = await _groupRepository.GetGroupInfoById(history.IdGroup);
+
+        if(groupCoder == null)
+          continue;
+
+        historyCoder.GroupList.Add(Details.CreateDetails(groupCoder.Name, history.Status));
+      }
+
+      return historyCoder;
+    }
+
+    public async Task<CoderHistoryDto> GetGroupHistoryById(string groupId)
+    {
+      List<CoderStatusHistory> coderHistory = await _mongoCollection.Find(x => x.IdGroup == groupId)
+        .ToListAsync();
+
+
+      GroupInfoDto group = await _groupRepository.GetGroupInfoById(groupId);
+
+      CoderHistoryDto historyCoder = new CoderHistoryDto()
+      {
+        Name = group.Name,
+        CoderList = new List<Details>()
+      };
+
+      foreach(CoderStatusHistory history in coderHistory)
+      {
+        Coder coder = await _coderRepository.GetCoderId(history.IdCoder);
+
+        if(coder == null)
+          continue;
+
+        string coderName = $"{coder.FirstName} {coder.FirstLastName}";
+
+        historyCoder.CoderList.Add(Details.CreateDetails(coderName, history.Status));
+      }
+
+      return historyCoder;
     }
 
     public async Task<IEnumerable<CoderStatusHistory>> GetCodersHistoryStatus()
@@ -76,6 +132,19 @@ namespace RiwiTalent.Services.Repository
       }
 
       await _coderRepository.UpdateCodersSelected(coderGroup);
+    }
+
+    public async Task DeleteCoderGroup(string coderId)
+    {
+      CoderStatusHistory coderStatus = new CoderStatusHistory()
+      {
+        IdCoder = coderId,
+        IdGroup = "",
+        Status = Status.Active.ToString()
+      };
+
+      Add(coderStatus);
+      _coderRepository.DeleteCoderGroup(coderId);
     }
 
     private IEnumerable<CoderStatusHistory> GetUniqueLastRegisters(BsonDocument filter)

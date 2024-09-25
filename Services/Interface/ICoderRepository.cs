@@ -16,6 +16,7 @@ namespace RiwiTalent.Services.Interface
         Task<Coder> GetCoderId(string id);
         Task<Coder> GetCoderName(string name);
         void Delete(string id);    
+        Task DeleteCoderGroup(string id);
         void ReactivateCoder(string id); 
         Task<List<Coder>> GetCodersBySkill(List<string> skill);
         Task<List<Coder>> GetCodersBylanguage(string level);

@@ -36,7 +36,7 @@ namespace RiwiTalent.App.Controllers.Coders
         // }
 
         [HttpPost]
-        [Route("riwitalent/addCodersGroup")]
+        [Route("riwitalent/addCodersGrouped")]
         public IActionResult AddCodersToGroup([FromBody] CoderGroupDto coderGroup)
         {
             try

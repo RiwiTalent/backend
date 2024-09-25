@@ -121,6 +121,17 @@ namespace RiwiTalent.Services.Repository
             _mongoCollection.UpdateOneAsync(filter, update);
         }
 
+        public async Task DeleteCoderGroup(string id)
+        {
+            var filterCoder = Builders<Coder>.Filter.Eq(coder => coder.Id, id);
+            var updateStatusAndRelation = Builders<Coder>.Update.Combine(
+                Builders<Coder>.Update.Set(coder => coder.Status, Status.Active.ToString()),
+                Builders<Coder>.Update.Set(coder => coder.GroupId, null)
+            );
+
+            await _mongoCollection.UpdateOneAsync(filterCoder, updateStatusAndRelation);
+        }
+
         public void ReactivateCoder(string id)
         {
             //This Method is the reponsable of update status the coder, first we search by id and then it execute the change Inactive to Active
@@ -233,7 +244,7 @@ namespace RiwiTalent.Services.Repository
         {
             if(status.Equals(Status.Active))
             {
-                coder.GroupId = "";
+                coder.GroupId = null;
                 coder.Status = Status.Active.ToString();
             }
 
