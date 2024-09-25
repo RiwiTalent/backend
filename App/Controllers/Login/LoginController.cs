@@ -45,7 +45,7 @@ namespace RiwiTalent.App.Controllers.Login
 
             var token = _tokenRepository.GetToken(users);
 
-            return Ok(new { Token = token });
+            return Ok(new { Token = token});
         }
     }
 }

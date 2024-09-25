@@ -94,5 +94,18 @@ namespace RiwiTalent.Services.Repository
           coderStatusHistory.Date = DateTime.Now;
           _mongoCollection.InsertOne(coderStatusHistory);
         }
+
+        public async Task<List<CoderStatusHistory>> GetCodersStatusById(string coderId)
+        {
+            try
+            {
+              var coders = Builders<CoderStatusHistory>.Filter.Eq(c => c.IdCoder, coderId);
+              return await _mongoCollection.Find(coders).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+              throw new ApplicationException("No existen coders por ese id.",ex);
+            }
+        }
     }
 }

@@ -34,6 +34,26 @@ namespace RiwiTalent.App.Controllers
         }
 
         [HttpGet]
+        [Route("riwitalent/coderstatushistory/{coderId}")]
+        public async Task<IActionResult> GetCoderHistory(string coderId)
+        {
+            try
+            {
+                var coders = await _coderStatusHistoryRepository.GetCodersStatusById(coderId);
+                if (coders == null || !coders.Any())
+                {
+                    return NotFound("No existe coder por este id.");
+                }
+
+                return Ok(coders);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Hubo un error al obtener el historial de un coder por id.", ex);
+            }
+        }
+
+        [HttpGet]
         [Route("riwitalent/groupCoders/{id}")]
         public async Task<IActionResult> GetByGroupId(string id)
         {
