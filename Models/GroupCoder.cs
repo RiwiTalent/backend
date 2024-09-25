@@ -13,6 +13,7 @@ namespace RiwiTalent.Models
         public string? Description { get; set; }
         public string? Status { get; set; }
         public DateTime Created_At { get; set; }
+        public List<Coder>? Coders { get; set; }
         public List<ExternalKey>? ExternalKeys { get; set; }
     }
 }
