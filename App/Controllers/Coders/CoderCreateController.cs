@@ -23,7 +23,7 @@ namespace RiwiTalent.App.Controllers.Coders
         {
 
 
-            if(coderDto == null)
+            if(!ModelState.IsValid)
             {
                 return BadRequest(Utils.Exceptions.StatusError.CreateBadRequest());
             }
