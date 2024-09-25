@@ -9,7 +9,7 @@ namespace RiwiTalent.Services.Interface
     {
         Task<IEnumerable<GroupCoderDto>> GetGroupCoders();
         void Add(GroupDto groupDto);
-        Task<KeyDto> SendToken(GruopCoder groupCoder, string key);
+        Task<KeyDto> SendToken(KeyDto keyDto);
         Task<GroupInfoDto> GetGroupInfoById(string groupId);
         Task Update(GroupCoderDto groupCoderDto);
         Task DeleteCoderGroup(string id);

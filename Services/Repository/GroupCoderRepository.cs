@@ -79,11 +79,24 @@ namespace RiwiTalent.Services.Repository
             _mongoCollection.InsertOne(newGruopCoder);
         }
 
-        public async Task<KeyDto> SendToken(GruopCoder groupCoder, string key)
+        public async Task<KeyDto> SendToken(KeyDto keyDto)
         {
             try
             {
-                var searchGroup = await _mongoCollection.Find(group => group.Name == groupCoder.Name).FirstOrDefaultAsync();
+                GruopCoder gruopCoder = new GruopCoder();
+                GruopCoder newGroupCoder = new GruopCoder
+                {
+                    Name = keyDto.Name,
+                    ExternalKeys = new List<ExternalKey>
+                    {
+                        new ExternalKey
+                        {
+                            Key = keyDto.Key
+                        }
+                    }
+                };
+
+                var searchGroup = await _mongoCollection.Find(group => group.Name == keyDto.Name).FirstOrDefaultAsync();
 
                 if(searchGroup == null)
                 {
@@ -102,7 +115,7 @@ namespace RiwiTalent.Services.Repository
 
                 if(searchGroup.ExternalKeys != null && searchGroup.ExternalKeys.Any())
                 {
-                    var KeyValidate = searchGroup.ExternalKeys.FirstOrDefault(k => k.Key.Trim().ToLower() == key.Trim().ToLower());
+                    var KeyValidate = searchGroup.ExternalKeys.FirstOrDefault(k => k.Key.Trim().ToLower() == keyDto.Key.Trim().ToLower());
 
                     foreach (var item in searchGroup.ExternalKeys)
                     {
