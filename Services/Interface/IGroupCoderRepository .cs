@@ -8,7 +8,7 @@ namespace RiwiTalent.Services.Interface
     public interface IGroupCoderRepository 
     {
         Task<IEnumerable<GroupCoderDto>> GetGroupCoders();
-        (ObjectId, Guid) Add(GroupDto groupDto);
+        void Add(GroupDto groupDto);
         Task<KeyDto> SendToken(GruopCoder groupCoder, string key);
         Task<GroupInfoDto> GetGroupInfoById(string groupId);
         Task Update(GroupCoderDto groupCoderDto);
