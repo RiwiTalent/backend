@@ -27,7 +27,7 @@ namespace RiwiTalent.Services.Repository
             _mapper = mapper;
             _service = service;
         }
-        public (ObjectId, Guid) Add(GroupDto groupDto)
+        public void Add(GroupDto groupDto)
         {
             var existGroup = _mongoCollection.Find(g => g.Name == groupDto.Name).FirstOrDefault();
 
@@ -44,16 +44,15 @@ namespace RiwiTalent.Services.Repository
             groupCoder.Id = objectId;
               
 
-            string RealObjectId = _service.RevertObjectIdUUID(guid);
+            /* string RealObjectId = _service.RevertObjectIdUUID(guid);
 
             if(RealObjectId.ToString() == objectId.ToString())
                 Console.WriteLine("Es igual");
 
-            Console.WriteLine($"el objectId del grupo es: {RealObjectId}");
+            Console.WriteLine($"el objectId del grupo es: {RealObjectId}"); */
 
 
             //we define the path of url link
-            string Link = $"http://riwitalent/external/{guid}";
             string tokenString = _service.GenerateTokenRandom();
 
             //define a new instance to add uuid into externalkeys -> url
@@ -64,12 +63,11 @@ namespace RiwiTalent.Services.Repository
                 Description = groupDto.Description,
                 Created_At = DateTime.UtcNow,
                 Status = Status.Active.ToString(),
-                UUID = guid.ToString(),
                 ExternalKeys = new List<ExternalKey>
                 {
                     new ExternalKey
                     {
-                        Url = Link,
+                        Url =  $"https://riwi-talent.onrender.com/{groupDto.Name}/{objectId}",
                         Key = tokenString,
                         Status = Status.Active.ToString(),
                         Date_Creation = DateTime.UtcNow,
@@ -79,15 +77,26 @@ namespace RiwiTalent.Services.Repository
             };
 
             _mongoCollection.InsertOne(newGruopCoder);
-
-            return (groupCoder.Id, guid);
         }
 
-        public async Task<KeyDto> SendToken(GruopCoder groupCoder, string key)
+        public async Task<KeyDto> SendToken(KeyDto keyDto)
         {
             try
             {
-                var searchGroup = await _mongoCollection.Find(group => group.Name == groupCoder.Name).FirstOrDefaultAsync();
+                GruopCoder gruopCoder = new GruopCoder();
+                GruopCoder newGroupCoder = new GruopCoder
+                {
+                    Name = keyDto.Name,
+                    ExternalKeys = new List<ExternalKey>
+                    {
+                        new ExternalKey
+                        {
+                            Key = keyDto.Key
+                        }
+                    }
+                };
+
+                var searchGroup = await _mongoCollection.Find(group => group.Name == keyDto.Name).FirstOrDefaultAsync();
 
                 if(searchGroup == null)
                 {
@@ -95,18 +104,18 @@ namespace RiwiTalent.Services.Repository
                 }
 
                 
-                if(!string.IsNullOrEmpty(searchGroup.UUID))
+                /* if(!string.IsNullOrEmpty(searchGroup.UUID))
                 {
                     Console.WriteLine("The group has UUID");
                 }
                 else
                 {
                     throw new Exception("The group hasn't valid UUID");
-                }
+                } */
 
                 if(searchGroup.ExternalKeys != null && searchGroup.ExternalKeys.Any())
                 {
-                    var KeyValidate = searchGroup.ExternalKeys.FirstOrDefault(k => k.Key.Trim().ToLower() == key.Trim().ToLower());
+                    var KeyValidate = searchGroup.ExternalKeys.FirstOrDefault(k => k.Key.Trim().ToLower() == keyDto.Key.Trim().ToLower());
 
                     foreach (var item in searchGroup.ExternalKeys)
                     {

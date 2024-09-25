@@ -71,19 +71,15 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //obtener el uuid y revertirlo
         [HttpPost]
-        [Route("riwitalent/uuid")]
-        public async Task<IActionResult> GetUUID([FromQuery] string user, [FromQuery] string key)
+        [Route("riwitalent/validationexternal")]
+        public async Task<IActionResult> GetUUID([FromBody] KeyDto keyDto)
         {
             try
             {
-
-                var groupCoder = new GruopCoder { Name = user};
-
-
-                var result = await _groupRepository.SendToken(groupCoder, key);
+                var result = await _groupRepository.SendToken(keyDto);
                 
                 if(result != null)
-                    return Ok(new {Message = "you've access", GroupName = groupCoder.Name });
+                    return Ok(new {Message = "you've access", GroupName = keyDto.Name });
                 return NotFound("Access denied"); 
             }
             catch(Exception ex)
