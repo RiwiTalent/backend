@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Services.Interface;
+using RiwiTalent.Utils.Exceptions;
 
 namespace RiwiTalent.App.Controllers
 {
@@ -18,7 +19,9 @@ namespace RiwiTalent.App.Controllers
         {
             if(!ModelState.IsValid)
             {
-                return BadRequest(RiwiTalent.Utils.Exceptions.StatusError.CreateBadRequest());
+                var instance = Guid.NewGuid().ToString();
+                var problemDetails = StatusError.CreateBadRequest(instance);
+                return BadRequest(problemDetails);
             }
 
             try
@@ -28,7 +31,8 @@ namespace RiwiTalent.App.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }
         }
@@ -46,7 +50,9 @@ namespace RiwiTalent.App.Controllers
 
                 if(coderPagination == null)
                 {
-                    return BadRequest(RiwiTalent.Utils.Exceptions.StatusError.CreateBadRequest());
+                    var instance = Guid.NewGuid().ToString();
+                    var problemDetails = StatusError.CreateBadRequest(instance);
+                    return BadRequest(problemDetails);
                 }
                 return Ok(new 
                 {
@@ -60,7 +66,8 @@ namespace RiwiTalent.App.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }
         }
@@ -76,14 +83,16 @@ namespace RiwiTalent.App.Controllers
 
                 if (coder is null)
                 {
-                    return NotFound(new { message = $"Coder con ID {id} no fue encontrado." });
+                    /* return NotFound(new { message = $"Coder con ID {id} no fue encontrado." }); */
+                    Utils.Exceptions.StatusError.CreateNotFound($"The coder with {id} not found");
                 }
 
                 return Ok(coder);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }
         }
@@ -99,14 +108,15 @@ namespace RiwiTalent.App.Controllers
 
                 if (coder is null)
                 {
-                    return NotFound( new{ message = $"Coder con nombre {name} no fue encontrado."});
+                    return NotFound(StatusError.CreateNotFound($"The coder {name} not found."));
                 }
 
                 return Ok(coder);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }
         }
@@ -122,15 +132,16 @@ namespace RiwiTalent.App.Controllers
                 var coders = await _coderRepository.GetCodersBySkill(skill);
                 if (coders is null || !coders.Any())
                 {
-                    return NotFound("No hay coder con esos lenguajes.");
+                    return NotFound(StatusError.CreateNotFound("There isn't coder with those languages."));
                 }
 
                 return Ok(coders);
             }
             catch (Exception ex)
             {
-                
-                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;
             }
             
         }
@@ -145,13 +156,14 @@ namespace RiwiTalent.App.Controllers
                 var coders = await _coderRepository.GetCodersBylanguage(level);
                 if (coders is null || !coders.Any())
                 {
-                    return NotFound("No hay coder con ese nivel de idioma.");
+                    return NotFound(StatusError.CreateNotFound("There isn't coder with those language level."));
                 }
                 return Ok(coders);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }
         }

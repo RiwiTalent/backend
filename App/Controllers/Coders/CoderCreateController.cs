@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
+using RiwiTalent.Utils.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Coders
 {
@@ -25,7 +26,9 @@ namespace RiwiTalent.App.Controllers.Coders
 
             if(!ModelState.IsValid)
             {
-                return BadRequest(Utils.Exceptions.StatusError.CreateBadRequest());
+                var instance = Guid.NewGuid().ToString();
+                var problemDetails = StatusError.CreateBadRequest(instance);
+                return BadRequest(problemDetails);
             }
 
 
@@ -44,7 +47,8 @@ namespace RiwiTalent.App.Controllers.Coders
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }
         }

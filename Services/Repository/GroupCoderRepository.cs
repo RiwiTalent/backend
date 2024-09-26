@@ -129,7 +129,7 @@ namespace RiwiTalent.Services.Repository
                     }
                     else
                     {
-                        StatusError.CreateNotFound();
+                        StatusError.CreateNotFound("The key not exist");
                     }
                 }
                 else 

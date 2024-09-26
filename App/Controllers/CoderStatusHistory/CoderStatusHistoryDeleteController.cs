@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Services.Interface;
+using RiwiTalent.Utils.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
@@ -19,11 +20,12 @@ namespace RiwiTalent.App.Controllers.Groups
             try
             {
                 await _coderStatusHistoryRepository.DeleteCoderGroup(id);
-                return NoContent();
+                return Ok("The coder has been deleted successfuly");
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }
             
