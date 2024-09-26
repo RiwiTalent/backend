@@ -6,9 +6,17 @@ namespace RiwiTalent.Utils.AutoMapper
 {
     public class GroupCoderProfile : Profile
     {
-        public GroupCoderProfile() {
+        public GroupCoderProfile() 
+        {
            CreateMap<GroupCoderDto, GruopCoder>()
-                                        .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null)); 
+                .ForAllMembers(opt => 
+                {
+                    opt.AllowNull();
+                    opt.Condition((src, dest, sourceMember) => sourceMember != null);
+                });
+            
+            CreateMap<GruopCoder, GroupCoderDto>();
+                                        /* .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null)); */ 
         } 
     }
 }
