@@ -217,9 +217,9 @@ namespace RiwiTalent.Services.Repository
             //First we call the method Builders and have access to Filter
             //Then we can use filter to have access Eq
 
-            var convertIdToObjectId = ObjectId.Parse(groupCoderDto.Id);
+            
 
-            var existGroup = await _mongoCollection.Find(group => group.Id == convertIdToObjectId).FirstOrDefaultAsync();
+            var existGroup = await _mongoCollection.Find(group => group.Id.ToString() == groupCoderDto.Id.ToString()).FirstOrDefaultAsync();
 
             if(existGroup == null)
             {
@@ -228,7 +228,7 @@ namespace RiwiTalent.Services.Repository
 
             var groupCoders = _mapper.Map(groupCoderDto, existGroup);
             var builder = Builders<GruopCoder>.Filter;
-            var filter = builder.Eq(group => group.Id, convertIdToObjectId );
+            var filter = builder.Eq(group => group.Id.ToString(), groupCoderDto.Id.ToString() );
 
             await _mongoCollection.ReplaceOneAsync(filter, groupCoders);
         }

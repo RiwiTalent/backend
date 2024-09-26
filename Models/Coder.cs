@@ -20,7 +20,7 @@ namespace RiwiTalent.Models
         public string? Cv { get; set; }
 
         [BsonRepresentation(BsonType.DateTime)]
-        public DateTime Date_Creation { get; set; }
+        public DateTime Date_Creation { get; set; } = DateTime.UtcNow;
 
         [BsonRepresentation(BsonType.DateTime)]
         public DateTime Date_Update { get; set; }
