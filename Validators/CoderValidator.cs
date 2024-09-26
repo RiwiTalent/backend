@@ -11,6 +11,7 @@ namespace RiwiTalent.Validators
             Include(new CoderSecondNameRule());
             Include(new CoderFirstLastNameRule());
             Include(new CoderSecondLastNameRule());
+            Include(new CoderProfessionalDescriptionRule());
             Include(new CoderEmailRule());
             /* Include(new CoderPhotoRule()); */
             Include(new CoderAgeRule());
@@ -52,6 +53,17 @@ namespace RiwiTalent.Validators
             {
                 RuleFor(coder => coder.SecondLastName).NotEmpty()
                                                  .WithMessage("The SecondLastName is required");
+            }
+        }
+
+        public class CoderProfessionalDescriptionRule : AbstractValidator<CoderDto>
+        {
+            public CoderProfessionalDescriptionRule()
+            {
+                RuleFor(coder => coder.ProfessionalDescription).NotEmpty()
+                                                                .WithMessage("The field ProfessionalDescription is required")
+                                                                .MaximumLength(400)
+                                                                .WithMessage("The maximum 400 characters");
             }
         }
 
