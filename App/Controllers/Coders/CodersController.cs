@@ -83,8 +83,8 @@ namespace RiwiTalent.App.Controllers
 
                 if (coder is null)
                 {
-                    /* return NotFound(new { message = $"Coder con ID {id} no fue encontrado." }); */
-                    Utils.Exceptions.StatusError.CreateNotFound($"The coder with {id} not found");
+                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
+                    return NotFound(StatusError.CreateNotFound($"The coder with {id} not found", instance));
                 }
 
                 return Ok(coder);
@@ -108,7 +108,8 @@ namespace RiwiTalent.App.Controllers
 
                 if (coder is null)
                 {
-                    return NotFound(StatusError.CreateNotFound($"The coder {name} not found."));
+                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
+                    return NotFound(StatusError.CreateNotFound($"The coder {name} not found.", instance));
                 }
 
                 return Ok(coder);
@@ -132,7 +133,8 @@ namespace RiwiTalent.App.Controllers
                 var coders = await _coderRepository.GetCodersBySkill(skill);
                 if (coders is null || !coders.Any())
                 {
-                    return NotFound(StatusError.CreateNotFound("There isn't coder with those languages."));
+                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
+                    return NotFound(StatusError.CreateNotFound("There isn't coder with those languages.", instance));
                 }
 
                 return Ok(coders);
@@ -156,7 +158,8 @@ namespace RiwiTalent.App.Controllers
                 var coders = await _coderRepository.GetCodersBylanguage(level);
                 if (coders is null || !coders.Any())
                 {
-                    return NotFound(StatusError.CreateNotFound("There isn't coder with those language level."));
+                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
+                    return NotFound(StatusError.CreateNotFound("There isn't coder with those language level.", instance));
                 }
                 return Ok(coders);
             }

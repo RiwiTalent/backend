@@ -5,13 +5,14 @@ namespace RiwiTalent.Utils.Exceptions
     public class StatusError
     {
         //404
-        public static ProblemDetails CreateNotFound(string detail)
+        public static ProblemDetails CreateNotFound(string detail, string instance)
         {
             return new ProblemDetails
             {
                 Title = "Error 404 - Not Found",
                 Status = StatusCodes.Status404NotFound,
-                Detail = detail
+                Detail = detail,
+                Instance = instance
             };
         }
 
@@ -38,6 +39,17 @@ namespace RiwiTalent.Utils.Exceptions
                 Detail = ex.Message,
                 Instance = Guid.NewGuid().ToString()
             };
+        }
+
+        //Exceptions
+        public class InvalidKeyException : Exception
+        {
+            public InvalidKeyException(string message) : base(message){}
+        }
+
+        public class ExternalKeyNotFound : Exception
+        {
+            public ExternalKeyNotFound(string message) : base(message){}
         }
     }
 }   

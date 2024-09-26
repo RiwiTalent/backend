@@ -100,7 +100,7 @@ namespace RiwiTalent.Services.Repository
 
                 if(searchGroup == null)
                 {
-                    throw new Exception($"Name is invalid");
+                    throw new StatusError.InvalidKeyException($"Name is invalid");
                 }
 
                 
@@ -124,12 +124,12 @@ namespace RiwiTalent.Services.Repository
 
                     if(KeyValidate != null)
                     {
-                        Console.WriteLine("The key is correct");
                         return new KeyDto { Key = KeyValidate.Key };
                     }
                     else
                     {
-                        StatusError.CreateNotFound("The key not exist");
+                        
+                        throw new StatusError.InvalidKeyException("The key isn't valid");
                     }
                 }
                 else 
@@ -137,7 +137,7 @@ namespace RiwiTalent.Services.Repository
                     throw new Exception("External key not found in this group");
                 }
             
-                throw new Exception("External key not found");
+                throw new StatusError.ExternalKeyNotFound("External key not found");
             }
             catch (Exception)
             {

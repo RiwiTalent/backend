@@ -32,7 +32,8 @@ namespace RiwiTalent.App.Controllers.Groups
 
                 if(groupList is null)
                 {
-                    return NotFound(Utils.Exceptions.StatusError.CreateNotFound("The groups not found"));
+                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
+                    return NotFound(StatusError.CreateNotFound("The groups not found", instance));
                 }
 
                 return Ok(groupList);
@@ -55,13 +56,15 @@ namespace RiwiTalent.App.Controllers.Groups
                 var groupExist = await _groupRepository.GroupExistByName(name);
                 if (!groupExist)
                 {
-                    return NotFound(StatusError.CreateNotFound($"The group '{name}' not exists."));
+                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
+                    return NotFound(StatusError.CreateNotFound($"The group '{name}' not exists.", instance));
                 }
 
                 var coder = await _coderRepository.GetCodersByGroup(name);
                 if (coder == null || !coder.Any())
                 {  
-                    return NotFound(StatusError.CreateNotFound($"This group haven't coders yet, '{name}'."));
+                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
+                    return NotFound(StatusError.CreateNotFound($"This group haven't coders yet, '{name}'.", instance));
                 }
                 return Ok(coder);
             }
@@ -102,7 +105,8 @@ namespace RiwiTalent.App.Controllers.Groups
 
                 if(groupInfo is null)
                 {
-                    return NotFound(StatusError.CreateNotFound($"The group {id} not found"));
+                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
+                    return NotFound(StatusError.CreateNotFound($"The group {id} not found", instance));
                 }
 
                 return Ok(groupInfo);
