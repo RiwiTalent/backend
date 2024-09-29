@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -36,6 +37,48 @@ namespace RiwiTalent.App.Controllers.Groups
                     return NotFound(StatusError.CreateNotFound("The groups not found", instance));
                 }
 
+                return Ok(groupList);
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("riwitalent/groups/inactive")]
+        public async Task<IActionResult> GetGroupsInactive()
+        {
+            try
+            {
+                var groupList = await _groupRepository.GetGroupsInactive();
+                if (groupList == null)
+                {
+                    return NotFound("There are no inactive groups.");
+                }
+                return Ok(groupList);
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("riwitalent/groups/active")]
+        public async Task<IActionResult> GetGroupsActive()
+        {
+            try
+            {
+                var groupList = await _groupRepository.GetGroupsActive();
+                if (groupList == null)
+                {
+                    return NotFound("There are no active groups.");
+                }
                 return Ok(groupList);
             }
             catch (Exception ex)
