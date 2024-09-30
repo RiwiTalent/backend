@@ -165,7 +165,7 @@ namespace RiwiTalent.Services.Repository
 
             var newGroup = Groups.Select(groups => new GroupCoderDto
             {
-                Id = groups.Id,
+                Id = groups.Id.ToString(),
                 Name = groups.Name,
                 Description = groups.Description,
                 Status = groups.Status,

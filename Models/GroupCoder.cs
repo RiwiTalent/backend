@@ -12,7 +12,6 @@ namespace RiwiTalent.Models
         public string? Name { get; set; }
         public string? Description { get; set; }
         public string? Status { get; set; }
-        [BsonRepresentation(BsonType.DateTime)]
         public DateTime Created_At { get; set; }
         public DateTime? Deleted_At { get; set; }
         public List<Coder>? Coders { get; set; }
