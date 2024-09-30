@@ -20,7 +20,7 @@ namespace RiwiTalent.App.Controllers.Login
             _validatorUser = validatorUser;
         }
 
-        [HttpPost("riwitalent/login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] TokenResponseDto tokenResponseDto)
         {
             try

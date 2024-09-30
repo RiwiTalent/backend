@@ -38,7 +38,7 @@ namespace RiwiTalent.Services.Repository
                 throw new ApplicationException($"El grupo con el nombre '{groupDto.Name}' ya existe.");
             }
 
-            GroupCoder groupCoder = new GroupCoder(); 
+            GroupCoder groupCoder = new GroupCoder();
 
             //generate ObjectId
             ObjectId objectId = ObjectId.GenerateNewId();

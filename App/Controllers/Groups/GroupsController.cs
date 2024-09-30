@@ -24,7 +24,7 @@ namespace RiwiTalent.App.Controllers.Groups
         }
 
         [HttpGet]
-        [Route("riwitalent/groups")]
+        [Route("groups")]
         public async Task<IActionResult> Get()
         {
             try
@@ -48,7 +48,7 @@ namespace RiwiTalent.App.Controllers.Groups
         }
 
         [HttpGet]
-        [Route("riwitalent/groups/inactive")]
+        [Route("groups/inactive")]
         public async Task<IActionResult> GetGroupsInactive()
         {
             try

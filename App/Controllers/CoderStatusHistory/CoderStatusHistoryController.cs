@@ -25,7 +25,7 @@ namespace RiwiTalent.App.Controllers
             }
         */
         [HttpGet]
-        [Route("riwitalent/historyStatus")]
+        [Route("historystatus")]
         public async Task<IActionResult> GetAllHistory()
         {
             if(!ModelState.IsValid)
@@ -80,7 +80,7 @@ namespace RiwiTalent.App.Controllers
         }
 
         [HttpGet]
-        [Route("riwitalent/historyStatus/group/{id}")]
+        [Route("historystatus/group/{id}")]
         public async Task<IActionResult> GetGroupHistory(string id)
         {
             if(!ModelState.IsValid)

@@ -20,7 +20,7 @@ namespace backend.App.Controllers.Groups
         }
 
         [HttpDelete]
-        [Route("riwitalent/delete/{groupId}/group")]
+        [Route("group/{Id}")]
         public IActionResult DeleteGroup(string groupId)
         {
             try

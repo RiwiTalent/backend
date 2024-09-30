@@ -18,7 +18,7 @@ namespace RiwiTalent.App.Controllers.Technologies
 
         //endpoint
         [HttpGet]
-        [Route("riwitalent/technologies")]
+        [Route("technologies")]
         public async Task<IActionResult> Get()
         {
             var techs = await _technologyRepository.GetTechnologies();

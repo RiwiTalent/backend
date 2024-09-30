@@ -19,7 +19,7 @@ namespace RiwiTalent.App.Controllers.Coders
 
         //Endpoint
         [HttpPost]
-        [Route("riwitalent/createcoders")]
+        [Route("coders")]
         public IActionResult Post([FromBody] CoderDto coderDto)
         {
 

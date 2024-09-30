@@ -19,7 +19,7 @@ namespace RiwiTalent.App.Controllers.Technologies
 
         //endpoint
         [HttpPost]
-        [Route("riwitalent/technologies")]
+        [Route("technologies")]
         public IActionResult Post(Technology technology)
         {
             if(!ModelState.IsValid)

@@ -20,7 +20,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //endpoint
         [HttpPost]
-        [Route("riwitalent/creategroups")]
+        [Route("groups")]
         // public IActionResult Post([FromBody] GruopCoder groupCoder, CoderDto coderDto)
         public IActionResult Post([FromBody] GroupDto groupDto)
         {
@@ -54,7 +54,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //endpoint regenerate token
         [HttpPatch]
-        [Route("riwitalent/regeneratetoken")]
+        [Route("regeneratetoken")]
         public async Task<IActionResult> GenerateToken([FromQuery] NewKeyDto newKeyDto)
         {
             try
