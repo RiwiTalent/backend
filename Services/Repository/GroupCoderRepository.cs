@@ -1,4 +1,6 @@
+using System.Xml.Schema;
 using AutoMapper;
+using backend.Models.Dtos;
 using Microsoft.AspNetCore.Http.HttpResults;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -144,6 +146,21 @@ namespace RiwiTalent.Services.Repository
             {
                 throw;
             }
+        }
+
+        public async Task RegenerateToken(NewKeyDto newKeyDto)
+        {
+            var group = await _mongoCollection.Find(g => g.ExternalKeys.Any()).FirstOrDefaultAsync();
+
+            if(group == null)
+                throw new StatusError.InvalidKeyException("Key isn't valid");
+            
+            string newKey = _service.GenerateTokenRandom();
+
+            var filter = Builders<GroupCoder>.Filter.Eq(g => g.Id, group.Id);
+            var updateKey = Builders<GroupCoder>.Update.Set(g => g.ExternalKeys[0].Key, newKey);
+
+            await _mongoCollection.UpdateOneAsync(filter, updateKey);
         }
 
         
