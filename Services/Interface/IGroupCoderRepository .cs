@@ -1,3 +1,4 @@
+using backend.Models.Dtos;
 using MongoDB.Bson;
 using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
@@ -11,6 +12,7 @@ namespace RiwiTalent.Services.Interface
         Task<IEnumerable<GroupCoder>> GetGroupsInactive();
         Task<IEnumerable<GroupCoder>> GetGroupsActive();
         void Add(GroupDto groupDto);
+        Task RegenerateToken(NewKeyDto newKeyDto);
         Task<KeyDto> SendToken(KeyDto keyDto);
         Task<GroupInfoDto> GetGroupInfoById(string groupId);
         Task Update(GroupCoderDto groupCoderDto);
