@@ -1,10 +1,12 @@
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
+using RiwiTalent.Utils.Exceptions;
 using RiwiTalent.Utils.ExternalKey;
 
 namespace RiwiTalent.App.Controllers.Groups
@@ -31,14 +33,58 @@ namespace RiwiTalent.App.Controllers.Groups
 
                 if(groupList is null)
                 {
-                    return NotFound(Utils.Exceptions.StatusError.CreateNotFound());
+                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
+                    return NotFound(StatusError.CreateNotFound("The groups not found", instance));
                 }
 
                 return Ok(groupList);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("riwitalent/groups/inactive")]
+        public async Task<IActionResult> GetGroupsInactive()
+        {
+            try
+            {
+                var groupList = await _groupRepository.GetGroupsInactive();
+                if (groupList == null)
+                {
+                    return NotFound("There are no inactive groups.");
+                }
+                return Ok(groupList);
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("riwitalent/groups/active")]
+        public async Task<IActionResult> GetGroupsActive()
+        {
+            try
+            {
+                var groupList = await _groupRepository.GetGroupsActive();
+                if (groupList == null)
+                {
+                    return NotFound("There are no active groups.");
+                }
+                return Ok(groupList);
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }
         }
@@ -53,19 +99,21 @@ namespace RiwiTalent.App.Controllers.Groups
                 var groupExist = await _groupRepository.GroupExistByName(name);
                 if (!groupExist)
                 {
-                    return NotFound($"El grupo '{name}' no existe.");
+                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
+                    return NotFound(StatusError.CreateNotFound($"The group '{name}' not exists.", instance));
                 }
 
                 var coder = await _coderRepository.GetCodersByGroup(name);
                 if (coder == null || !coder.Any())
                 {  
-                    return NotFound($"Este grupo aùn no tiene coders '{name}'.");
+                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
+                    return NotFound(StatusError.CreateNotFound($"This group haven't coders yet, '{name}'.", instance));
                 }
                 return Ok(coder);
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"Error al obtener los coders del grupo '{name}'", ex);
+                throw new ApplicationException($"Error to get the coders of grupo '{name}'", ex);
             }
         }
 
@@ -84,7 +132,8 @@ namespace RiwiTalent.App.Controllers.Groups
             }
             catch(Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }
         }
@@ -99,14 +148,16 @@ namespace RiwiTalent.App.Controllers.Groups
 
                 if(groupInfo is null)
                 {
-                    return NotFound(Utils.Exceptions.StatusError.CreateNotFound());
+                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
+                    return NotFound(StatusError.CreateNotFound($"The group {id} not found", instance));
                 }
 
                 return Ok(groupInfo);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }
         }

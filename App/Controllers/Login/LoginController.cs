@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
+using RiwiTalent.Utils.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Login
 {
@@ -22,30 +23,40 @@ namespace RiwiTalent.App.Controllers.Login
         [HttpPost("riwitalent/login")]
         public async Task<IActionResult> Login([FromBody] TokenResponseDto tokenResponseDto)
         {
-            var users = await _context.Users.Find(u => u.Email == tokenResponseDto.Email && u.Password == tokenResponseDto.Password).FirstOrDefaultAsync();
-
-            //we create a new instance to can validate
-            UserDto userDto = new UserDto
+            try
             {
-                Email = users.Email,
-                Password = users.Password
-            }; 
+                var users = await _context.Users.Find(u => u.Email == tokenResponseDto.Email && u.Password == tokenResponseDto.Password).FirstOrDefaultAsync();
 
-            var UserValidations = _validatorUser.Validate(userDto);
+                //we create a new instance to can validate
+                UserDto userDto = new UserDto
+                {
+                    Email = users.Email,
+                    Password = users.Password
+                }; 
 
-            if(!UserValidations.IsValid)
-            {
-                return Unauthorized(UserValidations.Errors);
+                var UserValidations = _validatorUser.Validate(userDto);
+
+                if(!UserValidations.IsValid)
+                {
+                    return Unauthorized(UserValidations.Errors);
+                }
+                else if(users == null || users.Password != users.Password)
+                {
+                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
+                    return NotFound(StatusError.CreateNotFound("user or password wrong", instance));
+                }
+
+
+                var token = _tokenRepository.GetToken(users);
+
+                return Ok(new { Token = token });
             }
-            else if(users == null || users.Password != users.Password)
+            catch (Exception ex)
             {
-                return NotFound("user or password wrong");
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;
             }
-
-
-            var token = _tokenRepository.GetToken(users);
-
-            return Ok(new { Token = token });
         }
     }
 }

@@ -5,24 +5,26 @@ namespace RiwiTalent.Utils.Exceptions
     public class StatusError
     {
         //404
-        public static ProblemDetails CreateNotFound()
+        public static ProblemDetails CreateNotFound(string detail, string instance)
         {
             return new ProblemDetails
             {
                 Title = "Error 404 - Not Found",
                 Status = StatusCodes.Status404NotFound,
-                Detail = "The content you are trying to access is not available. Please check the URL to ensure it is correct."
+                Detail = detail,
+                Instance = instance
             };
         }
 
         //400
-        public static ProblemDetails CreateBadRequest()
+        public static ProblemDetails CreateBadRequest(string instance)
         {
             return new ProblemDetails
             {
                 Title = "Error 400 - Bad Request",
                 Status = StatusCodes.Status400BadRequest,
-                Detail = "The request you are trying to make is not valid. Please check the data sent and try again."
+                Detail = "The request you are trying to make is not valid. Please check the data sent and try again.",
+                Instance = instance
             };
         }
 
@@ -34,8 +36,20 @@ namespace RiwiTalent.Utils.Exceptions
             {
                 Title = "Error 500 - Internal Server Error",
                 Status = StatusCodes.Status500InternalServerError,
-                Detail = ex.Message
+                Detail = ex.Message,
+                Instance = Guid.NewGuid().ToString()
             };
+        }
+
+        //Exceptions
+        public class InvalidKeyException : Exception
+        {
+            public InvalidKeyException(string message) : base(message){}
+        }
+
+        public class ExternalKeyNotFound : Exception
+        {
+            public ExternalKeyNotFound(string message) : base(message){}
         }
     }
 }   

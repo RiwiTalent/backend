@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Models.Enums;
 using RiwiTalent.Services.Interface;
+using RiwiTalent.Utils.Exceptions;
 
 namespace RiwiTalent.App.Controllers
 {
@@ -29,7 +30,9 @@ namespace RiwiTalent.App.Controllers
         {
             if(!ModelState.IsValid)
             {
-                return BadRequest(RiwiTalent.Utils.Exceptions.StatusError.CreateBadRequest());
+                var instance = Guid.NewGuid().ToString();
+                var problemDetails = StatusError.CreateBadRequest(instance);
+                return BadRequest(problemDetails);
             }
 
             try
@@ -39,7 +42,8 @@ namespace RiwiTalent.App.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }
         }
@@ -50,7 +54,9 @@ namespace RiwiTalent.App.Controllers
         {
             if(!ModelState.IsValid)
             {
-                return BadRequest(RiwiTalent.Utils.Exceptions.StatusError.CreateBadRequest());
+                var instance = Guid.NewGuid().ToString();
+                var problemDetails = StatusError.CreateBadRequest(instance);
+                return BadRequest(problemDetails);
             }
 
             try
@@ -67,7 +73,8 @@ namespace RiwiTalent.App.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }
         }
@@ -78,7 +85,9 @@ namespace RiwiTalent.App.Controllers
         {
             if(!ModelState.IsValid)
             {
-                return BadRequest(RiwiTalent.Utils.Exceptions.StatusError.CreateBadRequest());
+                var instance = Guid.NewGuid().ToString();
+                var problemDetails = StatusError.CreateBadRequest(instance);
+                return BadRequest(problemDetails);
             }
 
             try
@@ -88,7 +97,8 @@ namespace RiwiTalent.App.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }
         }

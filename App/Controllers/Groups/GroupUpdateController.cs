@@ -3,6 +3,7 @@ using RiwiTalent.Services.Interface;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Models;
 using AutoMapper;
+using RiwiTalent.Utils.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
@@ -24,7 +25,9 @@ namespace RiwiTalent.App.Controllers.Groups
         {
             if(!ModelState.IsValid)
             {
-                return BadRequest(Utils.Exceptions.StatusError.CreateBadRequest());
+                var instance = Guid.NewGuid().ToString();
+                var problemDetails = StatusError.CreateBadRequest(instance);
+                return BadRequest(problemDetails);
             }
             
             try
@@ -34,7 +37,8 @@ namespace RiwiTalent.App.Controllers.Groups
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }
 

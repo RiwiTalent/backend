@@ -9,9 +9,9 @@ namespace RiwiTalent.Services.Repository
 {
     public class TokenRepository : ITokenRepository
     {
-        private readonly string key;
-        private readonly string Issuer;
-        private readonly string Audience;
+        private readonly string? key;
+        private readonly string? Issuer;
+        private readonly string? Audience;
         public TokenRepository()
         {
             key = Environment.GetEnvironmentVariable("Key");

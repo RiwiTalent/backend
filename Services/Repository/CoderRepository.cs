@@ -12,7 +12,7 @@ namespace RiwiTalent.Services.Repository
     public class CoderRepository : ICoderRepository
     {
         private readonly IMongoCollection<Coder> _mongoCollection;
-        private readonly IMongoCollection<GruopCoder> _mongoCollectionGroups;
+        private readonly IMongoCollection<GroupCoder> _mongoCollectionGroups;
         private readonly IMapper _mapper; 
         private string Error = "The coder not found";
         public CoderRepository(MongoDbContext context, IMapper mapper)
@@ -33,14 +33,14 @@ namespace RiwiTalent.Services.Repository
         public async Task<Coder> GetCoderId(string id)
         {
             //In this method we get coders by id and we do a control of errors.
-            try
+           /*  try
             {
-                return await _mongoCollection.Find(Coders => Coders.Id == id).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
                 throw new ApplicationException("Ocurrió un error al obtener el coder", ex);
-            }
+            } */
+                return await _mongoCollection.Find(Coders => Coders.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<Coder> GetCoderName(string name)

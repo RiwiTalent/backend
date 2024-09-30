@@ -3,6 +3,7 @@ using RiwiTalent.Services.Interface;
 using RiwiTalent.Models;
 using FluentValidation;
 using RiwiTalent.Models.DTOs;
+using RiwiTalent.Utils.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
@@ -23,9 +24,9 @@ namespace RiwiTalent.App.Controllers.Groups
         public IActionResult Post([FromBody] GroupDto groupDto)
         {
             //we create a new instance to can validate
-            if(groupDto == null)
+            if(groupDto is null)
             {
-                return BadRequest("GroupCoderDto cannot be null.");
+                return NotFound("GroupCoderDto not found.");
             } 
 
             //validations with FluentValidation
@@ -44,7 +45,8 @@ namespace RiwiTalent.App.Controllers.Groups
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }
         }
