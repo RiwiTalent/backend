@@ -13,7 +13,7 @@ namespace RiwiTalent.App.Controllers.Coders
         }
     
         [HttpDelete]
-        [Route("riwitalent/{id:length(24)}/deletecoder")]
+        [Route("coder/{id:length(24)}")]
         public IActionResult Delete(string id)
         {
             /* The function has the main principle of search by coder id
@@ -33,7 +33,7 @@ namespace RiwiTalent.App.Controllers.Coders
         }
 
         [HttpPut]
-        [Route("riwitalent/{id:length(24)}/reactivate")]
+        [Route("reactivate/{id:length(24)}")]
         public IActionResult Reactivate(string id)
         {
             /* The function has the main principle of search by coder id

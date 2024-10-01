@@ -1,4 +1,6 @@
+using System.Xml.Schema;
 using AutoMapper;
+using backend.Models.Dtos;
 using Microsoft.AspNetCore.Http.HttpResults;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -14,7 +16,7 @@ namespace RiwiTalent.Services.Repository
 {
     public class GroupCoderRepository : IGroupCoderRepository
     {
-        private readonly IMongoCollection<GruopCoder> _mongoCollection;
+        private readonly IMongoCollection<GroupCoder> _mongoCollection  ;
         private readonly IMongoCollection<Coder> _mongoCollectionCoder;
         private readonly ExternalKeyUtils _service;
         private readonly IMapper _mapper;
@@ -36,7 +38,7 @@ namespace RiwiTalent.Services.Repository
                 throw new ApplicationException($"El grupo con el nombre '{groupDto.Name}' ya existe.");
             }
 
-            GruopCoder groupCoder = new GruopCoder(); 
+            GroupCoder groupCoder = new GroupCoder();
 
             //generate ObjectId
             ObjectId objectId = ObjectId.GenerateNewId();
@@ -56,12 +58,13 @@ namespace RiwiTalent.Services.Repository
             string tokenString = _service.GenerateTokenRandom();
 
             //define a new instance to add uuid into externalkeys -> url
-            GruopCoder newGruopCoder = new GruopCoder
+            GroupCoder newGruopCoder = new GroupCoder
             {
                 Id = objectId,
                 Name = groupDto.Name,
                 Description = groupDto.Description,
                 Created_At = DateTime.UtcNow,
+                Deleted_At = null,
                 Status = Status.Active.ToString(),
                 ExternalKeys = new List<ExternalKey>
                 {
@@ -83,8 +86,8 @@ namespace RiwiTalent.Services.Repository
         {
             try
             {
-                GruopCoder gruopCoder = new GruopCoder();
-                GruopCoder newGroupCoder = new GruopCoder
+                GroupCoder gruopCoder = new GroupCoder();
+                GroupCoder newGroupCoder = new GroupCoder
                 {
                     Name = keyDto.Name,
                     ExternalKeys = new List<ExternalKey>
@@ -145,6 +148,21 @@ namespace RiwiTalent.Services.Repository
             }
         }
 
+        public async Task RegenerateToken(NewKeyDto newKeyDto)
+        {
+            var group = await _mongoCollection.Find(g => g.ExternalKeys.Any()).FirstOrDefaultAsync();
+
+            if(group == null)
+                throw new StatusError.InvalidKeyException("Key isn't valid");
+            
+            string newKey = _service.GenerateTokenRandom();
+
+            var filter = Builders<GroupCoder>.Filter.Eq(g => g.Id, group.Id);
+            var updateKey = Builders<GroupCoder>.Update.Set(g => g.ExternalKeys[0].Key, newKey);
+
+            await _mongoCollection.UpdateOneAsync(filter, updateKey);
+        }
+
         
 
         // public async Task DeleteCoderGroup(string id)
@@ -169,6 +187,7 @@ namespace RiwiTalent.Services.Repository
                 Description = groups.Description,
                 Status = groups.Status,
                 Created_At = groups.Created_At,
+                Delete_At = groups.Deleted_At,
                 ExternalKeys = groups.ExternalKeys
             });
 
@@ -204,7 +223,7 @@ namespace RiwiTalent.Services.Repository
         // validation of group existence
         public async Task<bool> GroupExistByName(string name)
         {
-            var filter = Builders<GruopCoder>.Filter.Eq(g => g.Name, name);
+            var filter = Builders<GroupCoder>.Filter.Regex(g => g.Name, name);
             var group = await _mongoCollection.Find(filter).FirstOrDefaultAsync();
 
             // Retorna true si el grupo existe, false si no
@@ -217,7 +236,7 @@ namespace RiwiTalent.Services.Repository
             //First we call the method Builders and have access to Filter
             //Then we can use filter to have access Eq
 
-            var convertIdToObjectId = ObjectId.Parse(groupCoderDto.Id);
+            var convertIdToObjectId = ObjectId.Parse(groupCoderDto.Id.ToString());
 
             var existGroup = await _mongoCollection.Find(group => group.Id == convertIdToObjectId).FirstOrDefaultAsync();
 
@@ -227,10 +246,37 @@ namespace RiwiTalent.Services.Repository
             }
 
             var groupCoders = _mapper.Map(groupCoderDto, existGroup);
-            var builder = Builders<GruopCoder>.Filter;
+            var builder = Builders<GroupCoder>.Filter;
             var filter = builder.Eq(group => group.Id, convertIdToObjectId );
 
             await _mongoCollection.ReplaceOneAsync(filter, groupCoders);
+        }
+
+        public async Task DeleteGroup(string groupId)
+        {
+            var filter = Builders<GroupCoder>.Filter.Eq(c => c.Id, new ObjectId(groupId));         
+            var updateStatusAndRelation = Builders<GroupCoder>.Update.Combine(
+                Builders<GroupCoder>.Update.Set(coder => coder.Status, Status.Inactive.ToString()),
+                Builders<GroupCoder>.Update.Set(coder => coder.Deleted_At, DateTime.UtcNow)
+            );
+
+            var result = await _mongoCollection.UpdateOneAsync(filter, updateStatusAndRelation);
+            if (result.ModifiedCount == 0)
+            {
+                throw new Exception("No se pudo actualizar el grupo.");
+            }
+        }
+
+        public async Task<IEnumerable<GroupCoder>> GetGroupsInactive()
+        {
+            var filter = Builders<GroupCoder>.Filter.In(c => c.Status, new [] { Status.Inactive.ToString()});
+            return await _mongoCollection.Find(filter).ToListAsync();
+        }
+
+        public async Task<IEnumerable<GroupCoder>> GetGroupsActive()
+        {
+            var filter = Builders<GroupCoder>.Filter.In(c => c.Status, new [] { Status.Active.ToString() });
+            return await _mongoCollection.Find(filter).ToListAsync();
         }
     }
 }

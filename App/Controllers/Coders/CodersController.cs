@@ -14,7 +14,7 @@ namespace RiwiTalent.App.Controllers
 
         //get all coders
         [HttpGet]
-        [Route("riwitalent/coders")]
+        [Route("coders")]
         public async Task<IActionResult> Get()
         {
             if(!ModelState.IsValid)
@@ -40,7 +40,7 @@ namespace RiwiTalent.App.Controllers
 
         //Get all coders pagination
         [HttpGet]
-        [Route("riwitalent/coders/page={page}")]
+        [Route("coders/page={page}")]
         public async Task<IActionResult> Get(int page = 1,int cantRegisters = 10)
         {
             /*The main idea of this method, is when the user list all coders can watch for pagination*/
@@ -74,7 +74,7 @@ namespace RiwiTalent.App.Controllers
 
         //Get coder by id
         [HttpGet]
-        [Route("riwitalent/{id}/coder")]
+        [Route("coder/{id}")]
         public async Task<IActionResult> GetCoderById(string id)
         {
             try
@@ -99,7 +99,7 @@ namespace RiwiTalent.App.Controllers
 
         //Get Coder by name
         [HttpGet]
-        [Route("riwitalent/{name}/coders")]
+        [Route("coder/name")]
         public async Task<IActionResult> GetCoderByName(string name)
         {
             try
@@ -125,7 +125,7 @@ namespace RiwiTalent.App.Controllers
 
         //Get coder by skill tecnical
         [HttpGet]
-        [Route("RiwiTalent/skill/coder")]
+        [Route("coder/skill")]
         public async Task<IActionResult> GetCodersBySkill([FromQuery] List<string> skill)
         {
             try
@@ -150,7 +150,7 @@ namespace RiwiTalent.App.Controllers
 
         //Get coder by language level in english
         [HttpGet]
-        [Route("RiwiTalent/coder/{language}/level")]
+        [Route("coders/language/level")]
         public async Task<IActionResult> GetCodersByLanguage([FromQuery] string level, string language = "English")
         {
             try

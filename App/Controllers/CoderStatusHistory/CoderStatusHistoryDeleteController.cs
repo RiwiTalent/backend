@@ -14,7 +14,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //endpoint
         [HttpDelete]
-        [Route("riwitalent/{id:length(24)}/deleteCoderGroup")]
+        [Route("coder/group/{id:length(24)}")]
         public async Task<IActionResult> DeleteCoder(string id)
         {
             try

@@ -4,6 +4,7 @@ using RiwiTalent.Models;
 using FluentValidation;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Utils.Exceptions;
+using backend.Models.Dtos;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
@@ -19,7 +20,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //endpoint
         [HttpPost]
-        [Route("riwitalent/creategroups")]
+        [Route("groups")]
         // public IActionResult Post([FromBody] GruopCoder groupCoder, CoderDto coderDto)
         public IActionResult Post([FromBody] GroupDto groupDto)
         {
@@ -42,6 +43,25 @@ namespace RiwiTalent.App.Controllers.Groups
                 _groupRepository.Add(groupDto);
 
                 return Ok("The Group has been created successfully");
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;
+            }
+        }
+
+        //endpoint regenerate token
+        [HttpPatch]
+        [Route("regeneratetoken")]
+        public async Task<IActionResult> GenerateToken([FromQuery] NewKeyDto newKeyDto)
+        {
+            try
+            {
+                await _groupRepository.RegenerateToken(newKeyDto);
+                return Ok("The token is already");
+                
             }
             catch (Exception ex)
             {

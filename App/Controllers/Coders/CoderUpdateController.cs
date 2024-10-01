@@ -15,7 +15,7 @@ namespace RiwiTalent.App.Controllers.Coders
 
         //Endpoint
         [HttpPut]
-        [Route("riwitalent/updatecoder")]
+        [Route("coder")]
         public async Task<IActionResult> UpdateCoder(CoderDto coderDto)
         {
             if(coderDto is null)
