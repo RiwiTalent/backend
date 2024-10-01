@@ -26,8 +26,12 @@ namespace RiwiTalent.Services.Repository
             var message = new MimeMessage();
             message.From.Add(MailboxAddress.Parse(_config.GetSection("Email:Username").Value));
 
-            message.To.Add(MailboxAddress.Parse(email.Sender));               
-        
+            // Añadir múltiples destinatarios
+            foreach (var recipient in email.Recipients)
+            {
+                message.To.Add(MailboxAddress.Parse(recipient));
+            }
+
             message.Subject = email.Subject;
             message.Body = new TextPart("text/plain")
             {
