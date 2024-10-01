@@ -12,6 +12,7 @@ namespace RiwiTalent.Models
         public string? Name { get; set; }
         public string? Description { get; set; }
         public string? Status { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime Created_At { get; set; }
         public DateTime? Deleted_At { get; set; }
         public List<Coder>? Coders { get; set; }

@@ -11,6 +11,9 @@ using RiwiTalent.Models.Enums;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Utils.Exceptions;
 using RiwiTalent.Utils.ExternalKey;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Amazon.Runtime.Internal.Settings;
 
 namespace RiwiTalent.Services.Repository
 {
@@ -18,20 +21,23 @@ namespace RiwiTalent.Services.Repository
     {
         private readonly IMongoCollection<GroupCoder> _mongoCollection  ;
         private readonly IMongoCollection<Coder> _mongoCollectionCoder;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ExternalKeyUtils _service;
         private readonly IMapper _mapper;
 
         private string Error = "The group not found";
-        public GroupCoderRepository(MongoDbContext context, IMapper mapper, ExternalKeyUtils service)
+        public GroupCoderRepository(MongoDbContext context, IMapper mapper, ExternalKeyUtils service, IHttpContextAccessor httpContextAccessor)
         {
             _mongoCollection = context.GroupCoders;
             _mongoCollectionCoder = context.Coders;
+            _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
             _service = service;
         }
         public void Add(GroupDto groupDto)
         {
             var existGroup = _mongoCollection.Find(g => g.Name == groupDto.Name).FirstOrDefault();
+            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
 
             if (existGroup != null)
             {
@@ -66,6 +72,7 @@ namespace RiwiTalent.Services.Repository
                 Created_At = DateTime.UtcNow,
                 Deleted_At = null,
                 Status = Status.Active.ToString(),
+                CreatedBy = userEmail,
                 ExternalKeys = new List<ExternalKey>
                 {
                     new ExternalKey

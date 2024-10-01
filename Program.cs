@@ -22,6 +22,7 @@ const string MyCors = "PolicyCors";
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 
 //DotNetEnv
 Env.Load();

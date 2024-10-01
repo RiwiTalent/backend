@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -11,6 +12,7 @@ using RiwiTalent.Utils.ExternalKey;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
+    [Authorize]
     public class GroupsController : Controller
     {
         private readonly IGroupCoderRepository _groupRepository;
