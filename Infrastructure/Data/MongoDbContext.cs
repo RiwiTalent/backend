@@ -30,5 +30,6 @@ namespace RiwiTalent.Infrastructure.Data
         public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
         public IMongoCollection<CoderStatusHistory> CoderStatusHistories => _database.GetCollection<CoderStatusHistory>("CoderStatusHistories");
         public IMongoCollection<Technology> Technologies  => _database.GetCollection<Technology>("Technologies");
+        public IMongoCollection<TermAndCondition> TermsAndConditions  => _database.GetCollection<TermAndCondition>("TermsAndConditions");
     }
 }

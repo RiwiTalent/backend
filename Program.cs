@@ -36,6 +36,7 @@ builder.Services.AddScoped<IGroupCoderRepository, GroupCoderRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<ICoderStatusHistoryRepository, CoderStatusHistoryRepository>();
 builder.Services.AddScoped<ITechnologyRepository, TechnologyRepository>();
+builder.Services.AddScoped<ITermAndConditionRepository, TermAndConditionRepository>();
 
 
 //Mapper
