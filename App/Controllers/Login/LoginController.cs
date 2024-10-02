@@ -5,6 +5,7 @@ using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Utils.Exceptions;
+using System.Security.Cryptography;
 
 namespace RiwiTalent.App.Controllers.Login
 {
@@ -25,7 +26,17 @@ namespace RiwiTalent.App.Controllers.Login
         {
             try
             {
-                var users = await _context.Users.Find(u => u.Email == tokenResponseDto.Email && u.Password == tokenResponseDto.Password).FirstOrDefaultAsync();
+                var users = await _context.Users.Find(u => u.Email == tokenResponseDto.Email).FirstOrDefaultAsync();
+
+                if (users == null)
+                {
+                    return NotFound("Usuario no encontrado.");
+                }
+
+                if (tokenResponseDto.Password != users.Password)
+                {
+                    return Unauthorized("Contraseña o email incorrectos.");
+                }
 
                 //we create a new instance to can validate
                 UserDto userDto = new UserDto
@@ -39,11 +50,6 @@ namespace RiwiTalent.App.Controllers.Login
                 if(!UserValidations.IsValid)
                 {
                     return Unauthorized(UserValidations.Errors);
-                }
-                else if(users == null || users.Password != users.Password)
-                {
-                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
-                    return NotFound(StatusError.CreateNotFound("user or password wrong", instance));
                 }
 
 
