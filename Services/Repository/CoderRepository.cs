@@ -12,7 +12,7 @@ namespace RiwiTalent.Services.Repository
     public class CoderRepository : ICoderRepository
     {
         private readonly IMongoCollection<Coder> _mongoCollection;
-        private readonly IMongoCollection<GroupCoder> _mongoCollectionGroups;
+        private readonly IMongoCollection<Group> _mongoCollectionGroups;
         private readonly IMapper _mapper; 
         private string Error = "The coder not found";
         public CoderRepository(MongoDbContext context, IMapper mapper)

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Models;
 using RiwiTalent.Services.Interface;
+using RiwiTalent.Utils.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Technologies
 {
@@ -21,8 +22,18 @@ namespace RiwiTalent.App.Controllers.Technologies
         [Route("technologies")]
         public async Task<IActionResult> Get()
         {
-            var techs = await _technologyRepository.GetTechnologies();
-            return Ok(techs);
+            try
+            {
+                var techs = await _technologyRepository.GetTechnologies();
+
+                return Ok(techs); 
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;
+            }
         }   
     }
 }

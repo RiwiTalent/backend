@@ -20,7 +20,9 @@ namespace RiwiTalent.Models.DTOs
         public string? ProfessionalDescription { get; set; }
         public string? Email { get; set; }
         public string? Photo { get; set; }
+        public string? Phone { get; set; }
         public int Age { get; set; }
+        public float AssessmentScore { get; set; }
         public string? Cv { get; set; }
         public string? Status { get; set; }
         public string? Stack { get; set; }

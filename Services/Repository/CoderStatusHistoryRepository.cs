@@ -47,7 +47,7 @@ namespace RiwiTalent.Services.Repository
 
       foreach(CoderStatusHistory history in coderHistory)
       {
-        GroupInfoDto groupCoder = await _groupRepository.GetGroupInfoById(history.IdGroup);
+        GroupDetailsDto groupCoder = await _groupRepository.GetGroupInfoById(history.IdGroup);
 
         if(groupCoder == null)
           continue;
@@ -64,7 +64,7 @@ namespace RiwiTalent.Services.Repository
         .ToListAsync();
 
 
-      GroupInfoDto group = await _groupRepository.GetGroupInfoById(groupId);
+      GroupDetailsDto group = await _groupRepository.GetGroupInfoById(groupId);
 
       CoderHistoryDto historyCoder = new CoderHistoryDto()
       {

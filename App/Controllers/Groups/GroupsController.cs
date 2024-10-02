@@ -12,7 +12,7 @@ using RiwiTalent.Utils.ExternalKey;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
-    [Authorize]
+   
     public class GroupsController : Controller
     {
         private readonly IGroupCoderRepository _groupRepository;
@@ -71,7 +71,7 @@ namespace RiwiTalent.App.Controllers.Groups
         }
 
         [HttpGet]
-        [Route("riwitalent/groups/active")]
+        [Route("groups/active")]
         public async Task<IActionResult> GetGroupsActive()
         {
             try
@@ -93,7 +93,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //Get coders by group
         [HttpGet]
-        [Route("riwitalent/group/{name}")]
+        [Route("group/{name}")]
         public async Task<IActionResult> GetCodersByGroup(string name)
         {
             try
@@ -121,7 +121,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //obtener el uuid y revertirlo
         [HttpPost]
-        [Route("riwitalent/validationexternal")]
+        [Route("validation-external")]
         public async Task<IActionResult> GetUUID([FromBody] KeyDto keyDto)
         {
             try
@@ -141,12 +141,12 @@ namespace RiwiTalent.App.Controllers.Groups
         }
 
         [HttpGet]
-        [Route("riwitalent/groupDetails/{id}")]
+        [Route("group-details/{id}")]
         public async Task<IActionResult> GetGroupInfoById(string id)
         {
             try
             {
-                GroupInfoDto groupInfo = await _groupRepository.GetGroupInfoById(id);
+                GroupDetailsDto groupInfo = await _groupRepository.GetGroupInfoById(id);
 
                 if(groupInfo is null)
                 {
