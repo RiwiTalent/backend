@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models;
+using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.Services.Repository
@@ -26,13 +27,13 @@ namespace RiwiTalent.Services.Repository
 
             var newObject = new TermAndCondition
             {
-                Content = "http:termsandconditions.riwi.io",
+                Content = "Utils/Resources/TermsAndConditions.pdf",
                 Clicked_Date = termAndCondition.Clicked_Date,
                 IsActive = true,
                 Accepted = true,
                 Version = 1,
                 GroupId = null,
-                AcceptedEmail = "postobon@gmail.com",
+                AcceptedEmail = null,
                 CreatorEmail = userEmail
             };
 

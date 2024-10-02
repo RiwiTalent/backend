@@ -73,6 +73,7 @@ namespace RiwiTalent.Services.Repository
                 Deleted_At = null,
                 Status = Status.Active.ToString(),
                 CreatedBy = userEmail,
+                AssociateEmail = groupDto.AssociateEmail,
                 ExternalKeys = new List<ExternalKey>
                 {
                     new ExternalKey
