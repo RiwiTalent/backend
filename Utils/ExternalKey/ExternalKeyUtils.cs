@@ -39,8 +39,7 @@ namespace RiwiTalent.Utils.ExternalKey
                 int randomNumberInRange = random.Next(0, 10);
 
                 //Add randomNumberInRange in token
-                token.Add(randomNumberInRange);
-                
+                token.Add(randomNumberInRange);   
             }
 
             return string.Join("", token);

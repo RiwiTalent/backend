@@ -62,6 +62,9 @@ namespace RiwiTalent.Services.Repository
 
             //we define the path of url link
             string tokenString = _service.GenerateTokenRandom();
+            var expiration = DateTime.UtcNow.AddDays(15);
+            
+                
 
             //define a new instance to add uuid into externalkeys -> url
             GroupCoder newGruopCoder = new GroupCoder
@@ -70,6 +73,7 @@ namespace RiwiTalent.Services.Repository
                 Name = groupDto.Name,
                 Description = groupDto.Description,
                 Created_At = DateTime.UtcNow,
+                Expiration_At = expiration,
                 Deleted_At = null,
                 Status = Status.Active.ToString(),
                 CreatedBy = userEmail,
@@ -78,11 +82,8 @@ namespace RiwiTalent.Services.Repository
                 {
                     new ExternalKey
                     {
-                        Url =  $"https://riwi-talent.onrender.com/{groupDto.Name}/{objectId}",
+                        Url =  $"https://riwi-talent.onrender.com/page?=external/{objectId}",
                         Key = tokenString,
-                        Status = Status.Active.ToString(),
-                        Date_Creation = DateTime.UtcNow,
-                        Date_Expiration = DateTime.UtcNow.AddDays(7)
                     }
                 },
             };
@@ -196,7 +197,6 @@ namespace RiwiTalent.Services.Repository
                 Status = groups.Status,
                 Created_At = groups.Created_At,
                 Delete_At = groups.Deleted_At,
-                ExternalKeys = groups.ExternalKeys
             });
 
             return newGroup;
