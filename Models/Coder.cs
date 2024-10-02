@@ -28,7 +28,7 @@ namespace RiwiTalent.Models
         public string? Status { get; set; }
 
         [BsonRepresentation(BsonType.ObjectId)]
-        public string? GroupId { get; set; }//FK
+        public List<string>? GroupId { get; set; } // Ahora es una lista de ObjectIds en lugar de una cadena
         public string? Stack { get; set; }
 
         public StandarRiwi? StandarRiwi { get; set; }
