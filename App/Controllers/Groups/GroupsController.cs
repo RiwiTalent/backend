@@ -129,7 +129,7 @@ namespace RiwiTalent.App.Controllers.Groups
                 var result = await _groupRepository.SendToken(keyDto);
                 
                 if(result != null)
-                    return Ok(new {Message = "you've access", GroupName = keyDto.Name });
+                    return Ok(new {Message = "you've access", Email = keyDto.AssociateEmail });
                 return NotFound("Access denied"); 
             }
             catch(Exception ex)

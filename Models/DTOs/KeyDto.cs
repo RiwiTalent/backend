@@ -7,7 +7,7 @@ namespace RiwiTalent.Models.DTOs
 {
     public class KeyDto
     {
-        public string? Name { get; set; }
+        public string? AssociateEmail { get; set; }
         public string? Key { get; set; }
     }
 }

@@ -98,7 +98,7 @@ namespace RiwiTalent.Services.Repository
                 Group gruopCoder = new Group();
                 Group newGroupCoder = new Group
                 {
-                    Name = keyDto.Name,
+                    Name = keyDto.AssociateEmail,
                     ExternalKeys = new List<ExternalKey>
                     {
                         new ExternalKey
@@ -108,11 +108,11 @@ namespace RiwiTalent.Services.Repository
                     }
                 };
 
-                var searchGroup = await _mongoCollection.Find(group => group.Name == keyDto.Name).FirstOrDefaultAsync();
+                var searchGroup = await _mongoCollection.Find(group => group.AssociateEmail == keyDto.AssociateEmail).FirstOrDefaultAsync();
 
                 if(searchGroup == null)
                 {
-                    throw new StatusError.InvalidKeyException($"Name is invalid");
+                    throw new StatusError.InvalidKeyException($"Email is invalid");
                 }
 
                 
