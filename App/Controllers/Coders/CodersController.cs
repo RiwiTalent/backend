@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Utils.Exceptions;
@@ -13,6 +14,7 @@ namespace RiwiTalent.App.Controllers
         }
 
         //get all coders
+        [Authorize]
         [HttpGet]
         [Route("coders")]
         public async Task<IActionResult> Get()

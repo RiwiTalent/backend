@@ -27,20 +27,12 @@ namespace RiwiTalent.Services.Repository
             // Mapeo de CoderDto a Coder
             var coder = _mapper.Map<Coder>(coderDto);
             _mongoCollection.InsertOne(coder);
-
         }
 
         public async Task<Coder> GetCoderId(string id)
         {
             //In this method we get coders by id and we do a control of errors.
-           /*  try
-            {
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("Ocurrió un error al obtener el coder", ex);
-            } */
-                return await _mongoCollection.Find(Coders => Coders.Id == id).FirstOrDefaultAsync();
+            return await _mongoCollection.Find(Coders => Coders.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<Coder> GetCoderName(string name)

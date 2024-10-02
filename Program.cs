@@ -73,9 +73,9 @@ builder.Services.AddAuthentication(option => {
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = Environment.GetEnvironmentVariable("Key"),
+                ValidIssuer = Environment.GetEnvironmentVariable("Issuer"),
                 ValidAudience = Environment.GetEnvironmentVariable("Audience"),
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF32.GetBytes(Environment.GetEnvironmentVariable("Issuer")))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("Key")))
             };
             //Error controls of token
             configure.Events = new JwtBearerEvents

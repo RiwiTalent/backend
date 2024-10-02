@@ -15,7 +15,7 @@ namespace RiwiTalent.Models
         public string? Content { get; set; }
         public DateTime Clicked_Date { get; set; } = DateTime.UtcNow;
         public bool IsActive { get; set; }
-        public bool Accepted { get; set; }
+        public bool Accepted { get; set; } = false;
         public int Version { get; set; }
 
         [BsonRepresentation(BsonType.ObjectId)]
