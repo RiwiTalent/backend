@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -11,6 +12,7 @@ using RiwiTalent.Utils.ExternalKey;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
+   
     public class GroupsController : Controller
     {
         private readonly IGroupCoderRepository _groupRepository;
@@ -69,7 +71,7 @@ namespace RiwiTalent.App.Controllers.Groups
         }
 
         [HttpGet]
-        [Route("riwitalent/groups/active")]
+        [Route("groups/active")]
         public async Task<IActionResult> GetGroupsActive()
         {
             try
@@ -91,7 +93,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //Get coders by group
         [HttpGet]
-        [Route("riwitalent/group/{name}")]
+        [Route("group/{name}")]
         public async Task<IActionResult> GetCodersByGroup(string name)
         {
             try
@@ -119,7 +121,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //obtener el uuid y revertirlo
         [HttpPost]
-        [Route("riwitalent/validationexternal")]
+        [Route("validation-external")]
         public async Task<IActionResult> GetUUID([FromBody] KeyDto keyDto)
         {
             try
@@ -127,7 +129,7 @@ namespace RiwiTalent.App.Controllers.Groups
                 var result = await _groupRepository.SendToken(keyDto);
                 
                 if(result != null)
-                    return Ok(new {Message = "you've access", GroupName = keyDto.Name });
+                    return Ok(new {Message = "you've access", Email = keyDto.AssociateEmail });
                 return NotFound("Access denied"); 
             }
             catch(Exception ex)
@@ -139,12 +141,12 @@ namespace RiwiTalent.App.Controllers.Groups
         }
 
         [HttpGet]
-        [Route("riwitalent/groupDetails/{id}")]
+        [Route("group-details/{id}")]
         public async Task<IActionResult> GetGroupInfoById(string id)
         {
             try
             {
-                GroupInfoDto groupInfo = await _groupRepository.GetGroupInfoById(id);
+                GroupDetailsDto groupInfo = await _groupRepository.GetGroupInfoById(id);
 
                 if(groupInfo is null)
                 {

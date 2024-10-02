@@ -9,12 +9,12 @@ namespace RiwiTalent.Services.Interface
     public interface IGroupCoderRepository 
     {
         Task<IEnumerable<GroupCoderDto>> GetGroupCoders();
-        Task<IEnumerable<GroupCoder>> GetGroupsInactive();
-        Task<IEnumerable<GroupCoder>> GetGroupsActive();
+        Task<IEnumerable<Group>> GetGroupsInactive();
+        Task<IEnumerable<Group>> GetGroupsActive();
         void Add(GroupDto groupDto);
         Task RegenerateToken(NewKeyDto newKeyDto);
         Task<KeyDto> SendToken(KeyDto keyDto);
-        Task<GroupInfoDto> GetGroupInfoById(string groupId);
+        Task<GroupDetailsDto> GetGroupInfoById(string groupId);
         Task Update(GroupCoderDto groupCoderDto);
         // Task DeleteCoderGroup(string id);
         Task<bool> GroupExistByName(string name);

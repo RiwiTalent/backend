@@ -51,5 +51,10 @@ namespace RiwiTalent.Utils.Exceptions
         {
             public ExternalKeyNotFound(string message) : base(message){}
         }
+
+        public class ObjectIdNotFound : Exception
+        {
+            public ObjectIdNotFound(string message) : base(message){}
+        } 
     }
 }   

@@ -15,8 +15,9 @@ namespace RiwiTalent.Models
         public string? ProfessionalDescription { get; set; }
         public string? Email { get; set; }
         public string? Photo { get; set; }
+        public string? Phone { get; set; }
         public int Age { get; set; }
-
+        public float AssessmentScore { get; set; }
         public string? Cv { get; set; }
 
         [BsonRepresentation(BsonType.DateTime)]

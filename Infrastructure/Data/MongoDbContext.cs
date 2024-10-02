@@ -26,9 +26,10 @@ namespace RiwiTalent.Infrastructure.Data
 
         //We define connection to Models
         public IMongoCollection<Coder> Coders => _database.GetCollection<Coder>("Coders");
-        public IMongoCollection<GroupCoder> GroupCoders => _database.GetCollection<GroupCoder>("GroupCoders");
+        public IMongoCollection<Group> GroupCoders => _database.GetCollection<Group>("GroupCoders");
         public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
         public IMongoCollection<CoderStatusHistory> CoderStatusHistories => _database.GetCollection<CoderStatusHistory>("CoderStatusHistories");
         public IMongoCollection<Technology> Technologies  => _database.GetCollection<Technology>("Technologies");
+        public IMongoCollection<TermAndCondition> TermsAndConditions  => _database.GetCollection<TermAndCondition>("TermsAndConditions");
     }
 }

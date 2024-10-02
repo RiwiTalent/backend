@@ -8,14 +8,14 @@ namespace RiwiTalent.Utils.AutoMapper
     {
         public GroupCoderProfile() 
         {
-           CreateMap<GroupCoderDto, GroupCoder>()
+           CreateMap<GroupCoderDto, Group>()
                 .ForAllMembers(opt => 
                 {
                     opt.AllowNull();
                     opt.Condition((src, dest, sourceMember) => sourceMember != null);
                 });
             
-            CreateMap<GroupCoder, GroupCoderDto>();
+            CreateMap<Group, GroupCoderDto>();
                                         /* .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null)); */ 
         } 
     }

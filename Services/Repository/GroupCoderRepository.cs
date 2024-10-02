@@ -11,34 +11,40 @@ using RiwiTalent.Models.Enums;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Utils.Exceptions;
 using RiwiTalent.Utils.ExternalKey;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Amazon.Runtime.Internal.Settings;
 
 namespace RiwiTalent.Services.Repository
 {
     public class GroupCoderRepository : IGroupCoderRepository
     {
-        private readonly IMongoCollection<GroupCoder> _mongoCollection  ;
+        private readonly IMongoCollection<Group> _mongoCollection  ;
         private readonly IMongoCollection<Coder> _mongoCollectionCoder;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ExternalKeyUtils _service;
         private readonly IMapper _mapper;
 
         private string Error = "The group not found";
-        public GroupCoderRepository(MongoDbContext context, IMapper mapper, ExternalKeyUtils service)
+        public GroupCoderRepository(MongoDbContext context, IMapper mapper, ExternalKeyUtils service, IHttpContextAccessor httpContextAccessor)
         {
             _mongoCollection = context.GroupCoders;
             _mongoCollectionCoder = context.Coders;
+            _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
             _service = service;
         }
         public void Add(GroupDto groupDto)
         {
             var existGroup = _mongoCollection.Find(g => g.Name == groupDto.Name).FirstOrDefault();
+            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
 
             if (existGroup != null)
             {
                 throw new ApplicationException($"El grupo con el nombre '{groupDto.Name}' ya existe.");
             }
 
-            GroupCoder groupCoder = new GroupCoder();
+            Group groupCoder = new Group();
 
             //generate ObjectId
             ObjectId objectId = ObjectId.GenerateNewId();
@@ -56,25 +62,28 @@ namespace RiwiTalent.Services.Repository
 
             //we define the path of url link
             string tokenString = _service.GenerateTokenRandom();
+            var expiration = DateTime.UtcNow.Date.AddDays(15);
+            
+                
 
             //define a new instance to add uuid into externalkeys -> url
-            GroupCoder newGruopCoder = new GroupCoder
+            Group newGruopCoder = new Group
             {
                 Id = objectId,
                 Name = groupDto.Name,
                 Description = groupDto.Description,
-                Created_At = DateTime.UtcNow,
+                Created_At = DateTime.UtcNow.Date,
+                Expiration_At = expiration,
                 Deleted_At = null,
                 Status = Status.Active.ToString(),
+                CreatedBy = userEmail,
+                AssociateEmail = groupDto.AssociateEmail,
                 ExternalKeys = new List<ExternalKey>
                 {
                     new ExternalKey
                     {
-                        Url =  $"https://riwi-talent.onrender.com/{groupDto.Name}/{objectId}",
-                        Key = tokenString,
-                        Status = Status.Active.ToString(),
-                        Date_Creation = DateTime.UtcNow,
-                        Date_Expiration = DateTime.UtcNow.AddDays(7)
+                        Url =  $"https://riwi-talent.onrender.com/page?=external/{objectId}",
+                        Key = tokenString
                     }
                 },
             };
@@ -86,10 +95,10 @@ namespace RiwiTalent.Services.Repository
         {
             try
             {
-                GroupCoder gruopCoder = new GroupCoder();
-                GroupCoder newGroupCoder = new GroupCoder
+                Group gruopCoder = new Group();
+                Group newGroupCoder = new Group
                 {
-                    Name = keyDto.Name,
+                    Name = keyDto.AssociateEmail,
                     ExternalKeys = new List<ExternalKey>
                     {
                         new ExternalKey
@@ -99,11 +108,11 @@ namespace RiwiTalent.Services.Repository
                     }
                 };
 
-                var searchGroup = await _mongoCollection.Find(group => group.Name == keyDto.Name).FirstOrDefaultAsync();
+                var searchGroup = await _mongoCollection.Find(group => group.AssociateEmail == keyDto.AssociateEmail).FirstOrDefaultAsync();
 
                 if(searchGroup == null)
                 {
-                    throw new StatusError.InvalidKeyException($"Name is invalid");
+                    throw new StatusError.InvalidKeyException($"Email is invalid");
                 }
 
                 
@@ -157,8 +166,8 @@ namespace RiwiTalent.Services.Repository
             
             string newKey = _service.GenerateTokenRandom();
 
-            var filter = Builders<GroupCoder>.Filter.Eq(g => g.Id, group.Id);
-            var updateKey = Builders<GroupCoder>.Update.Set(g => g.ExternalKeys[0].Key, newKey);
+            var filter = Builders<Group>.Filter.Eq(g => g.Id, group.Id);
+            var updateKey = Builders<Group>.Update.Set(g => g.ExternalKeys[0].Key, newKey);
 
             await _mongoCollection.UpdateOneAsync(filter, updateKey);
         }
@@ -184,17 +193,15 @@ namespace RiwiTalent.Services.Repository
             {
                 Id = groups.Id.ToString(),
                 Name = groups.Name,
+                Photo = groups.Photo,
                 Description = groups.Description,
-                Status = groups.Status,
-                Created_At = groups.Created_At,
-                Delete_At = groups.Deleted_At,
-                ExternalKeys = groups.ExternalKeys
+                Status = groups.Status
             });
 
             return newGroup;
         }
 
-        public async Task<GroupInfoDto> GetGroupInfoById(string groupId)
+        public async Task<GroupDetailsDto> GetGroupInfoById(string groupId)
         {
             var group = await _mongoCollection.Find(x => x.Id.ToString() == groupId).FirstOrDefaultAsync();
 
@@ -209,11 +216,14 @@ namespace RiwiTalent.Services.Repository
             
             List<CoderDto> coderMap = _mapper.Map<List<CoderDto>>(coders);
 
-            GroupInfoDto groupInfo = new GroupInfoDto()
+            GroupDetailsDto groupInfo = new GroupDetailsDto()
             {
                 Id = group.Id.ToString(),
                 Name = group.Name,
                 Description = group.Description,
+                Status = group.Status,
+                Create_At = group.Created_At,
+                ExternalKeys = group.ExternalKeys,
                 Coders = coderMap
             };
 
@@ -223,7 +233,7 @@ namespace RiwiTalent.Services.Repository
         // validation of group existence
         public async Task<bool> GroupExistByName(string name)
         {
-            var filter = Builders<GroupCoder>.Filter.Regex(g => g.Name, name);
+            var filter = Builders<Group>.Filter.Regex(g => g.Name, name);
             var group = await _mongoCollection.Find(filter).FirstOrDefaultAsync();
 
             // Retorna true si el grupo existe, false si no
@@ -246,7 +256,7 @@ namespace RiwiTalent.Services.Repository
             }
 
             var groupCoders = _mapper.Map(groupCoderDto, existGroup);
-            var builder = Builders<GroupCoder>.Filter;
+            var builder = Builders<Group>.Filter;
             var filter = builder.Eq(group => group.Id, convertIdToObjectId );
 
             await _mongoCollection.ReplaceOneAsync(filter, groupCoders);
@@ -254,10 +264,10 @@ namespace RiwiTalent.Services.Repository
 
         public async Task DeleteGroup(string groupId)
         {
-            var filter = Builders<GroupCoder>.Filter.Eq(c => c.Id, new ObjectId(groupId));         
-            var updateStatusAndRelation = Builders<GroupCoder>.Update.Combine(
-                Builders<GroupCoder>.Update.Set(coder => coder.Status, Status.Inactive.ToString()),
-                Builders<GroupCoder>.Update.Set(coder => coder.Deleted_At, DateTime.UtcNow)
+            var filter = Builders<Group>.Filter.Eq(c => c.Id, new ObjectId(groupId));         
+            var updateStatusAndRelation = Builders<Group>.Update.Combine(
+                Builders<Group>.Update.Set(coder => coder.Status, Status.Inactive.ToString()),
+                Builders<Group>.Update.Set(coder => coder.Deleted_At, DateTime.UtcNow)
             );
 
             var result = await _mongoCollection.UpdateOneAsync(filter, updateStatusAndRelation);
@@ -267,15 +277,15 @@ namespace RiwiTalent.Services.Repository
             }
         }
 
-        public async Task<IEnumerable<GroupCoder>> GetGroupsInactive()
+        public async Task<IEnumerable<Group>> GetGroupsInactive()
         {
-            var filter = Builders<GroupCoder>.Filter.In(c => c.Status, new [] { Status.Inactive.ToString()});
+            var filter = Builders<Group>.Filter.In(c => c.Status, new [] { Status.Inactive.ToString()});
             return await _mongoCollection.Find(filter).ToListAsync();
         }
 
-        public async Task<IEnumerable<GroupCoder>> GetGroupsActive()
+        public async Task<IEnumerable<Group>> GetGroupsActive()
         {
-            var filter = Builders<GroupCoder>.Filter.In(c => c.Status, new [] { Status.Active.ToString() });
+            var filter = Builders<Group>.Filter.In(c => c.Status, new [] { Status.Active.ToString() });
             return await _mongoCollection.Find(filter).ToListAsync();
         }
     }

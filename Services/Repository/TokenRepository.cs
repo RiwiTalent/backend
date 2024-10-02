@@ -14,28 +14,35 @@ namespace RiwiTalent.Services.Repository
         private readonly string? Audience;
         public TokenRepository()
         {
-            key = Environment.GetEnvironmentVariable("Key");
-            Issuer = Environment.GetEnvironmentVariable("Issuer");
-            Audience = Environment.GetEnvironmentVariable("Audience");
+            key = Environment.GetEnvironmentVariable("Key") ?? throw new ArgumentNullException("Key");;
+            Issuer = Environment.GetEnvironmentVariable("Issuer") ?? throw new ArgumentNullException("Audience");
+            Audience = Environment.GetEnvironmentVariable("Audience") ?? throw new ArgumentNullException("Issuer");
         }
 
         public string GetToken(User user)
         {
            
-            var SecretKey = new SymmetricSecurityKey(Encoding.UTF32.GetBytes(key));
+            var SecretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
 
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Email, user.Email)
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
 
             var tokenOptions = new SecurityTokenDescriptor
             {
+                /* issuer: Issuer,
+                audience: Audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(1),
+                signingCredentials: SigningCredentials */
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddHours(1),
                 Issuer = Issuer,
                 Audience = Audience,
-                SigningCredentials = new SigningCredentials(SecretKey, SecurityAlgorithms.Aes192CbcHmacSha384)
+                SigningCredentials = new SigningCredentials(SecretKey, SecurityAlgorithms.HmacSha256)
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -43,6 +50,8 @@ namespace RiwiTalent.Services.Repository
             var tokenString = tokenHandler.WriteToken(securityToken);
 
             return tokenString;
+
+            /* return new JwtSecurityTokenHandler().WriteToken(tokenOptions); */
             
         }
     }
