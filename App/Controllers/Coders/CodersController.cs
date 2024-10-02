@@ -14,7 +14,7 @@ namespace RiwiTalent.App.Controllers
         }
 
         //get all coders
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         [Route("coders")]
         public async Task<IActionResult> Get()
