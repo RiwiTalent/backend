@@ -11,6 +11,7 @@ using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Validators;
 using RiwiTalent.Utils.ExternalKey;
+using RiwiTalent.Utils.MailKit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,8 +49,9 @@ builder.Services.AddTransient<IValidator<UserDto>, UserDtoValidator>();
 builder.Services.AddTransient<IValidator<GroupDto>, GroupCoderValidator>();
 builder.Services.AddTransient<IValidator<CoderDto>, CoderValidator>();
 
-
+//Utils
 builder.Services.AddTransient<ExternalKeyUtils>();
+builder.Services.AddTransient<SendFile>();
 
 //CORS
 builder.Services.AddCors(options => {

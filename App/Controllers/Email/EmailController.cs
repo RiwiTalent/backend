@@ -16,9 +16,17 @@ namespace RiwiTalent.App.Controllers.Email
         [HttpPost("api/email/send")]
         public IActionResult SendEmail(EmailDto email)
         {
-
-            _emailRepository.SendEmail(email);
-            return Ok();
+            try
+            {
+                _emailRepository.SendEmail(email);
+                return Ok(); 
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;
+            }
         }
 
 
