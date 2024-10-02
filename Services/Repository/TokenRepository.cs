@@ -17,20 +17,29 @@ namespace RiwiTalent.Services.Repository
             key = Environment.GetEnvironmentVariable("Key");
             Issuer = Environment.GetEnvironmentVariable("Issuer");
             Audience = Environment.GetEnvironmentVariable("Audience");
+            
         }
 
         public string GetToken(User user)
         {
            
             var SecretKey = new SymmetricSecurityKey(Encoding.UTF32.GetBytes(key));
+            /* var SigningCredentials = new SigningCredentials(SecretKey, SecurityAlgorithms.Aes192CbcHmacSha384); */
 
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Email, user.Email)
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
 
             var tokenOptions = new SecurityTokenDescriptor
             {
+                /* issuer: Issuer,
+                audience: Audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(1),
+                signingCredentials: SigningCredentials */
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddHours(1),
                 Issuer = Issuer,
@@ -43,6 +52,8 @@ namespace RiwiTalent.Services.Repository
             var tokenString = tokenHandler.WriteToken(securityToken);
 
             return tokenString;
+
+            /* return new JwtSecurityTokenHandler().WriteToken(tokenOptions); */
             
         }
     }

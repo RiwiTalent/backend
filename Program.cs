@@ -11,6 +11,7 @@ using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Validators;
 using RiwiTalent.Utils.ExternalKey;
+using RiwiTalent.Utils.MailKit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ const string MyCors = "PolicyCors";
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 
 //DotNetEnv
 Env.Load();
@@ -34,7 +36,9 @@ builder.Services.AddScoped<ICoderRepository, CoderRepository>();
 builder.Services.AddScoped<IGroupCoderRepository, GroupCoderRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<ICoderStatusHistoryRepository, CoderStatusHistoryRepository>();
+builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.AddScoped<ITechnologyRepository, TechnologyRepository>();
+builder.Services.AddScoped<ITermAndConditionRepository, TermAndConditionRepository>();
 
 
 //Mapper
@@ -45,8 +49,9 @@ builder.Services.AddTransient<IValidator<UserDto>, UserDtoValidator>();
 builder.Services.AddTransient<IValidator<GroupDto>, GroupCoderValidator>();
 builder.Services.AddTransient<IValidator<CoderDto>, CoderValidator>();
 
-
+//Utils
 builder.Services.AddTransient<ExternalKeyUtils>();
+builder.Services.AddTransient<SendFile>();
 
 //CORS
 builder.Services.AddCors(options => {
