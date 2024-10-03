@@ -19,11 +19,11 @@ namespace RiwiTalent.App.Controllers.Technologies
 
         //endpoint
         [HttpPatch("technology")]
-        public async Task<ActionResult> UpdateTechnology([FromQuery] string technologyId, int index, [FromQuery] string newTechnology)
+        public async Task<ActionResult> UpdateTechnology(Technology technology)
         {
             try
             {
-                await _technologyRepository.Update(technologyId, index, newTechnology);
+                await _technologyRepository.Update(technology);
                 return Ok("The technologies has been updated"); 
             }
             catch (Exception ex)

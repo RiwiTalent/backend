@@ -42,7 +42,7 @@ namespace RiwiTalent.App.Controllers.Technologies
             }            
         }
 
-        [HttpPost("technology")]
+        /* [HttpPost("technology")]
         public async Task<IActionResult> AddTech([FromQuery] string technologyId, [FromQuery] string newTechnology)
         {
             if(!ModelState.IsValid)
@@ -63,6 +63,6 @@ namespace RiwiTalent.App.Controllers.Technologies
                 return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }  
-        }
+        } */
     }
 }
