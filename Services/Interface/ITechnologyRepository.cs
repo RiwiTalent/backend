@@ -10,6 +10,6 @@ namespace RiwiTalent.Services.Interface
     {
         Task<IEnumerable<Technology>> GetTechnologies();
         void Add(Technology technology);
-        Task Update(Technology technology);
+        Task Update(string technologyId, int index, string newTechnology);
     }
 }

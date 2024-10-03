@@ -32,6 +32,7 @@ namespace RiwiTalent.Services.Repository
             foreach (var recipient in email.Recipients)
             {
                 message.To.Add(MailboxAddress.Parse(recipient));
+                message.Subject = "Hola";
             }
 
             message.Subject = email.Subject;
