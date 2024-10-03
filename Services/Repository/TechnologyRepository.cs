@@ -23,6 +23,19 @@ namespace RiwiTalent.Services.Repository
             _mongoCollection.InsertOne(technology);
         }
 
+        public async Task AddTechnology(string technologyId, string newTechnology)
+        {
+            var filter = Builders<Technology>.Filter.Eq(t => t.Id, technologyId);
+            var searchTech = _mongoCollection.Find(filter).FirstOrDefaultAsync();
+
+            if(searchTech == null)
+                throw new StatusError.ObjectIdNotFound("The document Technology not found");
+
+            var update = Builders<Technology>.Update.AddToSet(t => t.Language_Programming, newTechnology);
+
+            var result = await _mongoCollection.UpdateOneAsync(filter, update);
+        }
+
         public async Task<IEnumerable<Technology>> GetTechnologies()
         {
             var techs = await _mongoCollection.Find(_ => true)
