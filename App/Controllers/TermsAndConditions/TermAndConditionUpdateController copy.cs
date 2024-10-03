@@ -3,28 +3,29 @@ using RiwiTalent.Services.Interface;
 using RiwiTalent.Utils.Exceptions;
 using RiwiTalent.Models;
 using System;
+using RiwiTalent.Models.DTOs;
 using System.Threading.Tasks;
 
 namespace RiwiTalent.App.Controllers.TermsAndConditions
 {
 
-    public class TermAndConditionCreateController : ControllerBase
+    public class TermAndConditionUpdateController : ControllerBase
     {
         private readonly ITermAndConditionRepository _termAndConditionRepository;
 
-        public TermAndConditionCreateController(ITermAndConditionRepository termAndConditionRepository)
+        public TermAndConditionUpdateController(ITermAndConditionRepository termAndConditionRepository)
         {
             _termAndConditionRepository = termAndConditionRepository;
         }
 
-        // Endpoint para aceptar términos
-        [HttpPost("terms")]
-        public async Task<ActionResult> AcceptUserTerms()
+        
+        [HttpPut("terms")]
+        public async Task<ActionResult> UpdateTerms(TermAndConditionDto updatedTermsDto)
         {
             try
             {
-                await _termAndConditionRepository.Add();
-                return Ok("Data has been updated");
+                await _termAndConditionRepository.UpdateTermsAsync(updatedTermsDto);
+                return Ok("Terms have been updated.");
             }
             catch (Exception ex)
             {
@@ -32,6 +33,5 @@ namespace RiwiTalent.App.Controllers.TermsAndConditions
                 return StatusCode(problemDetails.Status.Value, problemDetails);
             }
         }
-
     }
 }
