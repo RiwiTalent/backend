@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models;
@@ -21,7 +22,6 @@ namespace RiwiTalent.Services.Repository
         {
             _mongoCollection.InsertOne(technology);
         }
-
         public async Task<IEnumerable<Technology>> GetTechnologies()
         {
             var techs = await _mongoCollection.Find(_ => true)
@@ -32,16 +32,15 @@ namespace RiwiTalent.Services.Repository
 
         public async Task Update(Technology technology)
         {
-            var tech = await _mongoCollection.Find(t => t.Id == technology.Id).FirstOrDefaultAsync();
+            var filter = Builders<Technology>.Filter.Eq(t => t.Id, technology.Id);
+            var tech = _mongoCollection.Find(filter).FirstOrDefaultAsync();
 
             if(tech == null)
-                throw new StatusError.ObjectIdNotFound("The document Technology not found");
-            
-            var builder = Builders<Technology>.Filter.Eq(t => t.Id, technology.Id);
+                throw new StatusError.ObjectIdNotFound("The document technology not found");
+
             var update = Builders<Technology>.Update.Set(t => t.Name, technology.Name);
-
-
-            await _mongoCollection.UpdateOneAsync(builder, update);
+            
+            await _mongoCollection.UpdateOneAsync(filter, update);
         }
     }
 }
