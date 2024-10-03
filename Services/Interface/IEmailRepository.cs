@@ -1,4 +1,6 @@
 using MimeKit;
+using MongoDB.Bson;
+using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
 
 

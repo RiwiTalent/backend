@@ -8,6 +8,9 @@ using System.IO;
 using RiwiTalent.Utils.Exceptions;
 using RiwiTalent.Utils.MailKit;
 using RiwiTalent.Models;
+using MongoDB.Driver;
+using RiwiTalent.Infrastructure.Data;
+using MongoDB.Bson;
 
 namespace RiwiTalent.Services.Repository
 {
@@ -155,11 +158,9 @@ namespace RiwiTalent.Services.Repository
 
         public void SendEmailTest()
         {
-            SendTermsAndConditions("Eucaris", "eucaristz@gmail.com");
-            SendEmailStaff("Carlos", "fjgt2000@gmail.com", "La empresa ha aceptado los términos y condiciones");
+            SendTermsAndConditions("Daza", "kevindazar.dev@gmail.com");
+            SendEmailStaff("Staff", "fjgt2000@gmail.com", "La empresa ha aceptado los términos y condiciones");
 
         }
-
-        
     }
 }

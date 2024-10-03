@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
-    
+    [Authorize]
     public class GroupCreateController : Controller
     {
         private readonly IValidator<GroupDto> _groupValidator;
