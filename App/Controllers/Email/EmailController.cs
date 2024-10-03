@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
@@ -13,13 +14,29 @@ namespace RiwiTalent.App.Controllers.Email
             _emailRepository = emailRepostory;
         }
 
-        [HttpPost("api/email/send")]
+        /* [HttpPost("api/email/send")]
         public IActionResult SendEmail(EmailDto email)
         {
             try
             {
                 _emailRepository.SendEmail(email);
                 return Ok(); 
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;
+            }
+        } */
+
+        [HttpPost("email/send")]
+        public IActionResult SendEmailTesting()
+        {
+            try
+            {
+                _emailRepository.SendEmailTest();
+                return Ok("The email has beend delivered"); 
             }
             catch (Exception ex)
             {
