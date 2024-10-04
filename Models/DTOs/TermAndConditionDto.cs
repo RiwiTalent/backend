@@ -2,8 +2,8 @@ namespace RiwiTalent.Models.DTOs
 {
     public class TermAndConditionDto
     {
-        public string Id { get; set; } // O el tipo correcto para tu Id (ej. ObjectId en MongoDB)
-        public string Content { get; set; }
+        public string Id { get; set; }
+        public string Content { get; set; } = "Utils/Resources/TermsAndConditions.pdf";
         public DateTime Clicked_Date { get; set; }
         public bool IsActive { get; set; }
         public bool Accepted { get; set; }

@@ -72,9 +72,6 @@ namespace RiwiTalent.Services.Repository
 
         public async Task Update(CoderDto coderDto)
         {
-            //we need filter groups by Id
-            //First we call the method Builders and have access to Filter
-            //Then we can use filter to have access Eq
 
             var existCoder = await _mongoCollection.Find(coder => coder.Id == coderDto.Id).FirstOrDefaultAsync();
 

@@ -27,24 +27,12 @@ namespace RiwiTalent.Services.Repository
             return await _mongoCollection.Find(tc => true).ToListAsync();
         }
 
-        public async Task Add()
+        public async Task Add(TermAndConditionDto termAndConditionDto)
         {
-            var userEmail = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-
-            var newObject = new TermAndCondition
-            {
-                Content = "Utils/Resources/TermsAndConditions.pdf",
-                Clicked_Date = DateTime.UtcNow, 
-                IsActive = false,
-                Accepted = false,
-                Version = 1,
-                GroupId = null,
-                AcceptedEmail = userEmail,
-                CreatorEmail = userEmail
-            };
-
-            await _mongoCollection.InsertOneAsync(newObject);
+            var newTerms = _mapper.Map<TermAndCondition>(termAndConditionDto); 
+            await _mongoCollection.InsertOneAsync(newTerms); 
         }
+
 
         public async Task<TermAndCondition?> GetTermsByEmailAsync(string email)
         {

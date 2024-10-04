@@ -8,7 +8,7 @@ namespace RiwiTalent.Services.Interface
     {
         Task<List<TermAndCondition>> GetAllTermsAsync(); // Nuevo método para listar todos los términos
         Task<TermAndCondition?> GetTermsByEmailAsync(string email);
-        Task Add();
+        Task Add(TermAndConditionDto termAndConditionDto);
         Task UpdateTermsAsync(TermAndConditionDto updatedTerms);
     }
 }
