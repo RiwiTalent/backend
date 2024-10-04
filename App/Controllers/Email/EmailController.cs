@@ -33,11 +33,11 @@ namespace RiwiTalent.App.Controllers.Email
         } */
 
         [HttpPost("email/send")]
-        public IActionResult SendEmailTesting()
+        public IActionResult SendEmailTesting([FromQuery] string Id)
         {
             try
             {
-                _emailRepository.SendEmailTest();
+                _emailRepository.SendEmailTest(Id);
                 return Ok("The email has beend delivered"); 
             }
             catch (Exception ex)

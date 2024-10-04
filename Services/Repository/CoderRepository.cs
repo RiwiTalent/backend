@@ -18,7 +18,7 @@ namespace RiwiTalent.Services.Repository
         public CoderRepository(MongoDbContext context, IMapper mapper)
         {
             _mongoCollection = context.Coders;
-            _mongoCollectionGroups = context.GroupCoders;
+            _mongoCollectionGroups = context.Groups;
             _mapper = mapper;
         }
 
