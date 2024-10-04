@@ -28,7 +28,7 @@ namespace RiwiTalent.Services.Repository
         private string Error = "The group not found";
         public GroupCoderRepository(MongoDbContext context, IMapper mapper, ExternalKeyUtils service, IHttpContextAccessor httpContextAccessor)
         {
-            _mongoCollection = context.GroupCoders;
+            _mongoCollection = context.Groups;
             _mongoCollectionCoder = context.Coders;
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
@@ -98,7 +98,8 @@ namespace RiwiTalent.Services.Repository
                 Group gruopCoder = new Group();
                 Group newGroupCoder = new Group
                 {
-                    Name = keyDto.AssociateEmail,
+                    Id = ObjectId.Parse(keyDto.Id),
+                    AssociateEmail = keyDto.AssociateEmail,
                     ExternalKeys = new List<ExternalKey>
                     {
                         new ExternalKey
@@ -108,11 +109,21 @@ namespace RiwiTalent.Services.Repository
                     }
                 };
 
-                var searchGroup = await _mongoCollection.Find(group => group.AssociateEmail == keyDto.AssociateEmail).FirstOrDefaultAsync();
+                var searchGroup = await _mongoCollection.Find(group => group.Id == ObjectId.Parse(keyDto.Id)).FirstOrDefaultAsync();
 
                 if(searchGroup == null)
                 {
-                    throw new StatusError.InvalidKeyException($"Email is invalid");
+                    throw new StatusError.ObjectIdNotFound($"The document not found");
+                }
+
+
+                if(string.IsNullOrEmpty(searchGroup.AssociateEmail) || searchGroup.AssociateEmail.ToLower() != keyDto.AssociateEmail)
+                {
+                    throw new StatusError.EmailNotFound("The group hasn't valid Email or is empty");
+                }
+                else
+                {
+                    Console.WriteLine("The group has Email");
                 }
 
                 

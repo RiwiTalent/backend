@@ -17,12 +17,14 @@ namespace RiwiTalent.Services.Repository
     public class EmailRepository : IEmailRepository
     {
         private readonly IConfiguration _config;
+        private readonly IMongoCollection<Group> _mongoCollection;
         private readonly SendFile _sendFile;
     
-        public EmailRepository(IConfiguration config, SendFile sendFile)
+        public EmailRepository(IConfiguration config, SendFile sendFile, MongoDbContext context)
         {
             _config = config;
             _sendFile = sendFile;
+            _mongoCollection = context.Groups;
         }
 
     
@@ -156,10 +158,15 @@ namespace RiwiTalent.Services.Repository
             SendEmailAll(message);
         }
 
-        public void SendEmailTest()
+        public void SendEmailTest(string Id)
         {
-            SendTermsAndConditions("Daza", "kevindazar.dev@gmail.com");
-            SendEmailStaff("Staff", "fjgt2000@gmail.com", "La empresa ha aceptado los términos y condiciones");
+            var tech = _mongoCollection.Find(t => t.Id == ObjectId.Parse(Id)).FirstOrDefault();
+
+            if(tech == null)
+                throw new StatusError.ObjectIdNotFound("The document Technology not found");
+
+            SendTermsAndConditions("Daza", tech.AssociateEmail);
+            SendEmailStaff("Staff", tech.CreatedBy, "La empresa ha aceptado los términos y condiciones");
 
         }
     }
