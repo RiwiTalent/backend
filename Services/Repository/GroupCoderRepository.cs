@@ -234,8 +234,8 @@ namespace RiwiTalent.Services.Repository
                 Description = group.Description,
                 Status = group.Status,
                 Create_At = group.Created_At,
-                ExternalKeys = group.ExternalKeys,
-                Coders = coderMap
+                CreatedBy = group.CreatedBy,
+                AssociateEmail = group.AssociateEmail
             };
 
             return groupInfo;
