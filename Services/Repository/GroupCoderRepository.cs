@@ -115,6 +115,10 @@ namespace RiwiTalent.Services.Repository
                 {
                     throw new StatusError.ObjectIdNotFound($"The document not found");
                 }
+                else
+                {
+                     Console.WriteLine("The Id group is: " + keyDto.Id);
+                }
 
 
                 if(string.IsNullOrEmpty(searchGroup.AssociateEmail) || searchGroup.AssociateEmail.ToLower() != keyDto.AssociateEmail)
@@ -166,6 +170,8 @@ namespace RiwiTalent.Services.Repository
             {
                 throw;
             }
+            Console.WriteLine($"Received: Id={keyDto.Id}, Email={keyDto.AssociateEmail}, Key={keyDto.Key}");
+
         }
 
         public async Task RegenerateToken(NewKeyDto newKeyDto)

@@ -122,7 +122,7 @@ namespace RiwiTalent.App.Controllers.Groups
         //obtener el uuid y revertirlo
         [HttpPost]
         [Route("validation-external")]
-        public async Task<IActionResult> GetUUID([FromBody] KeyDto keyDto)
+        public async Task<IActionResult> GetUUID(KeyDto keyDto)
         {
             try
             {
