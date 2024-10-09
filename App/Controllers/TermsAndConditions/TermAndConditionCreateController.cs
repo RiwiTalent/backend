@@ -9,7 +9,7 @@ using RiwiTalent.Utils.Exceptions;
 
 namespace RiwiTalent.App.Controllers.TermsAndConditions
 {
-    [Authorize]
+    //[Authorize]
     public class TermAndConditionCreateController : Controller
     {
         private readonly ITermAndConditionRepository _termAndConditionRepository;
