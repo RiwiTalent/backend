@@ -1,33 +1,31 @@
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Utils.Exceptions;
-using RiwiTalent.Models.DTOs;
+using RiwiTalent.Models;
 using System;
+using RiwiTalent.Models.DTOs;
 using System.Threading.Tasks;
 
 namespace RiwiTalent.App.Controllers.TermsAndConditions
 {
-    public class TermAndConditionCreateController : ControllerBase
+
+    public class TermAndConditionUpdateController : ControllerBase
     {
         private readonly ITermAndConditionRepository _termAndConditionRepository;
 
-        public TermAndConditionCreateController(ITermAndConditionRepository termAndConditionRepository)
+        public TermAndConditionUpdateController(ITermAndConditionRepository termAndConditionRepository)
         {
             _termAndConditionRepository = termAndConditionRepository;
         }
 
-        [HttpPost("terms")]
-        public async Task<ActionResult> AcceptUserTerms(TermAndConditionDto termAndConditionDto) 
+        
+        [HttpPut("terms")]
+        public async Task<ActionResult> UpdateTerms(TermAndConditionDto updatedTermsDto)
         {
-            if (termAndConditionDto == null)
-            {
-                return BadRequest("Invalid data."); 
-            }
-
             try
             {
-                await _termAndConditionRepository.Add(termAndConditionDto);
-                return Ok("Terms and conditions have been created.");
+                await _termAndConditionRepository.UpdateTermsAsync(updatedTermsDto);
+                return Ok("Terms have been updated.");
             }
             catch (Exception ex)
             {

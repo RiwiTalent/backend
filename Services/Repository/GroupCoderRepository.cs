@@ -24,7 +24,7 @@ namespace RiwiTalent.Services.Repository
         private string Error = "The group not found";
         public GroupCoderRepository(MongoDbContext context, IMapper mapper, ExternalKeyUtils service)
         {
-            _mongoCollection = context.GroupCoders;
+            _mongoCollection = context.Groups;
             _mongoCollectionCoder = context.Coders;
             _mapper = mapper;
             _service = service;
@@ -89,7 +89,8 @@ namespace RiwiTalent.Services.Repository
                 Group gruopCoder = new Group();
                 Group newGroupCoder = new Group
                 {
-                    /* Name = keyDto.Name, */
+                    Id = keyDto.Id,
+                    AssociateEmail = keyDto.AssociateEmail,
                     ExternalKeys = new List<ExternalKey>
                     {
                         new ExternalKey
@@ -99,13 +100,32 @@ namespace RiwiTalent.Services.Repository
                     }
                 };
 
-                var searchGroup = await _mongoCollection.Find(group => group.AssociateEmail == keyDto.AssociateEmail).FirstOrDefaultAsync();
+                var searchGroup = await _mongoCollection.Find(group => group.Id == keyDto.Id).FirstOrDefaultAsync();
 
                 if(searchGroup == null)
                 {
-                    throw new StatusError.InvalidKeyException($"Name is invalid");
+                    throw new StatusError.ObjectIdNotFound($"The document not found");
                 }
 
+
+                if(string.IsNullOrEmpty(searchGroup.AssociateEmail) || searchGroup.AssociateEmail.ToLower() != keyDto.AssociateEmail)
+                {
+                    throw new StatusError.EmailNotFound("The group hasn't valid Email or is empty");
+                }
+                else
+                {
+                    Console.WriteLine("The group has Email");
+                }
+
+                
+                /* if(!string.IsNullOrEmpty(searchGroup.UUID))
+                {
+                    Console.WriteLine("The group has UUID");
+                }
+                else
+                {
+                    throw new Exception("The group hasn't valid UUID");
+                } */
 
                 if(searchGroup.ExternalKeys != null && searchGroup.ExternalKeys.Any())
                 {
@@ -193,7 +213,10 @@ namespace RiwiTalent.Services.Repository
                 Id = group.Id.ToString(),
                 Name = group.Name,
                 Description = group.Description,
-                Coders = coderMap
+                Status = group.Status,
+                Create_At = group.Created_At,
+                CreatedBy = group.CreatedBy,
+                AssociateEmail = group.AssociateEmail
             };
 
             return groupInfo;

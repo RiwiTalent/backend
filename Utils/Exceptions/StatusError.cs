@@ -55,7 +55,12 @@ namespace RiwiTalent.Utils.Exceptions
         public class ObjectIdNotFound : Exception
         {
             public ObjectIdNotFound(string message) : base(message){}
-        } 
+        }
+
+        public class EmailNotFound : Exception
+        {
+            public EmailNotFound(string message) : base(message){}
+        }
 
         public class CoderAlreadyInGroup : Exception
         {

@@ -147,7 +147,6 @@ namespace RiwiTalent.App.Controllers.Groups
             try
             {
                 GroupDetailsDto groupInfo = await _groupRepository.GetGroupInfoById(id);
-
                 if(groupInfo is null)
                 {
                     var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;

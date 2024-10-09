@@ -19,7 +19,7 @@ namespace RiwiTalent.Services.Repository
         public CoderRepository(MongoDbContext context, IMapper mapper)
         {
             _mongoCollection = context.Coders;
-            _mongoCollectionGroups = context.GroupCoders;
+            _mongoCollectionGroups = context.Groups;
             _mapper = mapper;
         }
 
@@ -73,9 +73,6 @@ namespace RiwiTalent.Services.Repository
 
         public async Task Update(Coder coder)
         {
-            //we need filter groups by Id
-            //First we call the method Builders and have access to Filter
-            //Then we can use filter to have access Eq
 
             var existCoder = await _mongoCollection.Find(coder => coder.Id == coder.Id).FirstOrDefaultAsync();
 
