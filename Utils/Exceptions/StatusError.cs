@@ -56,5 +56,10 @@ namespace RiwiTalent.Utils.Exceptions
         {
             public ObjectIdNotFound(string message) : base(message){}
         } 
+
+        public class CoderAlreadyInGroup : Exception
+        {
+            public CoderAlreadyInGroup(string message) : base(message){}
+        }
     }
 }   
