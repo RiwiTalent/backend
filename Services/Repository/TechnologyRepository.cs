@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models;
@@ -22,6 +23,19 @@ namespace RiwiTalent.Services.Repository
             _mongoCollection.InsertOne(technology);
         }
 
+        public async Task AddTechnology(string technologyId, string newTechnology)
+        {
+            var filter = Builders<Technology>.Filter.Eq(t => t.Id, technologyId);
+            var searchTech = _mongoCollection.Find(filter).FirstOrDefaultAsync();
+
+            if(searchTech == null)
+                throw new StatusError.ObjectIdNotFound("The document Technology not found");
+
+            var update = Builders<Technology>.Update.AddToSet(t => t.Language_Programming, newTechnology);
+
+            var result = await _mongoCollection.UpdateOneAsync(filter, update);
+        }
+
         public async Task<IEnumerable<Technology>> GetTechnologies()
         {
             var techs = await _mongoCollection.Find(_ => true)
@@ -30,18 +44,25 @@ namespace RiwiTalent.Services.Repository
             return techs;
         }
 
-        public async Task Update(Technology technology)
+        public async Task Update(string technologyId, int index, string newTecnology)
         {
-            var tech = await _mongoCollection.Find(t => t.Id == technology.Id).FirstOrDefaultAsync();
+            var filter = Builders<Technology>.Filter.Eq(t => t.Id, technologyId);
+            var searchTech = _mongoCollection.Find(filter).FirstOrDefaultAsync();
 
-            if(tech == null)
+            if(searchTech == null)
                 throw new StatusError.ObjectIdNotFound("The document Technology not found");
+
+
+            var update = Builders<Technology>.Update.Set($"Language_Programming.{index}", newTecnology);
+
+            var result = await _mongoCollection.UpdateOneAsync(filter, update);
+
+            if(result.ModifiedCount == 0)   
+            {
+                throw new StatusError.ObjectIdNotFound("The document Technology not found or no modification was made");
+            }
             
-            var builder = Builders<Technology>.Filter.Eq(t => t.Id, technology.Id);
-            var update = Builders<Technology>.Update.Set(t => t.Name, technology.Name);
 
-
-            await _mongoCollection.UpdateOneAsync(builder, update);
         }
     }
 }

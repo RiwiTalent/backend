@@ -44,6 +44,10 @@ namespace RiwiTalent.App.Controllers.Coders
             {
                 _coderStatusHistoryRepository.AddCodersGrouped(coderGroup);
                 return Ok("List of coders sucessfully added to group");
+            }   
+            catch(StatusError.CoderAlreadyInGroup ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
             catch (Exception ex)
             {
