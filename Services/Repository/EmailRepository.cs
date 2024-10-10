@@ -105,6 +105,14 @@ namespace RiwiTalent.Services.Repository
                     smtp.Disconnect(true);
                 }
             }
+            catch (SmtpCommandException smtpEx)
+            {
+                throw new Exception($"Error smtp sending email {smtpEx.Message}");
+            }
+            catch (SmtpProtocolException protocolEx)
+            {
+                throw new Exception($"Error protocol smtp: {protocolEx.Message}");
+            }
             catch (Exception ex)
             {
                 Console.WriteLine($"error enviando el correo: {ex.Message}");
