@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models;
@@ -70,17 +71,17 @@ namespace RiwiTalent.Services.Repository
             return Pagination<Coder>.CreatePagination(coders, (int)total, page, cantRegisters);
         }
 
-        public async Task Update(CoderDto coderDto)
+        public async Task Update(Coder coder)
         {
 
-            var existCoder = await _mongoCollection.Find(coder => coder.Id == coderDto.Id).FirstOrDefaultAsync();
+            var existCoder = await _mongoCollection.Find(coder => coder.Id == coder.Id).FirstOrDefaultAsync();
 
             if(existCoder is null)
             {
                 throw new Exception($"{Error}");
             }
 
-            var coderMap = _mapper.Map(coderDto, existCoder);
+            var coderMap = _mapper.Map(coder, existCoder);
             var builder = Builders<Coder>.Filter;
             var filter = builder.Eq(coder => coder.Id, coderMap.Id);
 
@@ -95,7 +96,7 @@ namespace RiwiTalent.Services.Repository
         public async Task UpdateCodersSelected(CoderGroupDto coderGroup)
         {
             await UpdateCodersProcess(coderGroup, Status.Selected);
-            var coders = await _mongoCollection.Find(x => x.GroupId == coderGroup.GroupId && x.Status == Status.Grouped.ToString())
+            var coders = await _mongoCollection.Find(x => x.GroupId.ToString() == coderGroup.GroupId && x.Status == Status.Grouped.ToString())
                 .ToListAsync();
 
             await UpdateCodersProcess(coders, Status.Active);
@@ -197,7 +198,7 @@ namespace RiwiTalent.Services.Repository
 
                 // TASK: Se deberia de hacer un automapper
                 // existCoder.GroupId = "";
-                existCoder = UpdateCoderInfo(existCoder, status, existCoder.GroupId);
+                existCoder = UpdateCoderInfo(existCoder, status, existCoder.GroupId.ToString());
 
                 var filter = Builders<Coder>.Filter.Eq(x => x.Id, existCoder.Id);
                 await _mongoCollection.ReplaceOneAsync(filter, existCoder);
@@ -217,7 +218,7 @@ namespace RiwiTalent.Services.Repository
                 }
 
                 // then we compare the coder group id with the group id
-                var filter = Builders<Coder>.Filter.Eq(c => c.GroupId, group.Id.ToString());
+                var filter = Builders<Coder>.Filter.AnyEq(c => c.GroupId, group.Id.ToString());
 
                 var codersList = await _mongoCollection.Find(filter).ToListAsync();
 
@@ -233,17 +234,48 @@ namespace RiwiTalent.Services.Repository
         {
             if(status.Equals(Status.Active))
             {
-                coder.GroupId = null;
+                coder.GroupId = null;   
                 coder.Status = Status.Active.ToString();
             }
 
             if(status.Equals(Status.Selected) || status.Equals(Status.Grouped))
             {
-                coder.GroupId = groupId;
+                if (coder.GroupId == null)
+                {
+                    coder.GroupId = new List<string>(); // Inicializamos la lista si está vacía
+                }
+
+                if (!coder.GroupId.Contains(groupId))
+                {
+                    coder.GroupId.Add(groupId); // Añadimos el groupId a la lista
+                }
                 coder.Status = status.ToString();
             }
 
             return coder;
+        }
+
+        public async Task<Coder> FindCoderById(string coderId)
+        {
+            try
+            {
+                // Hacemos la búsqueda en la base de datos con el ObjectId
+                var filter = Builders<Coder>.Filter.Eq(c => c.Id, coderId.ToString());
+                var coder = await _mongoCollection.Find(filter).FirstOrDefaultAsync();
+
+                // Si el coder no existe
+                if (coder == null)
+                {
+                    throw new Exception($"El coder con Id '{coderId}' no fue encontrado.");
+                }
+
+                return coder;
+            }
+            catch (Exception ex)
+            {
+                // Manejo general de otras excepciones
+                throw new Exception($"Ocurrió un error al buscar el coder: {ex.Message}");
+            }
         }
     }
 }

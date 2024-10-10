@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Utils.Exceptions;
@@ -16,9 +17,9 @@ namespace RiwiTalent.App.Controllers.Coders
         //Endpoint
         [HttpPut]
         [Route("coder")]
-        public async Task<IActionResult> UpdateCoder(CoderDto coderDto)
+        public async Task<IActionResult> UpdateCoder(Coder coder)
         {
-            if(coderDto is null)
+            if(coder is null)
             {
                 var instance = Guid.NewGuid().ToString();
                 var problemDetails = StatusError.CreateBadRequest(instance);
@@ -27,7 +28,7 @@ namespace RiwiTalent.App.Controllers.Coders
 
             try
             {
-                await _coderRepository.Update(coderDto);
+                await _coderRepository.Update(coder);
                 return Ok("The coder has been updated the correct way");
             }
             catch (Exception ex)

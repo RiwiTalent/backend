@@ -199,9 +199,12 @@ namespace RiwiTalent.Services.Repository
             SendEmailAll(message);
         }
 
-        public void SendEmailTest(string Id)
+
+
+        public void SendEmailTest(string id)
         {
-            var tech = _mongoCollection.Find(t => t.Id == ObjectId.Parse(Id)).FirstOrDefault();
+            // Realizar la búsqueda comparando el string del ObjectId
+            var tech = _mongoCollection.Find(t => t.Id.ToString() == id).FirstOrDefault();
 
             if(tech == null)
                 throw new StatusError.ObjectIdNotFound("The document Technology not found");
@@ -213,5 +216,7 @@ namespace RiwiTalent.Services.Repository
             SendEmailStaff("Staff", tech.CreatedBy, "Términos y Condiciones", groupId.ToString());
 
         }
+
+
     }
 }

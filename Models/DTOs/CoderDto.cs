@@ -27,6 +27,7 @@ namespace RiwiTalent.Models.DTOs
         public string? Status { get; set; }
         public string? Stack { get; set; }
         public StandarRiwi? StandarRiwi { get; set; }
+        public List<string>? GroupId { get; set; }
         public List<Skill>? Skills { get; set; }
         public LanguageSkill? LanguageSkills { get; set; }
     }

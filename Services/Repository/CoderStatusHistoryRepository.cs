@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -7,6 +8,7 @@ using RiwiTalent.Models.DTOs;
 using RiwiTalent.Models.Enums;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Utils.Filters;
+using RiwiTalent.Utils.Exceptions;
 
 namespace RiwiTalent.Services.Repository
 {
@@ -110,11 +112,25 @@ namespace RiwiTalent.Services.Repository
       return GetUniqueLastRegisters(filter);
     }
 
-    public void AddCodersGrouped(CoderGroupDto coderGroup)
+    public async Task AddCodersGrouped(CoderGroupDto coderGroup)
     {
-      AddCodersProccess(coderGroup, Status.Grouped);
 
-      _coderRepository.UpdateCodersGroup(coderGroup);
+      try
+      {
+        await AddCodersProccess(coderGroup, Status.Grouped);
+
+        await _coderRepository.UpdateCodersGroup(coderGroup);
+      }
+      catch (StatusError.CoderAlreadyInGroup ex)
+      {
+        throw new StatusError.CoderAlreadyInGroup(ex.Message);
+      }
+      catch (Exception ex)
+      {
+        throw new Exception("Ocurrió un error al agregar coders al grupo.", ex);
+      }
+
+      
     }
 
     public async Task AddCodersSelected(CoderGroupDto coderGroup)
@@ -163,20 +179,46 @@ namespace RiwiTalent.Services.Repository
       return group;
     }
 
-    private void AddCodersProccess(CoderGroupDto coderGroup, Status status)
+    private async Task AddCodersProccess(CoderGroupDto coderGroup, Status status)
     {
       List<string> coderIdList = coderGroup.CoderList;
-
+ 
       foreach(string coderId in coderIdList)
       {
         CoderStatusHistory coderStatusHistory = new CoderStatusHistory()
         {
           IdCoder = coderId,
-          IdGroup = coderGroup.GroupId,
+          IdGroup = coderGroup.GroupId.ToString(),
           Status = status.ToString()
         };
 
         Add(coderStatusHistory);
+
+        var coder = await _coderRepository.FindCoderById(coderId);
+
+        if (coder != null)
+        {
+          if (coder.GroupId == null)
+          {
+              coder.GroupId = new List<string>();
+          }
+
+          if (!coder.GroupId.Contains(coderGroup.GroupId.ToString()))
+          {
+
+            coder.GroupId.Add(coderGroup.GroupId.ToString());
+
+            await _coderRepository.Update(coder);
+          }
+          else
+          {
+            throw new StatusError.CoderAlreadyInGroup($"El coder con Id {coderId} ya está en el grupo {coderGroup.GroupId}.");
+          }
+        }
+        else
+        {
+          throw new Exception("El coder con Id no fue encontrado.");
+        }
       }
     }
 
