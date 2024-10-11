@@ -15,6 +15,7 @@ using RiwiTalent.Utils.Exceptions;
 using RiwiTalent.Utils.MailKit;
 using System.Text;
 using RiwiTalent.Utils;
+using RiwiTalent.Models.Enums;
 
 namespace RiwiTalent.Services.Repository
 {
@@ -76,13 +77,13 @@ namespace RiwiTalent.Services.Repository
         public void SendCodersSelectedStaff(string Name, string Email, string groupId)
         {
             var findGroup = _group.Find(g => g.Id == groupId).FirstOrDefault();
-            var findSelectedCoders = _coder.Find(c => c.GroupId.Contains(groupId)).ToList();
+            var findSelectedCoders = _coder.Find(c => c.GroupId.Contains(groupId) && c.Status == Status.Selected.ToString()).ToList();
 
             if(findGroup == null)
                 throw new StatusError.ObjectIdNotFound("The document not found");
 
             if(findSelectedCoders == null || !findSelectedCoders.Any())
-                throw new StatusError.ObjectIdNotFound("No coders found for the groupId");
+                throw new StatusError.ObjectIdNotFound("No coders found for the groupId or the coder has not selected yet");
 
             EmailCoderSelected emailCoderSelected = new EmailCoderSelected();
 
@@ -117,8 +118,21 @@ namespace RiwiTalent.Services.Repository
             message.To.Add(new MailboxAddress(Name, Email));
             message.Subject = "Has Iniciado Proceso";
 
+            var htmlTemplatePath = "Utils/Templates/email_coder_selected_external.html";
+            string htmlTemplate;
+            try
+            {
+                htmlTemplate = File.ReadAllText(htmlTemplatePath);
+            }
+            catch (Exception ex)
+            {
+                
+                throw new Exception($"Error loading template to message {ex.Message}");
+            }
+
             var bodyBuilder = new BodyBuilder
             {
+                HtmlBody = htmlTemplate,
                 TextBody = "Felicidades, has iniciado un proceso para adquirir el mejor talento"
             };
 
