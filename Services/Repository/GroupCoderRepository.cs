@@ -195,7 +195,7 @@ namespace RiwiTalent.Services.Repository
 
         public async Task<GroupDetailsDto> GetGroupInfoById(string groupId)
         {
-            var group = await _mongoCollection.Find(x => x.Id.ToString() == groupId).FirstOrDefaultAsync();
+            var group = await _mongoCollection.Find(x => x.Id.Contains(groupId.ToString())).FirstOrDefaultAsync();
 
             if(group == null)
             {
@@ -203,7 +203,7 @@ namespace RiwiTalent.Services.Repository
                 // throw new Exception(Error);
             }
 
-            var coders = await _mongoCollectionCoder.Find(x => x.GroupId.ToString() == groupId)
+            var coders = await _mongoCollectionCoder.Find(x => x.GroupId.Contains(groupId.ToString()))
                 .ToListAsync();
             
             List<CoderDto> coderMap = _mapper.Map<List<CoderDto>>(coders);

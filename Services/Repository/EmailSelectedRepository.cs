@@ -14,6 +14,7 @@ using RiwiTalent.Services.Interface;
 using RiwiTalent.Utils.Exceptions;
 using RiwiTalent.Utils.MailKit;
 using System.Text;
+using RiwiTalent.Utils;
 
 namespace RiwiTalent.Services.Repository
 {
@@ -49,16 +50,19 @@ namespace RiwiTalent.Services.Repository
 
 
                     smtp.Authenticate( _config.GetSection("Email:Username").Value, _config.GetSection("Email:Password").Value);
+                    Console.WriteLine("Conexión exitosa");
                     smtp.Send(message);
                     smtp.Disconnect(true);
                 }                
             }
             catch (SmtpCommandException smtpEx)
             {
+                Console.WriteLine($"{smtpEx.Message}");
                 throw new Exception($"Error smtp sending email {smtpEx.Message}");
             }
             catch (SmtpProtocolException protocolEx)
             {
+                Console.WriteLine($"{protocolEx.Message}");
                 throw new Exception($"Error protocol smtp: {protocolEx.Message}");
             }
             catch (Exception ex)
@@ -80,40 +84,27 @@ namespace RiwiTalent.Services.Repository
             if(findSelectedCoders == null || !findSelectedCoders.Any())
                 throw new StatusError.ObjectIdNotFound("No coders found for the groupId");
 
+            EmailCoderSelected emailCoderSelected = new EmailCoderSelected();
+
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("Riwi", "riwitalen@gmail.com"));
             message.To.Add(new MailboxAddress(Name, Email));
             message.Subject = $"{findGroup.Name} Inició Proceso";
 
-            var htmlTemplatePath = "Utils/Templates/email_coders_selected.html";
-            string htmlTemplate;
-            try
-            {
-                htmlTemplate = File.ReadAllText(htmlTemplatePath);
-                var codersInfo = new StringBuilder();
-                foreach (var coder in findSelectedCoders)
-                {
-                    codersInfo.Append($@"
-                        <p>Nombre: {coder.FirstName}</p>
-                        <p>Email: {coder.Email}</p>
-                        <p>Teléfono: {coder.Phone}</p>
-                        <hr/>
-                    ");
-                }
-                htmlTemplate = htmlTemplate.Replace("{CodersInfo}", codersInfo.ToString());
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error loading template to message {ex.Message}");
-            }
-
-            var bodyBuilder = new BodyBuilder
-            {
-                HtmlBody = htmlTemplate
-            };
             
-            message.Body = bodyBuilder.ToMessageBody();
+            var builder = new BodyBuilder();
+            StringBuilder emailExternal = new StringBuilder();
+
+            foreach (var coder in findSelectedCoders)
+            {
+                string emailTemplate = emailCoderSelected.GenerateTemplate(coder, emailCoderSelected.template);
+                emailExternal.Append(emailTemplate);
+            }
+            
+                
+            builder.HtmlBody = emailExternal.ToString();
+            message.Body = builder.ToMessageBody(); 
+           
 
             SendEmail(message);
 
@@ -122,7 +113,7 @@ namespace RiwiTalent.Services.Repository
         public void SendEmailExternal(string Name, string Email)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Riwi", "riwitalent@gmail.com"));
+            message.From.Add(new MailboxAddress("Riwi", "riwitalen@gmail.com"));
             message.To.Add(new MailboxAddress(Name, Email));
             message.Subject = "Has Iniciado Proceso";
 
