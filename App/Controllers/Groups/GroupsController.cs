@@ -94,24 +94,19 @@ namespace RiwiTalent.App.Controllers.Groups
         //Get coders by group
         [HttpGet]
         [Route("group/{name}")]
-        public async Task<IActionResult> GetCodersByGroup(string name)
+        public async Task<IActionResult> GetGroupByName(string name)
         {
             try
             {
-                var groupExist = await _groupRepository.GroupExistByName(name);
-                if (!groupExist)
-                {
-                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
-                    return NotFound(StatusError.CreateNotFound($"The group '{name}' not exists.", instance));
-                }
+                
 
-                var coder = await _coderRepository.GetCodersByGroup(name);
-                if (coder == null || !coder.Any())
+                var group = await _groupRepository.GetGroupByName(name);
+                if (group == null)
                 {  
                     var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
                     return NotFound(StatusError.CreateNotFound($"This group haven't coders yet, '{name}'.", instance));
                 }
-                return Ok(coder);
+                return Ok(group);
             }
             catch (Exception ex)
             {
