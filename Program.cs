@@ -37,6 +37,7 @@ builder.Services.AddScoped<IGroupCoderRepository, GroupCoderRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<ICoderStatusHistoryRepository, CoderStatusHistoryRepository>();
 builder.Services.AddTransient<IEmailRepository, EmailRepository>();
+builder.Services.AddTransient<IEmailSelectedRepository, EmailSelectedRepository>();
 builder.Services.AddScoped<ITechnologyRepository, TechnologyRepository>();
 builder.Services.AddScoped<ITermAndConditionRepository, TermAndConditionRepository>();
 

@@ -11,18 +11,20 @@ namespace RiwiTalent.App.Controllers.Email
     public class EmailController : Controller
     {
         private readonly IEmailRepository _emailRepository;
-        public EmailController(IEmailRepository emailRepostory)
+        private readonly IEmailSelectedRepository _emailSelectedRepository;
+        public EmailController(IEmailRepository emailRepostory, IEmailSelectedRepository emailSelectedRepository)
         {
             _emailRepository = emailRepostory;
+            _emailSelectedRepository = emailSelectedRepository;
         }
 
-        /* [HttpPost("api/email/send")]
-        public IActionResult SendEmail(EmailDto email)
+        [HttpPost("api/email-process")]
+        public IActionResult SendEmail([FromQuery] string id)
         {
             try
             {
-                _emailRepository.SendEmail(email);
-                return Ok(); 
+                _emailSelectedRepository.SendEmailAll(id);
+                return Ok("The email has beend delivered"); 
             }
             catch (Exception ex)
             {
@@ -30,7 +32,7 @@ namespace RiwiTalent.App.Controllers.Email
                 return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }
-        } */
+        }
 
         [HttpPost("email/send")]
         public IActionResult SendEmailTesting([FromQuery] string Id)
@@ -47,6 +49,7 @@ namespace RiwiTalent.App.Controllers.Email
                 throw;
             }
         }
+
 
 
     }
