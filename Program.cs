@@ -32,14 +32,14 @@ Env.Load();
 builder.Services.AddSingleton<MongoDbContext>();
 
 //Services to Interface and Repository
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<ICoderRepository, CoderRepository>();
 builder.Services.AddScoped<IGroupCoderRepository, GroupCoderRepository>();
-builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<ICoderStatusHistoryRepository, CoderStatusHistoryRepository>();
 builder.Services.AddTransient<IEmailRepository, EmailRepository>();
 builder.Services.AddScoped<ITechnologyRepository, TechnologyRepository>();
 builder.Services.AddScoped<ITermAndConditionRepository, TermAndConditionRepository>();
-
+builder.Services.AddScoped<ILogginRepository, LogginRepository>();
 
 
 //Mapper
@@ -62,42 +62,6 @@ builder.Services.AddCors(options => {
     });
 });
 
-//Configuration JWT with environment variables
-builder.Services.AddAuthentication(option => {
-            option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-        .AddJwtBearer(configure => {
-            configure.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = Environment.GetEnvironmentVariable("Issuer"),
-                ValidAudience = Environment.GetEnvironmentVariable("Audience"),
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("Key")))
-            };
-            //Error controls of token
-            configure.Events = new JwtBearerEvents
-            {
-                OnAuthenticationFailed = context =>
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    if(context.Exception is SecurityTokenExpiredException)
-                    {
-                        Console.WriteLine("Token expirado, porfavor genere uno nuevo.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Usuario no autorizado.");
-                    }
-                    return Task.CompletedTask;
-                }
-            };
-        });
-
-
 var app = builder.Build();
 
 
@@ -110,7 +74,7 @@ app.UseSwaggerUI();
 app.UseCors("PolicyCors");
 
 app.UseAuthentication();
-app.UseAuthorization();
+
 
 
 //Controllers

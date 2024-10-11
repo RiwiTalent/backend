@@ -4,7 +4,7 @@ using RiwiTalent.Models;
 using FluentValidation;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Utils.Exceptions;
-using backend.Models.Dtos;
+using RiwiTalent.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
 
 namespace RiwiTalent.App.Controllers.Groups

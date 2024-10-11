@@ -1,6 +1,5 @@
 using System.Xml.Schema;
 using AutoMapper;
-using backend.Models.Dtos;
 using Microsoft.AspNetCore.Http.HttpResults;
 using MongoDB.Bson;
 using MongoDB.Driver;
