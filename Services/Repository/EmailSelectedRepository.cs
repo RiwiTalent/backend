@@ -13,13 +13,15 @@ using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Utils.Exceptions;
 using RiwiTalent.Utils.MailKit;
+using System.Text;
 
 namespace RiwiTalent.Services.Repository
 {
     public class EmailSelectedRepository : IEmailSelectedRepository
     {
         private readonly IConfiguration _config;
-        private readonly IMongoCollection<Coder> _mongoCollection;
+        private readonly IMongoCollection<Coder> _coder;
+        private readonly IMongoCollection<Group> _group;
         private readonly SendFile _sendFile;
         
     
@@ -27,7 +29,8 @@ namespace RiwiTalent.Services.Repository
         {
             _config = config;
             _sendFile = sendFile;
-            _mongoCollection = context.Coders;
+            _coder = context.Coders;
+            _group = context.Groups;
         }
 
         
@@ -66,10 +69,84 @@ namespace RiwiTalent.Services.Repository
             }
         }
 
-        public void SendCodersSelected()
+        public void SendCodersSelectedStaff(string Name, string Email, string groupId)
         {
-            throw new NotImplementedException();
+            var findGroup = _group.Find(g => g.Id == groupId).FirstOrDefault();
+            var findSelectedCoders = _coder.Find(c => c.GroupId.Contains(groupId)).ToList();
 
+            if(findGroup == null)
+                throw new StatusError.ObjectIdNotFound("The document not found");
+
+            if(findSelectedCoders == null || !findSelectedCoders.Any())
+                throw new StatusError.ObjectIdNotFound("No coders found for the groupId");
+
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Riwi", "riwitalen@gmail.com"));
+            message.To.Add(new MailboxAddress(Name, Email));
+            message.Subject = $"{findGroup.Name} Inició Proceso";
+
+            var htmlTemplatePath = "Utils/Templates/email_coders_selected.html";
+            string htmlTemplate;
+            try
+            {
+                htmlTemplate = File.ReadAllText(htmlTemplatePath);
+                var codersInfo = new StringBuilder();
+                foreach (var coder in findSelectedCoders)
+                {
+                    codersInfo.Append($@"
+                        <p>Nombre: {coder.FirstName}</p>
+                        <p>Email: {coder.Email}</p>
+                        <p>Teléfono: {coder.Phone}</p>
+                        <hr/>
+                    ");
+                }
+                htmlTemplate = htmlTemplate.Replace("{CodersInfo}", codersInfo.ToString());
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error loading template to message {ex.Message}");
+            }
+
+            var bodyBuilder = new BodyBuilder
+            {
+                HtmlBody = htmlTemplate
+            };
+            
+            message.Body = bodyBuilder.ToMessageBody();
+
+            SendEmail(message);
+
+        }
+
+        public void SendEmailExternal(string Name, string Email)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Riwi", "riwitalent@gmail.com"));
+            message.To.Add(new MailboxAddress(Name, Email));
+            message.Subject = "Has Iniciado Proceso";
+
+            var bodyBuilder = new BodyBuilder
+            {
+                TextBody = "Felicidades, has iniciado un proceso para adquirir el mejor talento"
+            };
+
+            message.Body = bodyBuilder.ToMessageBody();
+            SendEmail(message);
+        }
+
+        public void SendEmailAll(string id)
+        {
+            var group = _group.Find(g => g.Id == id).FirstOrDefault();
+            if(group == null)
+                throw new StatusError.ObjectIdNotFound("The document Technology not found");
+
+
+            var groupId = group.Id;
+
+            SendCodersSelectedStaff("Staff", group.CreatedBy, groupId.ToString());
+            SendEmailExternal("External", group.AssociateEmail);
+    
         }
 
         

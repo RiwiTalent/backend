@@ -207,6 +207,7 @@ namespace RiwiTalent.Services.Repository
                 .ToListAsync();
             
             List<CoderDto> coderMap = _mapper.Map<List<CoderDto>>(coders);
+            CoderDto coderDto = new CoderDto();
 
             GroupDetailsDto groupInfo = new GroupDetailsDto()
             {

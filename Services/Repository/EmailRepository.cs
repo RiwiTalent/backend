@@ -171,7 +171,7 @@ namespace RiwiTalent.Services.Repository
             message.To.Add(new MailboxAddress(Name, Email));
             message.Subject = "Información Importante";
 
-            var searchGroup = _mongoCollection.Find(g => g.Id == ObjectId.Parse(groupId)).FirstOrDefault();
+            var searchGroup = _mongoCollection.Find(g => g.Id == groupId).FirstOrDefault();
 
             if(searchGroup == null)
                 throw new StatusError.ObjectIdNotFound("The document not found");

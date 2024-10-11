@@ -10,6 +10,8 @@ namespace RiwiTalent.Services.Interface
     public interface IEmailSelectedRepository
     {
         void SendEmail(MimeMessage message);
-        void SendCodersSelected();
+        void SendCodersSelectedStaff(string Name, string Email, string groupId);
+        void SendEmailExternal(string Name, string Email);
+        void SendEmailAll(string id);
     }
 }
