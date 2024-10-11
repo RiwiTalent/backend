@@ -205,30 +205,7 @@ namespace RiwiTalent.Services.Repository
             }
         }
 
-        public async Task<IEnumerable<Coder>> GetCodersByGroup(string name)
-        {
-            try
-            {
-                // first we get the name
-                var group = await _mongoCollectionGroups.Find(g => g.Name == name).FirstOrDefaultAsync();
 
-                if (group == null)
-                {
-                    throw new ApplicationException($"El grupo con el nombre '{name}' no existe.");
-                }
-
-                // then we compare the coder group id with the group id
-                var filter = Builders<Coder>.Filter.AnyEq(c => c.GroupId, group.Id.ToString());
-
-                var codersList = await _mongoCollection.Find(filter).ToListAsync();
-
-                return codersList;
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException($"Error al obtener los coders del grupo '{name}'", ex);
-            }
-        }
 
         private Coder UpdateCoderInfo(Coder coder, Status status, string groupId)
         {

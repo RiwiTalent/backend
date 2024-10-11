@@ -8,7 +8,6 @@ namespace RiwiTalent.Services.Interface
 
         Task<IEnumerable<Coder>> GetCoders();
         Task<Pagination<Coder>> GetCodersPagination(int page, int cantRegisters);
-        Task<IEnumerable<Coder>> GetCodersByGroup(string name);
         void Add(CoderDto coderDto);
         Task Update(Coder coder);
         Task UpdateCodersGroup(CoderGroupDto groupCoder);

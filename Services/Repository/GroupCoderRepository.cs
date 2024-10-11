@@ -203,7 +203,7 @@ namespace RiwiTalent.Services.Repository
                 // throw new Exception(Error);
             }
 
-            var coders = await _mongoCollectionCoder.Find(x => x.GroupId.ToString() == groupId)
+            var coders = await _mongoCollectionCoder.Find(x => x.GroupId.Contains(groupId))
                 .ToListAsync();
             
             List<CoderDto> coderMap = _mapper.Map<List<CoderDto>>(coders);
@@ -267,6 +267,14 @@ namespace RiwiTalent.Services.Repository
             {
                 throw new Exception("No se pudo actualizar el grupo.");
             }
+        }
+
+        public async Task<Group> GetGroupByName(string name)
+        {
+            var filter = Builders<Group>.Filter.Regex(g => g.Name, new MongoDB.Bson.BsonRegularExpression(name, "i"));
+
+            return await _mongoCollection.Find(filter).FirstOrDefaultAsync();
+        
         }
 
         public async Task<IEnumerable<Group>> GetGroupsInactive()
