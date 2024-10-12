@@ -195,7 +195,7 @@ namespace RiwiTalent.Services.Repository
 
         public async Task<GroupDetailsDto> GetGroupInfoById(string groupId)
         {
-            var group = await _mongoCollection.Find(x => x.Id.Contains(groupId.ToString())).FirstOrDefaultAsync();
+            var group = await _mongoCollection.Find(x => x.Id == groupId).FirstOrDefaultAsync();
 
             if(group == null)
             {
