@@ -152,6 +152,7 @@ namespace RiwiTalent.Services.Repository
 
     public async Task DeleteCoderGroup(string coderId)
     {
+      
       CoderStatusHistory coderStatus = new CoderStatusHistory()
       {
         IdCoder = coderId,

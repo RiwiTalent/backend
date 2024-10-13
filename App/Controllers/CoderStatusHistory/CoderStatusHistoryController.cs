@@ -63,12 +63,12 @@ namespace RiwiTalent.App.Controllers
             {
                 var coders = await _coderStatusHistoryRepository.GetCoderHistoryById(id);
 
-                // JsonSerializerOptions options = new()
-                // {
-                //     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-                // };
+                /* JsonSerializerOptions options = new()
+                {
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                };
 
-                // string forecastJson = JsonSerializer.Serialize<CoderHistoryDto>(coders, options);
+                string forecastJson = JsonSerializer.Serialize<CoderHistoryDto>(coders, options); */
                 return Ok(coders);
             }
             catch (Exception ex)
