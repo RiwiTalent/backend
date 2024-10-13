@@ -1,15 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Threading.Tasks;
 using MimeKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models;
-using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Utils.Exceptions;
 using RiwiTalent.Utils.MailKit;
@@ -35,7 +29,7 @@ namespace RiwiTalent.Services.Repository
             _group = context.Groups;
         }
 
-        
+        //Here we realize emails to staff and companies partners, with diferent messages when thare is coders selected
 
         public void SendEmail(MimeMessage message)
         {
@@ -51,7 +45,6 @@ namespace RiwiTalent.Services.Repository
 
 
                     smtp.Authenticate( _config.GetSection("Email:Username").Value, _config.GetSection("Email:Password").Value);
-                    Console.WriteLine("Conexión exitosa");
                     smtp.Send(message);
                     smtp.Disconnect(true);
                 }                

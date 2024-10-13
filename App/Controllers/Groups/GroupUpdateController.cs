@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Models.DTOs;
-using RiwiTalent.Models;
 using AutoMapper;
 using RiwiTalent.Utils.Exceptions;
 

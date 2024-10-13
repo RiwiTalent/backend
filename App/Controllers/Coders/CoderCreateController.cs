@@ -1,6 +1,5 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Utils.Exceptions;

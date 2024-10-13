@@ -1,10 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Utils.Exceptions;
-using RiwiTalent.Models;
-using System;
 using RiwiTalent.Models.DTOs;
-using System.Threading.Tasks;
 
 namespace RiwiTalent.App.Controllers.TermsAndConditions
 {

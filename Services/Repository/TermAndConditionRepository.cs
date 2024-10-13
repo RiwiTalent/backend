@@ -1,5 +1,3 @@
-using System.Security.Claims;
-using System.Threading.Tasks;
 using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models;
@@ -50,7 +48,7 @@ namespace RiwiTalent.Services.Repository
                 throw new Exception("Terms not found.");
             }
 
-            // Usar AutoMapper para mapear desde el DTO a la entidad existente
+            // It is used AutoMapper to the information of Dto
             var termsToUpdate = _mapper.Map(updatedTermsDto, existTerms);
             var filter = Builders<TermAndCondition>.Filter.Eq(tc => tc.Id, termsToUpdate.Id);
 

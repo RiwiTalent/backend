@@ -1,7 +1,4 @@
-using System.Xml.Schema;
 using AutoMapper;
-using backend.Models.Dtos;
-using Microsoft.AspNetCore.Http.HttpResults;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
@@ -199,8 +196,7 @@ namespace RiwiTalent.Services.Repository
 
             if(group == null)
             {
-                return null;
-                // throw new Exception(Error);
+                throw new StatusError.ObjectIdNotFound("The group has not found");
             }
 
             var coders = await _mongoCollectionCoder.Find(x => x.GroupId.Contains(groupId.ToString()))
@@ -231,7 +227,7 @@ namespace RiwiTalent.Services.Repository
             var filter = Builders<Group>.Filter.Regex(g => g.Name, name);
             var group = await _mongoCollection.Find(filter).FirstOrDefaultAsync();
 
-            // Retorna true si el grupo existe, false si no
+            // Return true if group exists, if not return false
             return group != null;
         }
 
@@ -268,7 +264,7 @@ namespace RiwiTalent.Services.Repository
             var result = await _mongoCollection.UpdateOneAsync(filter, updateStatusAndRelation);
             if (result.ModifiedCount == 0)
             {
-                throw new Exception("No se pudo actualizar el grupo.");
+                throw new Exception("Group updated failed");
             }
         }
 

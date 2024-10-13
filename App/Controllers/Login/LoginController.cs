@@ -5,7 +5,6 @@ using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Utils.Exceptions;
-using System.Security.Cryptography;
 
 namespace RiwiTalent.App.Controllers.Login
 {

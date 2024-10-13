@@ -1,10 +1,8 @@
 using MimeKit;
-using MongoDB.Bson;
-using RiwiTalent.Models;
-using RiwiTalent.Models.DTOs;
 
 
-namespace RiwiTalent.Services.Interface{
+namespace RiwiTalent.Services.Interface
+{
 
     public interface IEmailRepository{
         void SendEmailTest(string Id);

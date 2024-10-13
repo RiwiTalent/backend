@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -12,7 +11,7 @@ using RiwiTalent.Utils.Exceptions;
 
 namespace RiwiTalent.Services.Repository
 {
-  public class CoderStatusHistoryRepository : ICoderStatusHistoryRepository
+    public class CoderStatusHistoryRepository : ICoderStatusHistoryRepository
   {
     private readonly IMongoCollection<CoderStatusHistory> _mongoCollection;
     private readonly IMapper _mapper;
@@ -40,6 +39,9 @@ namespace RiwiTalent.Services.Repository
 
 
       Coder coder = await _coderRepository.GetCoderId(coderId);
+      if(coder == null)
+        throw new StatusError.ObjectIdNotFound("Coder not found");
+
 
       CoderHistoryDto historyCoder = new CoderHistoryDto()
       {
@@ -99,7 +101,7 @@ namespace RiwiTalent.Services.Repository
 
     public async Task<IEnumerable<CoderStatusHistory>> GetCompanyCoders(string companyId, Status status)
     {
-      // Traemos ambos estados, agrupados y seleccionados
+      // we get both status, such as agruped and selecteds.
       BsonDocument filter;
 
       if(status == Status.Active)
@@ -127,7 +129,7 @@ namespace RiwiTalent.Services.Repository
       }
       catch (Exception ex)
       {
-        throw new Exception("Ocurrió un error al agregar coders al grupo.", ex);
+        throw new Exception($"An error occurred while adding coder to group. {ex.Message}");
       }
 
       
@@ -213,12 +215,12 @@ namespace RiwiTalent.Services.Repository
           }
           else
           {
-            throw new StatusError.CoderAlreadyInGroup($"El coder con Id {coderId} ya está en el grupo {coderGroup.GroupId}.");
+            throw new StatusError.CoderAlreadyInGroup($"The coder with id {coderId} is alredy exists {coderGroup.GroupId}.");
           }
         }
         else
         {
-          throw new Exception("El coder con Id no fue encontrado.");
+          throw new Exception("The coder with id not found");
         }
       }
     }

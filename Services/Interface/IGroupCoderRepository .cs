@@ -1,8 +1,5 @@
-using backend.Models.Dtos;
-using MongoDB.Bson;
 using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
-using RiwiTalent.Services.Repository;
 
 namespace RiwiTalent.Services.Interface
 {

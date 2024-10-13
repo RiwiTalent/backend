@@ -1,8 +1,4 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Models.Enums;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Utils.Exceptions;
 

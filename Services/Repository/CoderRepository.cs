@@ -1,12 +1,12 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Models.Enums;
 using RiwiTalent.Services.Interface;
+using RiwiTalent.Utils.Exceptions;
 
 namespace RiwiTalent.Services.Repository
 {
@@ -25,7 +25,7 @@ namespace RiwiTalent.Services.Repository
 
         public void Add(CoderDto coderDto)
         {
-            // Mapeo de CoderDto a Coder
+            // Here we add a new coder
             var coder = _mapper.Map<Coder>(coderDto);
             _mongoCollection.InsertOne(coder);
         }
@@ -61,6 +61,7 @@ namespace RiwiTalent.Services.Repository
         public async Task<Pagination<Coder>> GetCodersPagination(int page, int cantRegisters)
         {
             var skip = (page -1) * cantRegisters;
+
             //we get all coders
             var coders = await _mongoCollection.Find(_ => true)
                                                 .Skip(skip)
@@ -134,22 +135,23 @@ namespace RiwiTalent.Services.Repository
         
         public async Task<List<Coder>> GetCodersBySkill(List<string> skill)
         {
+            // This function aims to search for coder by skill
             try
             {
-                var filter = new List<FilterDefinition<Coder>>(); //Defino una variable en la cual ingreso a un listado de lenguajes
-                foreach (var language in skill) //Hago un foreach para recorrer todos los lenguajes de programacion y de esta forma verificar que el coder lo tiene
+                var filter = new List<FilterDefinition<Coder>>();
+                foreach (var language in skill)
                 {
                     var languageFilter = Builders<Coder>.Filter.ElemMatch(c => c.Skills, s => s.Language_Programming == language);
-                    filter.Add(languageFilter); //Cada que voy obteniendo coders con las skills los añado a languageFilter 
+                    filter.Add(languageFilter);
                 }
 
-                var combinedFilter = Builders<Coder>.Filter.And(filter); //Luego junto las variables filter y langugeFilter para luego returnarlo
+                var combinedFilter = Builders<Coder>.Filter.And(filter);
                 
                 return await _mongoCollection.Find(combinedFilter).ToListAsync();
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("No hay coder con esos lenguajes.");
+                throw new ApplicationException("There is no coder with those languages.");
             }
         }
 
@@ -157,13 +159,13 @@ namespace RiwiTalent.Services.Repository
         {
             try
             {
-                var filter = Builders<Coder>.Filter.Eq(c => c.LanguageSkills.Language_Level, level); //Busco language_Level dentro de LanguageSkills y creo el filtrado
+                var filter = Builders<Coder>.Filter.Eq(c => c.LanguageSkills.Language_Level, level);
                 return await _mongoCollection.Find(filter).ToListAsync();
             }
             catch (Exception ex)
             {
                 
-                throw new ApplicationException("Ocurrió un error al obtener el coder", ex);
+                throw new ApplicationException("An error occurred getting coder", ex);
                 
              }
          }
@@ -219,12 +221,12 @@ namespace RiwiTalent.Services.Repository
             {
                 if (coder.GroupId == null)
                 {
-                    coder.GroupId = new List<string>(); // Inicializamos la lista si está vacía
+                    coder.GroupId = new List<string>();
                 }
 
                 if (!coder.GroupId.Contains(groupId))
                 {
-                    coder.GroupId.Add(groupId); // Añadimos el groupId a la lista
+                    coder.GroupId.Add(groupId);
                 }
                 coder.Status = status.ToString();
             }
@@ -236,22 +238,21 @@ namespace RiwiTalent.Services.Repository
         {
             try
             {
-                // Hacemos la búsqueda en la base de datos con el ObjectId
+                // we search coder by id, and if isn't exists return a exception
                 var filter = Builders<Coder>.Filter.Eq(c => c.Id, coderId.ToString());
                 var coder = await _mongoCollection.Find(filter).FirstOrDefaultAsync();
 
-                // Si el coder no existe
+               
                 if (coder == null)
                 {
-                    throw new Exception($"El coder con Id '{coderId}' no fue encontrado.");
+                    throw new StatusError.ObjectIdNotFound($"The coder with Id '{coderId}' not found.");
                 }
 
                 return coder;
             }
             catch (Exception ex)
             {
-                // Manejo general de otras excepciones
-                throw new Exception($"Ocurrió un error al buscar el coder: {ex.Message}");
+                throw new Exception($"An error occurred searching coder: {ex.Message}");
             }
         }
     }
