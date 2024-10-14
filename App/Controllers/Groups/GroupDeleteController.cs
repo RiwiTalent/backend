@@ -20,7 +20,7 @@ namespace backend.App.Controllers.Groups
             try
             {
                 _groupCoderRepository.DeleteGroup(groupId);
-                return Ok(new { Message = "The coder has been deleted successfuly" });
+                return Ok(new { Message = "The group has been deleted successfuly" });
             }
             catch (Exception ex)
             {
