@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
-using RiwiTalent.Models.DTOs;
+using RiwiTalent.Application.DTOs;
+using RiwiTalent.Domain.Services.Interface.Terms;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.TermsAndConditions
 {
@@ -16,7 +16,7 @@ namespace RiwiTalent.App.Controllers.TermsAndConditions
         }
 
         
-        [HttpPut("terms")]
+        [HttpPut("terms/{id}")]
         public async Task<ActionResult> UpdateTerms(TermAndConditionDto updatedTermsDto)
         {
             try

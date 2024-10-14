@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
-using RiwiTalent.Utils.ExternalKey;
+using RiwiTalent.Application.DTOs;
+using RiwiTalent.Domain.ExternalKey;
+using RiwiTalent.Domain.Services.Groups;
+using RiwiTalent.Domain.Services.Interface.Coders;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
@@ -87,7 +88,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //Get coders by group
         [HttpGet]
-        [Route("group/{name}")]
+        [Route("groups/{name}")]
         public async Task<IActionResult> GetGroupByName(string name)
         {
             try
@@ -108,10 +109,10 @@ namespace RiwiTalent.App.Controllers.Groups
             }
         }
 
-        //obtener el uuid y revertirlo
+        
         [HttpPost]
-        [Route("validation-external")]
-        public async Task<IActionResult> GetUUID([FromBody] KeyDto keyDto)
+        [Route("company/validate-external")]
+        public async Task<IActionResult> GetCompanyCredentials([FromBody] KeyDto keyDto)
         {
             try
             {
@@ -130,7 +131,7 @@ namespace RiwiTalent.App.Controllers.Groups
         }
 
         [HttpGet]
-        [Route("group-details/{id}")]
+        [Route("groups/{id}/details")]
         public async Task<IActionResult> GetGroupInfoById(string id)
         {
             try

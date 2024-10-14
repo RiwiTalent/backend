@@ -1,10 +1,10 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using RiwiTalent.Infrastructure.Data;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Application.DTOs;
+using RiwiTalent.Domain.Services.Tokens;
+using RiwiTalent.Infrastructure.ExternalServices;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Login
 {

@@ -1,8 +1,8 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Application.DTOs;
+using RiwiTalent.Domain.Services.Interface.Coders;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Coders
 {
@@ -19,7 +19,7 @@ namespace RiwiTalent.App.Controllers.Coders
         //Endpoint
         [HttpPost]
         [Route("coders")]
-        public IActionResult Post([FromBody] CoderDto coderDto)
+        public async Task<IActionResult> Post([FromBody] CoderDto coderDto)
         {
 
 
@@ -41,7 +41,7 @@ namespace RiwiTalent.App.Controllers.Coders
 
             try
             {
-                _coderRepository.Add(coderDto);
+                await _coderRepository.Add(coderDto);
                 return Ok("The coder has been created successfully");
             }
             catch (Exception ex)

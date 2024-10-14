@@ -1,17 +1,23 @@
 using System.Net;
 using System.Text;
-using RiwiTalent.Services.Interface;
 using RiwiTalent.Services.Repository;
 using DotNetEnv;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using RiwiTalent.Infrastructure.Data;
-using RiwiTalent.Models;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Validators;
-using RiwiTalent.Utils.ExternalKey;
-using RiwiTalent.Utils.MailKit;
+using RiwiTalent.Domain.Services.Interface.Coders;
+using RiwiTalent.Infrastructure.Persistence.Repository;
+using RiwiTalent.Domain.Services.Groups;
+using RiwiTalent.Domain.Services.Tokens;
+using RiwiTalent.Domain.Services.Interface.Emails;
+using RiwiTalent.Infrastructure.Persistence.Emails;
+using RiwiTalent.Domain.Services.Interface.Technologies;
+using RiwiTalent.Domain.Services.Interface.Terms;
+using RiwiTalent.Infrastructure.ExternalServices;
+using RiwiTalent.Application.DTOs;
+using RiwiTalent.Domain.Validators;
+using RiwiTalent.Domain.ExternalKey;
+using RiwiTalent.Infrastructure.ExternalServices.MailKit;
 
 var builder = WebApplication.CreateBuilder(args);
 

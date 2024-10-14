@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Application.DTOs;
+using RiwiTalent.Domain.Services.Interface.Coders;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Coders
 {

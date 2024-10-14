@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Domain.Services.Interface.Emails;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Email
 {
@@ -14,12 +14,12 @@ namespace RiwiTalent.App.Controllers.Email
             _emailSelectedRepository = emailSelectedRepository;
         }
 
-        [HttpPost("api/email-process")]
-        public IActionResult SendEmail([FromQuery] string id)
+        [HttpPost("email/company-process")]
+        public async Task<IActionResult> SendEmail([FromQuery] string id)
         {
             try
             {
-                _emailSelectedRepository.SendEmailAll(id);
+                await _emailSelectedRepository.SendEmailAll(id);
                 return Ok("The email has beend delivered"); 
             }
             catch (Exception ex)
@@ -30,12 +30,12 @@ namespace RiwiTalent.App.Controllers.Email
             }
         }
 
-        [HttpPost("email/send")]
-        public IActionResult SendEmailTesting([FromQuery] string Id)
+        [HttpPost("email/accept-terms")]
+        public async Task<IActionResult> SendEmailTesting([FromQuery] string Id)
         {
             try
             {
-                _emailRepository.SendEmailTest(Id);
+                await _emailRepository.SendEmailTest(Id);
                 return Ok("The email has beend delivered"); 
             }
             catch (Exception ex)

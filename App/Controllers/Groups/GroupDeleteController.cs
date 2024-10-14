@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Domain.Services.Groups;
+using RiwiTalent.Shared.Exceptions;
 
 namespace backend.App.Controllers.Groups
 {
@@ -14,7 +14,7 @@ namespace backend.App.Controllers.Groups
         }
 
         [HttpDelete]
-        [Route("group/{Id}")]
+        [Route("groups/{Id}")]
         public IActionResult DeleteGroup(string groupId)
         {
             try
