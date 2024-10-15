@@ -14,14 +14,14 @@ namespace RiwiTalent.App.Controllers.Coders
     
         [HttpDelete]
         [Route("coders/{id:length(24)}")]
-        public IActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             /* The function has the main principle of search by coder id
                 and then update status the Active to Inactive
             */
             try
             {                
-                _coderRepository.Delete(id);               
+                await _coderRepository.Delete(id);               
                 return Ok(new { Message = "The status of coder has been updated to Inactive" });
             }
             catch (Exception ex)

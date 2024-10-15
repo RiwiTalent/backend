@@ -77,9 +77,9 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
 
             var existCoder = await _mongoCollection.Find(coder => coder.Id == coder.Id).FirstOrDefaultAsync();
 
-            if(existCoder is null)
+            if(existCoder == null)
             {
-                throw new Exception($"{Error}");
+                throw new StatusError.ObjectIdNotFound($"{Error}");
             }
 
             var coderMap = _mapper.Map(coder, existCoder);
@@ -103,13 +103,13 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
             await UpdateCodersProcess(coders, Status.Active);
         }
 
-        public void Delete(string id)
+        public async Task Delete(string id)
         {
             //This Method is the reponsable of update status the coder, first we search by id and then it execute the change Active to Inactive
 
             var filter = Builders<Coder>.Filter.Eq(c => c.Id, id);         
             var update = Builders<Coder>.Update.Set(c => c.Status, Status.Inactive.ToString());            
-            _mongoCollection.UpdateOneAsync(filter, update);
+            await _mongoCollection.UpdateOneAsync(filter, update);
         }
 
         public async Task DeleteCoderGroup(string id)
@@ -254,6 +254,15 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
             {
                 throw new Exception($"An error occurred searching coder: {ex.Message}");
             }
+        }
+
+        public async Task UpdateCoderPhoto(string coderId, string photoUrl)
+        {
+            //This method have an important responsability of upload photo to each coder
+
+            var filter = Builders<Coder>.Filter.Eq(c => c.Id, coderId);
+            var updatePhoto = Builders<Coder>.Update.Set(c => c.Photo, photoUrl);
+            await _mongoCollection.UpdateOneAsync(filter, updatePhoto);
         }
     }
 }
