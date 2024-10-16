@@ -3,6 +3,7 @@ using AutoMapper;
 using RiwiTalent.Domain.Services.Groups;
 using RiwiTalent.Application.DTOs;
 using RiwiTalent.Shared.Exceptions;
+using MongoDB.Bson;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
@@ -19,7 +20,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //Endpoint
         [HttpPut]
-        [Route("groups/{id}")]
+        [Route("groups")]
         public async Task<IActionResult> UpdateGroups(GroupCoderDto groupCoderDto)
         {
             if(!ModelState.IsValid)

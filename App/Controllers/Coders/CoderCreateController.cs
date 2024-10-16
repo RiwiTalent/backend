@@ -80,6 +80,8 @@ namespace RiwiTalent.App.Controllers.Coders
                         Transformation = new Transformation().Width(250)
                                                             .Height(300)
                                                             .Crop("fill")
+                                                            .Quality("auto:low")
+                                                            .FetchFormat("auto")
                     };
 
                     uploadResult = await _cloudinary.UploadAsync(uploadParams);

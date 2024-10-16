@@ -237,8 +237,6 @@ namespace RiwiTalent.Services.Repository
             //First we call the method Builders and have access to Filter
             //Then we can use filter to have access Eq
 
-            
-
             var existGroup = await _mongoCollection.Find(group => group.Id == groupCoderDto.Id).FirstOrDefaultAsync();
 
             if(existGroup == null)

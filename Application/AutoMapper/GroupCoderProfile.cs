@@ -1,22 +1,25 @@
 using AutoMapper;
+using MongoDB.Bson;
 using RiwiTalent.Application.DTOs;
-using System.Text.RegularExpressions;
+using RiwiTalent.Domain.Entities;
 
 namespace RiwiTalent.Application.AutoMapper
 {
     public class GroupCoderProfile : Profile
     {
-        public GroupCoderProfile() 
+        public GroupCoderProfile()
         {
-           CreateMap<GroupCoderDto, Group>()
-                .ForAllMembers(opt => 
+           
+            CreateMap<GroupCoderDto, Group>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.Id) ? ObjectId.GenerateNewId() : new ObjectId(src.Id)))
+                .ForAllMembers(opt =>
                 {
-                    opt.AllowNull();
                     opt.Condition((src, dest, sourceMember) => sourceMember != null);
                 });
-            
-            CreateMap<Group, GroupCoderDto>();
-                                        /* .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null)); */ 
-        } 
+
+        
+            CreateMap<Group, GroupCoderDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()));
+        }
     }
 }
