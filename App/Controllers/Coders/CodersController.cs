@@ -1,7 +1,6 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Domain.Services.Interface.Coders;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers
 {
@@ -14,7 +13,8 @@ namespace RiwiTalent.App.Controllers
         }
 
         //get all coders
-        // [Authorize]
+        /* [Authorize] */
+
         [HttpGet]
         [Route("coders")]
         public async Task<IActionResult> Get()
@@ -101,7 +101,7 @@ namespace RiwiTalent.App.Controllers
 
         //Get Coder by name
         [HttpGet]
-        [Route("coder/name")]
+        [Route("coders/name")]
         public async Task<IActionResult> GetCoderByName(string name)
         {
             try
@@ -127,7 +127,7 @@ namespace RiwiTalent.App.Controllers
 
         //Get coder by skill tecnical
         [HttpGet]
-        [Route("coder/skill")]
+        [Route("coders/skill")]
         public async Task<IActionResult> GetCodersBySkill([FromQuery] List<string> skill)
         {
             try
@@ -152,8 +152,8 @@ namespace RiwiTalent.App.Controllers
 
         //Get coder by language level in english
         [HttpGet]
-        [Route("coders/language/level")]
-        public async Task<IActionResult> GetCodersByLanguage([FromQuery] string level, string language = "English")
+        [Route("coders/language-level={level}")]
+        public async Task<IActionResult> GetCodersByLanguage([FromRoute] string level, string language = "English")
         {
             try
             {

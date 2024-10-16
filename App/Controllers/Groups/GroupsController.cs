@@ -1,18 +1,13 @@
-using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using RiwiTalent.Models;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
-using RiwiTalent.Utils.ExternalKey;
+using RiwiTalent.Application.DTOs;
+using RiwiTalent.Domain.ExternalKey;
+using RiwiTalent.Domain.Services.Groups;
+using RiwiTalent.Domain.Services.Interface.Coders;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
-   
+
     public class GroupsController : Controller
     {
         private readonly IGroupCoderRepository _groupRepository;
@@ -93,25 +88,20 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //Get coders by group
         [HttpGet]
-        [Route("group/{name}")]
-        public async Task<IActionResult> GetCodersByGroup(string name)
+        [Route("groups/{name}")]
+        public async Task<IActionResult> GetGroupByName(string name)
         {
             try
             {
-                var groupExist = await _groupRepository.GroupExistByName(name);
-                if (!groupExist)
-                {
-                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
-                    return NotFound(StatusError.CreateNotFound($"The group '{name}' not exists.", instance));
-                }
+                
 
-                var coder = await _coderRepository.GetCodersByGroup(name);
-                if (coder == null || !coder.Any())
+                var group = await _groupRepository.GetGroupByName(name);
+                if (group == null)
                 {  
                     var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
                     return NotFound(StatusError.CreateNotFound($"This group haven't coders yet, '{name}'.", instance));
                 }
-                return Ok(coder);
+                return Ok(group);
             }
             catch (Exception ex)
             {
@@ -119,10 +109,10 @@ namespace RiwiTalent.App.Controllers.Groups
             }
         }
 
-        //obtener el uuid y revertirlo
+        
         [HttpPost]
-        [Route("validation-external")]
-        public async Task<IActionResult> GetUUID([FromBody] KeyDto keyDto)
+        [Route("company/validate-external")]
+        public async Task<IActionResult> GetCompanyCredentials([FromBody] KeyDto keyDto)
         {
             try
             {
@@ -141,7 +131,7 @@ namespace RiwiTalent.App.Controllers.Groups
         }
 
         [HttpGet]
-        [Route("group-details/{id}")]
+        [Route("groups/{id}/details")]
         public async Task<IActionResult> GetGroupInfoById(string id)
         {
             try

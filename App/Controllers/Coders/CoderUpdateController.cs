@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Domain.Entities;
+using RiwiTalent.Domain.Services.Interface.Coders;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Coders
 {
@@ -15,10 +15,10 @@ namespace RiwiTalent.App.Controllers.Coders
 
         //Endpoint
         [HttpPut]
-        [Route("coder")]
-        public async Task<IActionResult> UpdateCoder(CoderDto coderDto)
+        [Route("coders")]
+        public async Task<IActionResult> UpdateCoder(Coder coder)
         {
-            if(coderDto is null)
+            if(coder is null)
             {
                 var instance = Guid.NewGuid().ToString();
                 var problemDetails = StatusError.CreateBadRequest(instance);
@@ -27,7 +27,7 @@ namespace RiwiTalent.App.Controllers.Coders
 
             try
             {
-                await _coderRepository.Update(coderDto);
+                await _coderRepository.Update(coder);
                 return Ok("The coder has been updated the correct way");
             }
             catch (Exception ex)
@@ -35,6 +35,26 @@ namespace RiwiTalent.App.Controllers.Coders
                 var problemDetails = StatusError.CreateInternalServerError(ex);
                 return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
+            }
+        }
+
+        [HttpPatch]
+        [Route("coders/{id:length(24)}/reactivate")]
+        public async Task<IActionResult> Reactivate(string id)
+        {
+            /* The function has the main principle of search by coder id
+                and then update status the Inactive to Active
+            */
+            try
+            {
+                await _coderRepository.ReactivateCoder(id);
+                return Ok(new { Message = "The status of coder has been updated to Active" });
+            }
+            catch (Exception ex)
+            {   
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;  
             }
         }
 

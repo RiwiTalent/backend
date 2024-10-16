@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
-using RiwiTalent.Models;
-using System;
-using System.Threading.Tasks;
+using RiwiTalent.Domain.Entities;
+using RiwiTalent.Domain.Services.Interface.Terms;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.TermsAndConditions
 {
@@ -17,7 +15,7 @@ namespace RiwiTalent.App.Controllers.TermsAndConditions
             _termAndConditionRepository = termAndConditionRepository;
         }
 
-        // Nuevo endpoint para listar todos los términos
+        // endpoint to list all terms
         [HttpGet("terms")]
         public async Task<ActionResult<List<TermAndCondition>>> GetAllTerms()
         {
@@ -42,7 +40,8 @@ namespace RiwiTalent.App.Controllers.TermsAndConditions
                 var terms = await _termAndConditionRepository.GetTermsByEmailAsync(email);
                 if (terms == null)
                 {
-                    return NotFound("No terms found for this email.");
+                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
+                    return NotFound(StatusError.CreateNotFound($"No terms found for this email.", instance));
                 }
                 return Ok(terms);
             }

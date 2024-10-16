@@ -1,9 +1,7 @@
-using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Models;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Application.DTOs;
+using RiwiTalent.Domain.Services.Interface.Coders;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Coders
 {
@@ -44,6 +42,10 @@ namespace RiwiTalent.App.Controllers.Coders
             {
                 _coderStatusHistoryRepository.AddCodersGrouped(coderGroup);
                 return Ok("List of coders sucessfully added to group");
+            }   
+            catch(StatusError.CoderAlreadyInGroup ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
             catch (Exception ex)
             {

@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Models;
 using AutoMapper;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Domain.Services.Groups;
+using RiwiTalent.Application.DTOs;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
@@ -19,11 +18,10 @@ namespace RiwiTalent.App.Controllers.Groups
         }
 
         //Endpoint
-        [HttpPut]
-        [Route("groups")]
+        [HttpPut("groups")]
         public async Task<IActionResult> UpdateGroups(GroupCoderDto groupCoderDto)
         {
-            if(!ModelState.IsValid)
+            if(groupCoderDto is null)
             {
                 var instance = Guid.NewGuid().ToString();
                 var problemDetails = StatusError.CreateBadRequest(instance);
@@ -42,6 +40,25 @@ namespace RiwiTalent.App.Controllers.Groups
                 throw;
             }
 
+        }
+
+        //endpoint regenerate token
+        [HttpPatch]
+        [Route("groups/regenerate-token")]
+        public async Task<IActionResult> GenerateToken([FromQuery] NewKeyDto newKeyDto)
+        {
+            try
+            {
+                await _groupRepository.RegenerateToken(newKeyDto);
+                return Ok("The token is already");
+                
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;
+            }
         }
     }
 }

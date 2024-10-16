@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Domain.Services.Interface.Coders;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Coders
 {
@@ -13,15 +13,15 @@ namespace RiwiTalent.App.Controllers.Coders
         }
     
         [HttpDelete]
-        [Route("coder/{id:length(24)}")]
-        public IActionResult Delete(string id)
+        [Route("coders/{id:length(24)}")]
+        public async Task<IActionResult> Delete(string id)
         {
             /* The function has the main principle of search by coder id
                 and then update status the Active to Inactive
             */
             try
             {                
-                _coderRepository.Delete(id);               
+                await _coderRepository.Delete(id);               
                 return Ok(new { Message = "The status of coder has been updated to Inactive" });
             }
             catch (Exception ex)
@@ -32,25 +32,27 @@ namespace RiwiTalent.App.Controllers.Coders
             }
         }
 
-        [HttpPut]
-        [Route("reactivate/{id:length(24)}")]
-        public IActionResult Reactivate(string id)
+        [HttpDelete]
+        [Route("coder-groups/{id:length(24)}")]
+        public IActionResult DeleteCoderOfGroup(string id)
         {
             /* The function has the main principle of search by coder id
-                and then update status the Inactive to Active
+                and then update status the Active to Inactive
             */
             try
-            {
-                _coderRepository.ReactivateCoder(id);
+            {                
+                _coderRepository.DeleteCoderGroup(id);               
                 return Ok(new { Message = "The status of coder has been updated to Active" });
             }
             catch (Exception ex)
-            {   
+            {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
                 return StatusCode(problemDetails.Status.Value, problemDetails);
-                throw;  
+                throw;
             }
         }
+
+        
     }
 }
 
