@@ -39,7 +39,9 @@ namespace RiwiTalent.App.Controllers.Groups
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
         }
@@ -60,7 +62,9 @@ namespace RiwiTalent.App.Controllers.Groups
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
         }
@@ -81,7 +85,9 @@ namespace RiwiTalent.App.Controllers.Groups
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
         }
@@ -125,7 +131,9 @@ namespace RiwiTalent.App.Controllers.Groups
             catch(Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
         }
@@ -148,7 +156,9 @@ namespace RiwiTalent.App.Controllers.Groups
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
         }

@@ -29,13 +29,16 @@ namespace RiwiTalent.App.Controllers.Login
             try
             {
                 var res = await _loginRepository.GenerateJwtCentinela(firebaseToken);
-                
-                return Ok(new { Token = res.access_token, Email = res.Email });
+                #pragma warning disable
+                return Ok(new { Token = res.Access_token });
+                #pragma warning restore
             }
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
         }

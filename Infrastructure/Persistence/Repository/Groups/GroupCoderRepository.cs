@@ -12,6 +12,7 @@ using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.Services.Repository
 {
+    #pragma warning disable
     public class GroupCoderRepository : IGroupCoderRepository
     {
         private readonly IMongoCollection<Group> _mongoCollection;
@@ -31,9 +32,6 @@ namespace RiwiTalent.Services.Repository
         }
         public async Task Add(GroupDto groupDto)
         {
-
-            var email = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
-
             var existGroup = await _mongoCollection.Find(g => g.Name == groupDto.Name).FirstOrDefaultAsync();
 
             if (existGroup != null)
@@ -58,7 +56,7 @@ namespace RiwiTalent.Services.Repository
                 Created_At = DateTime.UtcNow,
                 Deleted_At = null,
                 Status = Status.Active.ToString(),
-                CreatedBy = email,
+                CreatedBy = groupDto.CreatedBy,
                 AssociateEmail = groupDto.AssociateEmail,
                 ExternalKeys = new List<ExternalKey>
                 {

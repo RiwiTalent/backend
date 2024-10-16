@@ -26,8 +26,9 @@ namespace RiwiTalent.Application.AutoMapper
             // Mapeo de Group a GroupCoderDto
             CreateMap<Group, GroupCoderDto>()
                 .ForMember(dest => 
-dest.Id
-, opt => opt.MapFrom(src => src.Id.ToString()));
+                #pragma warning disable
+                dest.Id, opt => opt.MapFrom(src => src.Id.ToString()));
+                #pragma warning restore
         }
     }
 } 

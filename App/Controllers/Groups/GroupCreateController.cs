@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
-    [Authorize]
     public class GroupCreateController : Controller
     {
         private readonly IValidator<GroupDto> _groupValidator;
@@ -46,7 +45,9 @@ namespace RiwiTalent.App.Controllers.Groups
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
         }

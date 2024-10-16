@@ -12,6 +12,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
 {
     public class CoderRepository : ICoderRepository
     {
+        #pragma warning disable
         private readonly IMongoCollection<Coder> _mongoCollection;
         private readonly IMongoCollection<Group> _mongoCollectionGroups;
         private readonly IMapper _mapper; 
@@ -99,6 +100,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
             await UpdateCodersProcess(coderGroup, Status.Selected);
             var coders = await _mongoCollection.Find(x => x.GroupId.ToString() == coderGroup.GroupId && x.Status == Status.Grouped.ToString())
                 .ToListAsync();
+            
 
             await UpdateCodersProcess(coders, Status.Active);
         }

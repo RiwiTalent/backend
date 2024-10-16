@@ -9,6 +9,7 @@ using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Coders
 {
+    #pragma warning disable
     public class CoderCreateController : Controller
     {
         private readonly ICoderRepository _coderRepository;
@@ -52,7 +53,9 @@ namespace RiwiTalent.App.Controllers.Coders
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
         }
@@ -102,7 +105,9 @@ namespace RiwiTalent.App.Controllers.Coders
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
 
@@ -112,6 +117,7 @@ namespace RiwiTalent.App.Controllers.Coders
         [HttpPost("upload-pdf/{coderId}")]
         public async Task<IActionResult> UploadPdfCv(string coderId, IFormFile file)
         {
+            #pragma warning disable
             if(file == null || file.Length == 0)
             {
                 var instance = Guid.NewGuid().ToString();
@@ -140,12 +146,13 @@ namespace RiwiTalent.App.Controllers.Coders
 
                 var urlCv = uploadResult.SecureUrl.AbsoluteUri;
                 await _coderRepository.UpdateCoderCv(coderId, urlCv);
-
+                
                 return Ok(new { urlCv });
             }
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                
                 return StatusCode(problemDetails.Status.Value, problemDetails);
                 throw;
             }

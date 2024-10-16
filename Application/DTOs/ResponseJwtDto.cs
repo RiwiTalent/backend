@@ -2,7 +2,6 @@ namespace RiwiTalent.Application.DTOs;
 
 public class ResponseJwtDto
 {
-    public string access_token { get; set; }
-    public string refresh_token { get; set; }
-    public string Email { get; set; }
+    public string? Access_token { get; set; }
+    public string? Refresh_token { get; set; }
 }

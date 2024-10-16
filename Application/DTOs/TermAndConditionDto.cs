@@ -2,7 +2,7 @@ namespace RiwiTalent.Application.DTOs
 {
     public class TermAndConditionDto
     {
-        public string Id { get; set; }
+        public string? Id { get; set; }
         public string Content { get; set; } = "Utils/Resources/TermsAndConditions.pdf";
         public DateTime Clicked_Date { get; set; }
         public bool IsActive { get; set; }

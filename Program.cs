@@ -107,6 +107,7 @@ app.UseSwaggerUI();
 app.UseCors("PolicyCors");
 
 app.UseAuthentication();
+app.UseAuthorization();
 
 
 
