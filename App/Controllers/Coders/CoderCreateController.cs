@@ -1,9 +1,10 @@
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Models;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Application.DTOs;
+using RiwiTalent.Domain.Services.Interface.Coders;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Coders
 {
@@ -11,16 +12,18 @@ namespace RiwiTalent.App.Controllers.Coders
     {
         private readonly ICoderRepository _coderRepository;
         private readonly IValidator<CoderDto> _coderValidator;
-        public CoderCreateController(ICoderRepository coderRepository, IValidator<CoderDto> coderValidator)
+        private readonly Cloudinary _cloudinary;
+        public CoderCreateController(ICoderRepository coderRepository, IValidator<CoderDto> coderValidator, Cloudinary cloudinary)
         {
             _coderRepository = coderRepository;
             _coderValidator = coderValidator;
+            _cloudinary = cloudinary;
         }
 
         //Endpoint
         [HttpPost]
         [Route("coders")]
-        public IActionResult Post([FromBody] CoderDto coderDto)
+        public async Task<IActionResult> Post([FromBody] CoderDto coderDto)
         {
 
 
@@ -42,7 +45,7 @@ namespace RiwiTalent.App.Controllers.Coders
 
             try
             {
-                _coderRepository.Add(coderDto);
+                await _coderRepository.Add(coderDto);
                 return Ok("The coder has been created successfully");
             }
             catch (Exception ex)
@@ -52,6 +55,52 @@ namespace RiwiTalent.App.Controllers.Coders
                 throw;
             }
         }
+
+        //upload photo
+        [HttpPost("upload-photo/{coderId}")]
+        public async Task<IActionResult> UploadCoderPhoto(string coderId, IFormFile file)
+        {   
+            if(file == null || file.Length == 0)
+            {
+                var instance = Guid.NewGuid().ToString();
+                var problemDetails = StatusError.CreateBadRequest(instance);
+                return BadRequest($"{problemDetails}, No file uploaded");
+
+            }
+
+            try
+            {
+                var uploadResult = new ImageUploadResult();
+
+                using(var stream = file.OpenReadStream())
+                {
+                    var uploadParams = new ImageUploadParams()
+                    {
+                        File = new FileDescription(file.FileName, stream),
+                        Transformation = new Transformation().Width(250)
+                                                            .Height(300)
+                                                            .Crop("fill")
+                    };
+
+                    uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                }
+
+                if(uploadResult.Error != null)
+                    return BadRequest(uploadResult.Error.Message);
+                
+                var urlPhoto = uploadResult.SecureUrl.AbsoluteUri;
+                await _coderRepository.UpdateCoderPhoto(coderId, urlPhoto);
+
+                return Ok(new { urlPhoto });
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;
+            }
+
+        }   
 
     }
 }

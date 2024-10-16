@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Domain.Services.Groups;
+using RiwiTalent.Shared.Exceptions;
 
 namespace backend.App.Controllers.Groups
 {
@@ -20,13 +14,13 @@ namespace backend.App.Controllers.Groups
         }
 
         [HttpDelete]
-        [Route("group/{Id}")]
-        public IActionResult DeleteGroup(string groupId)
+        [Route("groups/{groupId}")]
+        public IActionResult DeleteGroup([FromRoute] string groupId)
         {
             try
             {
                 _groupCoderRepository.DeleteGroup(groupId);
-                return Ok(new { Message = "The coder has been deleted successfuly" });
+                return Ok(new { Message = "The group has been deleted successfuly" });
             }
             catch (Exception ex)
             {

@@ -1,10 +1,6 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Models.Enums;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Domain.Services.Interface.Coders;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers
 {
@@ -25,7 +21,7 @@ namespace RiwiTalent.App.Controllers
             }
         */
         [HttpGet]
-        [Route("historystatus")]
+        [Route("historystatuses")]
         public async Task<IActionResult> GetAllHistory()
         {
             if(!ModelState.IsValid)
@@ -49,7 +45,7 @@ namespace RiwiTalent.App.Controllers
         }
 
         [HttpGet]
-        [Route("riwitalent/historyStatus/coder/{id}")]
+        [Route("historystatuses/coder/{id}")]
         public async Task<IActionResult> GetCoderHistory(string id)
         {
             if(!ModelState.IsValid)
@@ -80,7 +76,7 @@ namespace RiwiTalent.App.Controllers
         }
 
         [HttpGet]
-        [Route("historystatus/group/{id}")]
+        [Route("historystatuses/group/{id}")]
         public async Task<IActionResult> GetGroupHistory(string id)
         {
             if(!ModelState.IsValid)

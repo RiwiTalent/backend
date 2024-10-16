@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Domain.Services.Interface.Coders;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
@@ -14,7 +14,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //endpoint
         [HttpDelete]
-        [Route("coder/group/{id:length(24)}")]
+        [Route("coders/groups/{id:length(24)}")]
         public async Task<IActionResult> DeleteCoder(string id)
         {
             try
