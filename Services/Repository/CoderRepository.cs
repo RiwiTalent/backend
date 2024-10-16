@@ -50,12 +50,23 @@ namespace RiwiTalent.Services.Repository
             }
         }
 
-        public async Task<IEnumerable<Coder>> GetCoders()
+        // Metodo para traer los coders
+        public async Task<List<Coder>> GetAllCoders(List<string> skills)
         {
-            var coders = await _mongoCollection.Find(_ => true)
-                                                .ToListAsync();
-            
-            return coders;
+            // Filtrar todos los coders del repositorio
+            if (skills == null || skills.Any())
+            {
+                // Crear un filtro para que coincidan todas las skills
+                var filter = Builders<Coder>.Filter.AnyIn(c => c.Skills.Select(s => s.Language_Programming), skills);
+
+                // Ejecutar la consulta con el filtro
+                var coders = await _mongoCollection.Find(filter).ToListAsync();
+                return coders;
+            }
+
+            // Si no se proporcionan skills, traer todos los coders
+            var allCoders = await _mongoCollection.Find(Builders<Coder>.Filter.Empty).ToListAsync();
+            return allCoders;
         }
 
         public async Task<Pagination<Coder>> GetCodersPagination(int page, int cantRegisters)
@@ -165,8 +176,8 @@ namespace RiwiTalent.Services.Repository
                 
                 throw new ApplicationException("Ocurrió un error al obtener el coder", ex);
                 
-             }
-         }
+            }
+        }
 
         private async Task UpdateCodersProcess(CoderGroupDto coderGroup, Status status)
         {
@@ -204,7 +215,6 @@ namespace RiwiTalent.Services.Repository
                 await _mongoCollection.ReplaceOneAsync(filter, existCoder);
             }
         }
-
 
 
         private Coder UpdateCoderInfo(Coder coder, Status status, string groupId)
@@ -254,5 +264,16 @@ namespace RiwiTalent.Services.Repository
                 throw new Exception($"Ocurrió un error al buscar el coder: {ex.Message}");
             }
         }
+
+        // public async Task<List<Coder>> FilterBySkills(List<string> selectedSkills)
+        // {
+        //     if (selectedSkills == null || !selectedSkills.Any())
+        //         return new List<Coder>();
+
+        //     // Filtro que busca coders que tengan alguna de las skills seleccionadas
+        //     var filter = Builders<Coder>.Filter.AnyIn(c => c.Skills.Select(s => s.Language_Programming), selectedSkills);
+
+        //     return await _mongoCollection.Find(filter).ToListAsync();
+        // }
     }
 }
