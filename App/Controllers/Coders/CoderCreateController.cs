@@ -3,6 +3,7 @@ using CloudinaryDotNet.Actions;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Application.DTOs;
+using RiwiTalent.Domain.Entities;
 using RiwiTalent.Domain.Services.Interface.Coders;
 using RiwiTalent.Shared.Exceptions;
 
@@ -77,9 +78,14 @@ namespace RiwiTalent.App.Controllers.Coders
                     var uploadParams = new ImageUploadParams()
                     {
                         File = new FileDescription(file.FileName, stream),
-                        Transformation = new Transformation().Width(250)
+                        Transformation = new Transformation().Gravity("face")
+                                                            .Width(250)
                                                             .Height(300)
-                                                            .Crop("fill")
+                                                            .Crop("scale")
+                                                            .Chain()
+                                                            .Quality("auto")
+                                                            .Chain()
+                                                            .FetchFormat("auto")
                     };
 
                     uploadResult = await _cloudinary.UploadAsync(uploadParams);
@@ -100,7 +106,50 @@ namespace RiwiTalent.App.Controllers.Coders
                 throw;
             }
 
-        }   
+        }
+
+        //upload Cv
+        [HttpPost("upload-pdf/{coderId}")]
+        public async Task<IActionResult> UploadPdfCv(string coderId, IFormFile file)
+        {
+            if(file == null || file.Length == 0)
+            {
+                var instance = Guid.NewGuid().ToString();
+                var problemDetails = StatusError.CreateBadRequest(instance);
+                return BadRequest($"{problemDetails}, No file uploaded");
+
+            }
+
+             try
+            {
+                var uploadResult = new RawUploadResult();
+
+                using(var stream = file.OpenReadStream())
+                {
+                    var uploadParams = new RawUploadParams()
+                    {
+                        File = new FileDescription(file.Name, stream),
+                        PublicId = $"cv_{coderId}_document" + ".pdf"
+                    };
+
+                    uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                }
+
+                if(uploadResult.Error != null)
+                    return BadRequest(uploadResult.Error.Message);
+
+                var urlCv = uploadResult.SecureUrl.AbsoluteUri;
+                await _coderRepository.UpdateCoderCv(coderId, urlCv);
+
+                return Ok(new { urlCv });
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;
+            }
+        }
 
     }
 }

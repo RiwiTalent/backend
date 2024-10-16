@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -17,17 +18,22 @@ namespace RiwiTalent.Services.Repository
         private readonly IMongoCollection<Coder> _mongoCollectionCoder;
         private readonly ExternalKeyUtils _service;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         private string Error = "The group not found";
-        public GroupCoderRepository(MongoDbContext context, IMapper mapper, ExternalKeyUtils service)
+        public GroupCoderRepository(MongoDbContext context, IMapper mapper, ExternalKeyUtils service, IHttpContextAccessor httpContextAccessor)
         {
             _mongoCollection = context.Groups;
             _mongoCollectionCoder = context.Coders;
             _mapper = mapper;
             _service = service;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task Add(GroupDto groupDto)
         {
+
+            var email = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
+
             var existGroup = await _mongoCollection.Find(g => g.Name == groupDto.Name).FirstOrDefaultAsync();
 
             if (existGroup != null)
@@ -39,17 +45,6 @@ namespace RiwiTalent.Services.Repository
 
             //generate ObjectId
             ObjectId objectId = ObjectId.GenerateNewId();
-            Guid guid =  _service.ObjectIdToUUID(objectId);
-            groupCoder.Id = objectId.ToString();
-              
-
-            /* string RealObjectId = _service.RevertObjectIdUUID(guid);
-
-            if(RealObjectId.ToString() == objectId.ToString())
-                Console.WriteLine("Es igual");
-
-            Console.WriteLine($"el objectId del grupo es: {RealObjectId}"); */
-
 
             //we define the path of url link
             string tokenString = _service.GenerateTokenRandom();
@@ -63,6 +58,8 @@ namespace RiwiTalent.Services.Repository
                 Created_At = DateTime.UtcNow,
                 Deleted_At = null,
                 Status = Status.Active.ToString(),
+                CreatedBy = email,
+                AssociateEmail = groupDto.AssociateEmail,
                 ExternalKeys = new List<ExternalKey>
                 {
                     new ExternalKey

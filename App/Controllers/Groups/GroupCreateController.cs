@@ -3,9 +3,11 @@ using FluentValidation;
 using RiwiTalent.Application.DTOs;
 using RiwiTalent.Domain.Services.Groups;
 using RiwiTalent.Shared.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
+    [Authorize]
     public class GroupCreateController : Controller
     {
         private readonly IValidator<GroupDto> _groupValidator;

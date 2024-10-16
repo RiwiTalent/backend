@@ -30,7 +30,7 @@ namespace RiwiTalent.App.Controllers.Login
             {
                 var res = await _loginRepository.GenerateJwtCentinela(firebaseToken);
                 
-                return Ok(new { Token = res.access_token });
+                return Ok(new { Token = res.access_token, Email = res.Email });
             }
             catch (Exception ex)
             {

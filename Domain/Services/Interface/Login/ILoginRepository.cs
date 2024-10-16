@@ -1,10 +1,10 @@
-using RiwiTalent.Domain.Entities;
+using RiwiTalent.Application.DTOs;
 
 namespace RiwiTalent.Domain.Services.Interface.Login
 {
     public interface ILoginRepository
     {
-        Task<ResponseJwt?> GenerateJwtCentinela(string tokenFirebase);
+        Task<ResponseJwtDto?> GenerateJwtCentinela(string tokenFirebase);
     }
 
 }
