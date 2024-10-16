@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Models;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Domain.Entities;
+using RiwiTalent.Domain.Services.Interface.Technologies;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Technologies
 {
@@ -20,7 +16,7 @@ namespace RiwiTalent.App.Controllers.Technologies
         //endpoint
         [HttpPost]
         [Route("technologies")]
-        public IActionResult Post(Technology technology)
+        public async Task<IActionResult> Post(Technology technology)
         {
             if(!ModelState.IsValid)
             {
@@ -31,7 +27,7 @@ namespace RiwiTalent.App.Controllers.Technologies
 
             try
             {
-                _technologyRepository.Add(technology);
+                await _technologyRepository.Add(technology);
                 return Ok();
             }
             catch (Exception ex)
