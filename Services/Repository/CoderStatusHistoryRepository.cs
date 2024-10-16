@@ -38,8 +38,12 @@ namespace RiwiTalent.Services.Repository
       List<CoderStatusHistory> coderHistory = await _mongoCollection.Find(x => x.IdCoder == coderId)
         .ToListAsync();
 
-
       Coder coder = await _coderRepository.GetCoderId(coderId);
+
+      if (coder == null)
+      {
+          throw new KeyNotFoundException($"Coder with ID {coderId} not found.");
+      }
 
       CoderHistoryDto historyCoder = new CoderHistoryDto()
       {
@@ -62,11 +66,16 @@ namespace RiwiTalent.Services.Repository
 
     public async Task<CoderHistoryDto> GetGroupHistoryById(string groupId)
     {
-      List<CoderStatusHistory> coderHistory = await _mongoCollection.Find(x => x.IdGroup == groupId)
+      var coderHistory = await _mongoCollection.Find(x => x.IdGroup == groupId)
         .ToListAsync();
 
 
       GroupDetailsDto group = await _groupRepository.GetGroupInfoById(groupId);
+
+      if (group == null)
+      {
+        throw new KeyNotFoundException($"Group with ID {groupId} not found.");
+      }
 
       CoderHistoryDto historyCoder = new CoderHistoryDto()
       {

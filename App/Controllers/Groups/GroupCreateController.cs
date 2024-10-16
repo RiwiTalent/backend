@@ -49,7 +49,6 @@ namespace RiwiTalent.App.Controllers.Groups
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
                 return StatusCode(problemDetails.Status.Value, problemDetails);
-                throw;
             }
         }
 
@@ -68,7 +67,6 @@ namespace RiwiTalent.App.Controllers.Groups
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
                 return StatusCode(problemDetails.Status.Value, problemDetails);
-                throw;
             }
         }
     }

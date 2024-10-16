@@ -13,11 +13,11 @@ namespace RiwiTalent.Services.Interface
         Task UpdateCodersGroup(CoderGroupDto groupCoder);
         Task UpdateCodersSelected(CoderGroupDto groupCoder);
         Task<Coder> GetCoderId(string id);
-        Task<Coder> GetCoderName(string name);
+        Task<List<Coder>> GetCoderName(string name);
         Task<Coder> FindCoderById(string coderId);
         void Delete(string id);    
         Task DeleteCoderGroup(string id);
-        void ReactivateCoder(string id); 
+        Task ReactivateCoder(string id); 
         Task<List<Coder>> GetCodersBySkill(List<string> skill);
         Task<List<Coder>> GetCodersBylanguage(string level);
     }

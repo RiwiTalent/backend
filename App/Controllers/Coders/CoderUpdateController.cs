@@ -39,6 +39,30 @@ namespace RiwiTalent.App.Controllers.Coders
             }
         }
 
-        
+        [HttpPatch]
+        [Route("coder/{id:length(24)}/reactivate")]
+        public async Task<IActionResult> Reactivate(string id)
+        {
+            /* The function has the main principle of search by coder id
+                and then update status the Inactive to Active
+            */
+            try
+            {
+                await _coderRepository.ReactivateCoder(id);
+                return Ok(new { Message = "The status of coder has been updated to Active" });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                var problemDetails = StatusError.CreateNotFound(ex.Message, Guid.NewGuid().ToString());
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+            }
+            catch (Exception ex)
+            {   
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;  
+            }
+        }
+
     }
 }

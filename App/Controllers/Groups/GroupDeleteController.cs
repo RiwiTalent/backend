@@ -20,7 +20,7 @@ namespace backend.App.Controllers.Groups
         }
 
         [HttpDelete]
-        [Route("group/{Id}")]
+        [Route("group/{Id:length(24)}")]
         public IActionResult DeleteGroup(string groupId)
         {
             try

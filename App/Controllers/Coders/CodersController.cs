@@ -77,7 +77,7 @@ namespace RiwiTalent.App.Controllers
 
         //Get coder by id
         [HttpGet]
-        [Route("coder/{id}")]
+        [Route("coder/{id:length(24)}")]
         public async Task<IActionResult> GetCoderById(string id)
         {
             try
@@ -109,10 +109,10 @@ namespace RiwiTalent.App.Controllers
             {
                 var coder = await _coderRepository.GetCoderName(name);
 
-                if (coder is null)
+                if (coder is null || !coder.Any())
                 {
-                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
-                    return NotFound(StatusError.CreateNotFound($"The coder {name} not found.", instance));
+                    var problemDetails = StatusError.CreateNotFound($"No coders found with the name {name}.", Guid.NewGuid().ToString());
+                    return StatusCode(problemDetails.Status.Value, problemDetails);
                 }
 
                 return Ok(coder);
@@ -128,7 +128,7 @@ namespace RiwiTalent.App.Controllers
 
         //Get coder by skill tecnical
         [HttpGet]
-        [Route("coder/skill")]
+        [Route("coders/skill")]
         public async Task<IActionResult> GetCodersBySkill([FromQuery] List<string> skill)
         {
             try

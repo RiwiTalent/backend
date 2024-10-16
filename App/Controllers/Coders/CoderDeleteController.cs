@@ -31,26 +31,6 @@ namespace RiwiTalent.App.Controllers.Coders
                 throw;
             }
         }
-
-        [HttpPut]
-        [Route("reactivate/{id:length(24)}")]
-        public IActionResult Reactivate(string id)
-        {
-            /* The function has the main principle of search by coder id
-                and then update status the Inactive to Active
-            */
-            try
-            {
-                _coderRepository.ReactivateCoder(id);
-                return Ok(new { Message = "The status of coder has been updated to Active" });
-            }
-            catch (Exception ex)
-            {   
-                var problemDetails = StatusError.CreateInternalServerError(ex);
-                return StatusCode(problemDetails.Status.Value, problemDetails);
-                throw;  
-            }
-        }
     }
 }
 

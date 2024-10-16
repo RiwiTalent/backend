@@ -36,18 +36,13 @@ namespace RiwiTalent.Services.Repository
             return await _mongoCollection.Find(Coders => Coders.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<Coder> GetCoderName(string name)
+        public async Task<List<Coder>> GetCoderName(string name)
         {
+
             //In this method we get coders by name and we do a control of errors.
-            try
-            {
-                return await _mongoCollection.Find(Coders => Coders.FirstName == name).FirstOrDefaultAsync();
-            }
-            catch (Exception ex)
-            {
-                
-                throw new ApplicationException("Ocurrió un error al obtener el coder", ex);
-            }
+            var filter = Builders<Coder>.Filter.Regex(c => c.FirstName, new MongoDB.Bson.BsonRegularExpression(name, "i"));
+
+            return await _mongoCollection.Find(filter).ToListAsync();
         }
 
         public async Task<IEnumerable<Coder>> GetCoders()
@@ -122,13 +117,20 @@ namespace RiwiTalent.Services.Repository
             await _mongoCollection.UpdateOneAsync(filterCoder, updateStatusAndRelation);
         }
 
-        public void ReactivateCoder(string id)
+        public async Task ReactivateCoder(string id)
         {
             //This Method is the reponsable of update status the coder, first we search by id and then it execute the change Inactive to Active
             
-            var filter = Builders<Coder>.Filter.Eq(c => c.Id, id);           
+            var filter = Builders<Coder>.Filter.Eq(c => c.Id, id);  
+
+            var coderExists = await _mongoCollection.Find(filter).AnyAsync();
+            if (!coderExists)
+            {
+                throw new KeyNotFoundException($"The coder with ID {id} was not found.");
+            }           
+
             var update = Builders<Coder>.Update.Set(c => c.Status, Status.Active.ToString());
-            _mongoCollection.UpdateOne(filter, update);
+            await _mongoCollection.UpdateOneAsync(filter, update);
         }
         
         

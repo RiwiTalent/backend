@@ -43,5 +43,29 @@ namespace RiwiTalent.App.Controllers.Groups
             }
 
         }
+
+        [HttpPatch]
+        [Route("group/{id:length(24)}/reactivate")]
+        public async Task<IActionResult> ReactivateGroup(string id)
+        {
+            /* The function has the main principle of search by group id
+                and then update status the Inactive to Active
+            */
+            try
+            {
+                await _groupRepository.ReactiveGroup(id);
+                return Ok(new { Message = "The status of group has been updated to Active" });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                var problemDetails = StatusError.CreateNotFound(ex.Message, Guid.NewGuid().ToString());
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+            }
+        }
     }
 }

@@ -12,7 +12,9 @@ namespace RiwiTalent.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
         public string? IdCoder { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
         public string? IdGroup { get; set; }
         public string? Status { get; set; }
 

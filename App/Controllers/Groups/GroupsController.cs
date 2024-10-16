@@ -136,7 +136,7 @@ namespace RiwiTalent.App.Controllers.Groups
         }
 
         [HttpGet]
-        [Route("group-details/{id}")]
+        [Route("group-details/{id:length(24)}")]
         public async Task<IActionResult> GetGroupInfoById(string id)
         {
             try
