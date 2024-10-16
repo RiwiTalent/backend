@@ -21,7 +21,7 @@ namespace RiwiTalent.App.Controllers.Groups
         //Endpoint
         [HttpPut]
         [Route("groups")]
-        public async Task<IActionResult> UpdateGroups(GroupCoderDto groupCoderDto)
+        public async Task<IActionResult> UpdateGroups([FromBody]GroupCoderDto groupCoderDto)
         {
             if(!ModelState.IsValid)
             {
