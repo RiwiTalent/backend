@@ -3,6 +3,7 @@ using FluentValidation;
 using RiwiTalent.Application.DTOs;
 using RiwiTalent.Domain.Services.Groups;
 using RiwiTalent.Shared.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
@@ -44,7 +45,9 @@ namespace RiwiTalent.App.Controllers.Groups
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
         }

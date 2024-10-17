@@ -4,7 +4,7 @@ namespace RiwiTalent.Application.DTOs
 {
   public class CoderHistoryDto
   {
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     // [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     // public string? CoderId { get; set; }
@@ -18,8 +18,8 @@ namespace RiwiTalent.Application.DTOs
 
   public class Details
   {
-    public string Name {get; set;}
-    public string Status {get; set;}
+    public string? Name {get; set;}
+    public string? Status {get; set;}
 
     public static Details CreateDetails(string name, string status)
     {

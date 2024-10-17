@@ -14,8 +14,8 @@ namespace backend.App.Controllers.Groups
         }
 
         [HttpDelete]
-        [Route("groups/{Id}")]
-        public IActionResult DeleteGroup(string groupId)
+        [Route("groups/{groupId}")]
+        public IActionResult DeleteGroup([FromRoute] string groupId)
         {
             try
             {
@@ -25,7 +25,11 @@ namespace backend.App.Controllers.Groups
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
+                
                 throw; 
             }
         }

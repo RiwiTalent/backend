@@ -12,6 +12,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
 {
     public class CoderRepository : ICoderRepository
     {
+        #pragma warning disable
         private readonly IMongoCollection<Coder> _mongoCollection;
         private readonly IMongoCollection<Group> _mongoCollectionGroups;
         private readonly IMapper _mapper; 
@@ -99,6 +100,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
             await UpdateCodersProcess(coderGroup, Status.Selected);
             var coders = await _mongoCollection.Find(x => x.GroupId.ToString() == coderGroup.GroupId && x.Status == Status.Grouped.ToString())
                 .ToListAsync();
+            
 
             await UpdateCodersProcess(coders, Status.Active);
         }
@@ -263,6 +265,15 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
             var filter = Builders<Coder>.Filter.Eq(c => c.Id, coderId);
             var updatePhoto = Builders<Coder>.Update.Set(c => c.Photo, photoUrl);
             await _mongoCollection.UpdateOneAsync(filter, updatePhoto);
+        }
+
+        public async Task UpdateCoderCv(string coderId, string pdf)
+        {
+            //This method have an important responsability of upload pdf cv to each coder
+
+            var filter = Builders<Coder>.Filter.Eq(c => c.Id, coderId);
+            var updatePdfCv= Builders<Coder>.Update.Set(c => c.Cv, pdf);
+            await _mongoCollection.UpdateOneAsync(filter, updatePdfCv);
         }
     }
 }

@@ -10,6 +10,7 @@ using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.Infrastructure.Persistence.Emails
 {
+    #pragma warning disable
     public class EmailRepository : IEmailRepository
     {
         private readonly IConfiguration _config;

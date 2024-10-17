@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using RiwiTalent.Domain.Services.Interface.Coders;
 using RiwiTalent.Infrastructure.Persistence.Repository;
 using RiwiTalent.Domain.Services.Groups;
-using RiwiTalent.Domain.Services.Tokens;
+using RiwiTalent.Domain.Services.Interface.Login;
 using RiwiTalent.Domain.Services.Interface.Emails;
 using RiwiTalent.Infrastructure.Persistence.Emails;
 using RiwiTalent.Domain.Services.Interface.Technologies;
@@ -18,6 +18,7 @@ using RiwiTalent.Application.DTOs;
 using RiwiTalent.Domain.Validators;
 using RiwiTalent.Domain.ExternalKey;
 using RiwiTalent.Infrastructure.ExternalServices.MailKit;
+using RiwiTalent.Application.AutoMapper;
 using Microsoft.Extensions.Options;
 using CloudinaryDotNet;
 using RiwiTalent.Domain.Services.Interface.Users;
@@ -42,20 +43,23 @@ Env.Load();
 builder.Services.AddSingleton<MongoDbContext>();
 
 //Services to Interface and Repository
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<ICoderRepository, CoderRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGroupCoderRepository, GroupCoderRepository>();
-builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<ICoderStatusHistoryRepository, CoderStatusHistoryRepository>();
 builder.Services.AddTransient<IEmailRepository, EmailRepository>();
 builder.Services.AddTransient<IEmailSelectedRepository, EmailSelectedRepository>();
 builder.Services.AddScoped<ITechnologyRepository, TechnologyRepository>();
 builder.Services.AddScoped<ITermAndConditionRepository, TermAndConditionRepository>();
-
+builder.Services.AddScoped<ILoginRepository, LoginRepository>();
 
 
 //Mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(typeof(GroupCoderProfile));
+
+
 
 //Validator
 builder.Services.AddTransient<IValidator<UserDto>, UserDtoValidator>();
@@ -89,42 +93,6 @@ builder.Services.AddCors(options => {
     });
 });
 
-//Configuration JWT with environment variables
-builder.Services.AddAuthentication(option => {
-            option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-        .AddJwtBearer(configure => {
-            configure.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = Environment.GetEnvironmentVariable("Issuer"),
-                ValidAudience = Environment.GetEnvironmentVariable("Audience"),
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("Key")))
-            };
-            //Error controls of token
-            configure.Events = new JwtBearerEvents
-            {
-                OnAuthenticationFailed = context =>
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    if(context.Exception is SecurityTokenExpiredException)
-                    {
-                        Console.WriteLine("Token expirado, porfavor genere uno nuevo.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Usuario no autorizado.");
-                    }
-                    return Task.CompletedTask;
-                }
-            };
-        });
-
-
 
 
 var app = builder.Build();
@@ -142,12 +110,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 
+
 //Controllers
 app.MapControllers();
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

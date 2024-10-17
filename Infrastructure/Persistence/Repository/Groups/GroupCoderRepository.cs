@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -11,20 +12,23 @@ using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.Services.Repository
 {
+    #pragma warning disable
     public class GroupCoderRepository : IGroupCoderRepository
     {
         private readonly IMongoCollection<Group> _mongoCollection;
         private readonly IMongoCollection<Coder> _mongoCollectionCoder;
         private readonly ExternalKeyUtils _service;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         private string Error = "The group not found";
-        public GroupCoderRepository(MongoDbContext context, IMapper mapper, ExternalKeyUtils service)
+        public GroupCoderRepository(MongoDbContext context, IMapper mapper, ExternalKeyUtils service, IHttpContextAccessor httpContextAccessor)
         {
             _mongoCollection = context.Groups;
             _mongoCollectionCoder = context.Coders;
             _mapper = mapper;
             _service = service;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task Add(GroupDto groupDto)
         {
@@ -39,17 +43,6 @@ namespace RiwiTalent.Services.Repository
 
             //generate ObjectId
             ObjectId objectId = ObjectId.GenerateNewId();
-            Guid guid =  _service.ObjectIdToUUID(objectId);
-            groupCoder.Id = objectId.ToString();
-              
-
-            /* string RealObjectId = _service.RevertObjectIdUUID(guid);
-
-            if(RealObjectId.ToString() == objectId.ToString())
-                Console.WriteLine("Es igual");
-
-            Console.WriteLine($"el objectId del grupo es: {RealObjectId}"); */
-
 
             //we define the path of url link
             string tokenString = _service.GenerateTokenRandom();
@@ -63,6 +56,8 @@ namespace RiwiTalent.Services.Repository
                 Created_At = DateTime.UtcNow,
                 Deleted_At = null,
                 Status = Status.Active.ToString(),
+                CreatedBy = groupDto.CreatedBy,
+                AssociateEmail = groupDto.AssociateEmail,
                 ExternalKeys = new List<ExternalKey>
                 {
                     new ExternalKey
@@ -237,7 +232,6 @@ namespace RiwiTalent.Services.Repository
             //First we call the method Builders and have access to Filter
             //Then we can use filter to have access Eq
 
-            
 
             var existGroup = await _mongoCollection.Find(group => group.Id == groupCoderDto.Id).FirstOrDefaultAsync();
 
