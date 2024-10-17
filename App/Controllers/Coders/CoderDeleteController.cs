@@ -46,6 +46,10 @@ namespace RiwiTalent.App.Controllers.Coders
                 _coderRepository.DeleteCoderGroup(id);               
                 return Ok(new { Message = "The status of coder has been updated to Active" });
             }
+            catch(StatusError.ObjectIdNotFound ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);

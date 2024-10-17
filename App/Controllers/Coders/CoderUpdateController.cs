@@ -31,6 +31,10 @@ namespace RiwiTalent.App.Controllers.Coders
                 await _coderRepository.Update(coder);
                 return Ok("The coder has been updated the correct way");
             }
+            catch (StatusError.ObjectIdNotFound ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);

@@ -35,7 +35,14 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
         public async Task<Coder> GetCoderId(string id)
         {
             //In this method we get coders by id and we do a control of errors.
-            return await _mongoCollection.Find(Coders => Coders.Id == id).FirstOrDefaultAsync();
+            var coder = await _mongoCollection.Find(Coders => Coders.Id == id).FirstOrDefaultAsync();
+
+            if(coder == null)
+            {
+                throw new StatusError.ObjectIdNotFound("Id coder not found");
+            }
+
+            return coder;
         }
 
         public async Task<Coder> GetCoderName(string name)
@@ -92,7 +99,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
 
             if (existCoder == null)
             {
-                throw new StatusError.ObjectIdNotFound($"{Error}");
+                throw new StatusError.ObjectIdNotFound($"The coder Id not found");
             }
 
             var updateDefinition = new List<UpdateDefinition<Coder>>();
@@ -196,7 +203,13 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
         {
             //This Method is the reponsable of update status the coder, first we search by id and then it execute the change Active to Inactive
 
-            var filter = Builders<Coder>.Filter.Eq(c => c.Id, id);         
+            var filter = Builders<Coder>.Filter.Eq(c => c.Id, id);
+
+            if(filter == null)
+            {
+                throw new StatusError.ObjectIdNotFound("The id not found or no exists");
+            }
+
             var update = Builders<Coder>.Update.Set(c => c.Status, Status.Inactive.ToString());            
             await _mongoCollection.UpdateOneAsync(filter, update);
         }
@@ -230,7 +243,8 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
                 var filter = new List<FilterDefinition<Coder>>();
                 foreach (var language in skill)
                 {
-                    var languageFilter = Builders<Coder>.Filter.ElemMatch(c => c.Skills, s => s.Language_Programming == language);
+                    var lowerCase = language.ToLower();
+                    var languageFilter = Builders<Coder>.Filter.ElemMatch(c => c.Skills, s => s.Language_Programming.ToLower() == lowerCase);
                     filter.Add(languageFilter);
                 }
 
@@ -244,7 +258,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
             }
         }
 
-        public async Task<List<Coder>> GetCodersBylanguage([FromQuery]string level)
+        public async Task<List<Coder>> GetCodersBylanguage(string level)
         {
             try
             {
