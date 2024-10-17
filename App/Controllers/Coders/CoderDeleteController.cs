@@ -50,6 +50,7 @@ namespace RiwiTalent.App.Controllers.Coders
             {
                 var problemDetails = StatusError.CreateNotFound(ex.Message, Guid.NewGuid().ToString());
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+            }
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
