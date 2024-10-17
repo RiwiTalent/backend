@@ -12,6 +12,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
 {
     public class CoderRepository : ICoderRepository
     {
+        #pragma warning disable
         private readonly IMongoCollection<Coder> _mongoCollection;
         private readonly IMongoCollection<Group> _mongoCollectionGroups;
         private readonly IMapper _mapper; 
@@ -26,6 +27,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
         public async Task Add(CoderDto coderDto)
         {
             // Here we add a new coder
+        
             var coder = _mapper.Map<Coder>(coderDto);
             await _mongoCollection.InsertOneAsync(coder);
         }
@@ -45,12 +47,23 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
             return await _mongoCollection.Find(filter).ToListAsync();
         }
 
-        public async Task<IEnumerable<Coder>> GetCoders()
+        // Metodo para traer los coders
+        public async Task<List<Coder>> GetCoders(List<string> skills)
         {
-            var coders = await _mongoCollection.Find(_ => true)
-                                                .ToListAsync();
-            
-            return coders;
+            // Filtrar todos los coders del repositorio
+            if (skills == null || skills.Any())
+            {
+                // Crear un filtro para que coincidan todas las skills
+                var filter = Builders<Coder>.Filter.AnyIn(c => c.Skills.Select(s => s.Language_Programming), skills);
+
+                // Ejecutar la consulta con el filtro
+                var coders = await _mongoCollection.Find(filter).ToListAsync();
+                return coders;
+            }
+
+            // Si no se proporcionan skills, traer todos los coders
+            var allCoders = await _mongoCollection.Find(Builders<Coder>.Filter.Empty).ToListAsync();
+            return allCoders;
         }
 
         public async Task<Pagination<Coder>> GetCodersPagination(int page, int cantRegisters)
@@ -70,18 +83,93 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
         public async Task Update(Coder coder)
         {
 
-            var existCoder = await _mongoCollection.Find(coder => coder.Id == coder.Id).FirstOrDefaultAsync();
+            var existCoder = await _mongoCollection.Find(c => c.Id == coder.Id).FirstOrDefaultAsync();
 
-            if(existCoder == null)
+            if (existCoder == null)
             {
                 throw new StatusError.ObjectIdNotFound($"{Error}");
             }
 
-            var coderMap = _mapper.Map(coder, existCoder);
-            var builder = Builders<Coder>.Filter;
-            var filter = builder.Eq(coder => coder.Id, coderMap.Id);
+            var updateDefinition = new List<UpdateDefinition<Coder>>();
 
-            await _mongoCollection.ReplaceOneAsync(filter, coderMap);
+            if (!string.IsNullOrEmpty(coder.FirstName))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.FirstName, coder.FirstName));
+            }
+            if (!string.IsNullOrEmpty(coder.SecondName))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.SecondName, coder.SecondName));
+            }
+            if (!string.IsNullOrEmpty(coder.FirstLastName))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.FirstLastName, coder.FirstLastName));
+            }
+            if (!string.IsNullOrEmpty(coder.SecondLastName))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.SecondLastName, coder.SecondLastName));
+            }
+            if (!string.IsNullOrEmpty(coder.ProfessionalDescription))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.ProfessionalDescription, coder.ProfessionalDescription));
+            }
+            if (!string.IsNullOrEmpty(coder.Email))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Email, coder.Email));
+            }
+            if (!string.IsNullOrEmpty(coder.Photo))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Photo, coder.Photo));
+            }
+            if (!string.IsNullOrEmpty(coder.Phone))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Phone, coder.Phone));
+            }
+            if (coder.Age > 0)
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Age, coder.Age));
+            }
+            if (coder.AssessmentScore > 0)
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.AssessmentScore, coder.AssessmentScore));
+            }
+            if (!string.IsNullOrEmpty(coder.Cv))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Cv, coder.Cv));
+            }
+            if (!string.IsNullOrEmpty(coder.Status))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Status, coder.Status));
+            }
+            if (coder.GroupId != null && coder.GroupId.Any())
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.GroupId, coder.GroupId));
+            }
+            if (!string.IsNullOrEmpty(coder.Stack))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Stack, coder.Stack));
+            }
+            if (coder.StandarRiwi != null)
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.StandarRiwi, coder.StandarRiwi));
+            }
+            if (coder.Skills != null && coder.Skills.Any())
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Skills, coder.Skills));
+            }
+            if (coder.LanguageSkills != null)
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.LanguageSkills, coder.LanguageSkills));
+            }
+
+            // Actualiza la fecha de modificación
+            updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Date_Update, DateTime.UtcNow));
+
+            // Combina todas las actualizaciones
+            if (updateDefinition.Count > 0)
+            {
+                var update = Builders<Coder>.Update.Combine(updateDefinition);
+                await _mongoCollection.UpdateOneAsync(c => c.Id == coder.Id, update);
+            }
         }  
 
         public async Task UpdateCodersGroup(CoderGroupDto coderGroup)
@@ -168,8 +256,8 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
                 
                 throw new ApplicationException("An error occurred getting coder", ex);
                 
-             }
-         }
+            }
+        }
 
         private async Task UpdateCodersProcess(CoderGroupDto coderGroup, Status status)
         {
@@ -207,7 +295,6 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
                 await _mongoCollection.ReplaceOneAsync(filter, existCoder);
             }
         }
-
 
 
         private Coder UpdateCoderInfo(Coder coder, Status status, string groupId)
@@ -272,5 +359,25 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
             var updatePhoto = Builders<Coder>.Update.Set(c => c.Photo, photoUrl);
             await _mongoCollection.UpdateOneAsync(filter, updatePhoto);
         }
+
+        public async Task UpdateCoderCv(string coderId, string pdf)
+        {
+            //This method have an important responsability of upload pdf cv to each coder
+
+            var filter = Builders<Coder>.Filter.Eq(c => c.Id, coderId);
+            var updatePdfCv= Builders<Coder>.Update.Set(c => c.Cv, pdf);
+            await _mongoCollection.UpdateOneAsync(filter, updatePdfCv);
+        }
+
+        // public async Task<List<Coder>> FilterBySkills(List<string> selectedSkills)
+        // {
+        //     if (selectedSkills == null || !selectedSkills.Any())
+        //         return new List<Coder>();
+
+        //     // Filtro que busca coders que tengan alguna de las skills seleccionadas
+        //     var filter = Builders<Coder>.Filter.AnyIn(c => c.Skills.Select(s => s.Language_Programming), selectedSkills);
+
+        //     return await _mongoCollection.Find(filter).ToListAsync();
+        // }
     }
 }

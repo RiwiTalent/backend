@@ -14,12 +14,11 @@ namespace RiwiTalent.App.Controllers
 
         //get all coders
         /* [Authorize] */
-
         [HttpGet]
         [Route("coders")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetCoders([FromQuery] List<string>? skills)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 var instance = Guid.NewGuid().ToString();
                 var problemDetails = StatusError.CreateBadRequest(instance);
@@ -28,13 +27,16 @@ namespace RiwiTalent.App.Controllers
 
             try
             {
-                var coders = await _coderRepository.GetCoders();
+                // Obtener todos los coders del repositorio
+                var coders = await _coderRepository.GetCoders(skills);
                 return Ok(coders);
             }
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
         }
@@ -69,7 +71,9 @@ namespace RiwiTalent.App.Controllers
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
         }
@@ -94,7 +98,9 @@ namespace RiwiTalent.App.Controllers
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
         }
@@ -119,7 +125,9 @@ namespace RiwiTalent.App.Controllers
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
         }
@@ -144,7 +152,9 @@ namespace RiwiTalent.App.Controllers
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
             
@@ -168,9 +178,30 @@ namespace RiwiTalent.App.Controllers
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
         }
+
+        // [HttpPost("filterBySkills")]
+        // public async Task<IActionResult> FilterCodersBySkills([FromBody] List<string> selectedSkills)
+        // {
+        //     try
+        //     {
+        //         // Llamada asíncrona al repositorio
+        //         var filteredCoders = await _coderRepository.FilterBySkills(selectedSkills);
+
+        //         // Devuelve los coders filtrados en el cuerpo de la respuesta
+        //         return Ok(filteredCoders);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         // Manejo de errores mediante el objeto ProblemDetails
+        //         var problemDetails = StatusError.CreateInternalServerError(ex);
+        //         return StatusCode(problemDetails.Status.Value, problemDetails);
+        //     }
+        // }
     }
 }

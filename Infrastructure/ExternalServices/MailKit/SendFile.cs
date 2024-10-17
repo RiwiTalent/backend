@@ -4,6 +4,7 @@ namespace RiwiTalent.Infrastructure.ExternalServices.MailKit
 {
     public class SendFile
     {
+        #pragma warning disable
         public async Task<MimePart> GetFileTermsAsync(string path)
         {
             if(!File.Exists(path))

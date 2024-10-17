@@ -17,7 +17,6 @@ namespace RiwiTalent.Application.AutoMapper
                 })
                 .ForAllMembers ( opt => 
                 {
-                    opt.AllowNull();
                     opt.Condition((src, dest, sourceMember) => sourceMember != null);
                 });
 

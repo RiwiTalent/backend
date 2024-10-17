@@ -12,6 +12,7 @@ using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.Infrastructure.Persistence.Repository
 {
+  #pragma warning disable
     public class CoderStatusHistoryRepository : ICoderStatusHistoryRepository
   {
     private readonly IMongoCollection<CoderStatusHistory> _mongoCollection;

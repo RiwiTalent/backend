@@ -18,11 +18,10 @@ namespace RiwiTalent.App.Controllers.Groups
         }
 
         //Endpoint
-        [HttpPut]
-        [Route("groups/{id}")]
+        [HttpPut("groups")]
         public async Task<IActionResult> UpdateGroups(GroupCoderDto groupCoderDto)
         {
-            if(!ModelState.IsValid)
+            if(groupCoderDto is null)
             {
                 var instance = Guid.NewGuid().ToString();
                 var problemDetails = StatusError.CreateBadRequest(instance);
@@ -37,7 +36,9 @@ namespace RiwiTalent.App.Controllers.Groups
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
 
@@ -81,7 +82,9 @@ namespace RiwiTalent.App.Controllers.Groups
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
                 throw;
             }
         }
