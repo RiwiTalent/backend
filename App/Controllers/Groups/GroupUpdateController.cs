@@ -19,7 +19,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //Endpoint
         [HttpPut("groups")]
-        public async Task<IActionResult> UpdateGroups([FromBody]GroupCoderDto groupCoderDto)
+        public async Task<IActionResult> UpdateGroups(GroupCoderDto groupCoderDto)
         {
             if(groupCoderDto is null)
             {

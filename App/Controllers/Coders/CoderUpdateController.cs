@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using RiwiTalent.Application.DTOs;
 using RiwiTalent.Domain.Entities;
 using RiwiTalent.Domain.Services.Interface.Coders;
 using RiwiTalent.Shared.Exceptions;
@@ -18,7 +19,7 @@ namespace RiwiTalent.App.Controllers.Coders
         [Route("coders")]
         public async Task<IActionResult> UpdateCoder(Coder coder)
         {
-            if(coder is null)
+            if(coder == null)
             {
                 var instance = Guid.NewGuid().ToString();
                 var problemDetails = StatusError.CreateBadRequest(instance);

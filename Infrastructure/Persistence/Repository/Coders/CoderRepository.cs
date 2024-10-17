@@ -87,18 +87,93 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
         public async Task Update(Coder coder)
         {
 
-            var existCoder = await _mongoCollection.Find(coder => coder.Id == coder.Id).FirstOrDefaultAsync();
+            var existCoder = await _mongoCollection.Find(c => c.Id == coder.Id).FirstOrDefaultAsync();
 
-            if(existCoder == null)
+            if (existCoder == null)
             {
                 throw new StatusError.ObjectIdNotFound($"{Error}");
             }
 
-            var coderMap = _mapper.Map(coder, existCoder);
-            var builder = Builders<Coder>.Filter;
-            var filter = builder.Eq(coder => coder.Id, coderMap.Id);
+            var updateDefinition = new List<UpdateDefinition<Coder>>();
 
-            await _mongoCollection.ReplaceOneAsync(filter, coderMap);
+            if (!string.IsNullOrEmpty(coder.FirstName))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.FirstName, coder.FirstName));
+            }
+            if (!string.IsNullOrEmpty(coder.SecondName))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.SecondName, coder.SecondName));
+            }
+            if (!string.IsNullOrEmpty(coder.FirstLastName))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.FirstLastName, coder.FirstLastName));
+            }
+            if (!string.IsNullOrEmpty(coder.SecondLastName))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.SecondLastName, coder.SecondLastName));
+            }
+            if (!string.IsNullOrEmpty(coder.ProfessionalDescription))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.ProfessionalDescription, coder.ProfessionalDescription));
+            }
+            if (!string.IsNullOrEmpty(coder.Email))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Email, coder.Email));
+            }
+            if (!string.IsNullOrEmpty(coder.Photo))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Photo, coder.Photo));
+            }
+            if (!string.IsNullOrEmpty(coder.Phone))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Phone, coder.Phone));
+            }
+            if (coder.Age > 0)
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Age, coder.Age));
+            }
+            if (coder.AssessmentScore > 0)
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.AssessmentScore, coder.AssessmentScore));
+            }
+            if (!string.IsNullOrEmpty(coder.Cv))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Cv, coder.Cv));
+            }
+            if (!string.IsNullOrEmpty(coder.Status))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Status, coder.Status));
+            }
+            if (coder.GroupId != null && coder.GroupId.Any())
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.GroupId, coder.GroupId));
+            }
+            if (!string.IsNullOrEmpty(coder.Stack))
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Stack, coder.Stack));
+            }
+            if (coder.StandarRiwi != null)
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.StandarRiwi, coder.StandarRiwi));
+            }
+            if (coder.Skills != null && coder.Skills.Any())
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Skills, coder.Skills));
+            }
+            if (coder.LanguageSkills != null)
+            {
+                updateDefinition.Add(Builders<Coder>.Update.Set(c => c.LanguageSkills, coder.LanguageSkills));
+            }
+
+            // Actualiza la fecha de modificación
+            updateDefinition.Add(Builders<Coder>.Update.Set(c => c.Date_Update, DateTime.UtcNow));
+
+            // Combina todas las actualizaciones
+            if (updateDefinition.Count > 0)
+            {
+                var update = Builders<Coder>.Update.Combine(updateDefinition);
+                await _mongoCollection.UpdateOneAsync(c => c.Id == coder.Id, update);
+            }
         }  
 
         public async Task UpdateCodersGroup(CoderGroupDto coderGroup)
