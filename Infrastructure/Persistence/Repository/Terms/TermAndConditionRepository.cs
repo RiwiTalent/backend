@@ -4,6 +4,8 @@ using RiwiTalent.Domain.Services.Interface.Terms;
 using RiwiTalent.Domain.Entities;
 using RiwiTalent.Infrastructure.ExternalServices;
 using RiwiTalent.Application.DTOs;
+using MongoDB.Bson;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.Services.Repository
 {
@@ -43,9 +45,9 @@ namespace RiwiTalent.Services.Repository
         {
             var existTerms = await _mongoCollection.Find(tc => tc.Id == updatedTermsDto.Id).FirstOrDefaultAsync();
 
-            if (existTerms is null)
+            if (existTerms == null)
             {
-                throw new Exception("Terms not found.");
+                throw new StatusError.ObjectIdNotFound("Terms not found");
             }
 
             // It is used AutoMapper to the information of Dto

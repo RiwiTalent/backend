@@ -1,4 +1,5 @@
 using AutoMapper;
+using MongoDB.Bson;
 using RiwiTalent.Application.DTOs;
 using RiwiTalent.Domain.Entities;
 
@@ -8,7 +9,7 @@ namespace RiwiTalent.Application.AutoMapper
     {
         public TermAndConditionProfile()
         {
-            CreateMap<TermAndCondition, TermAndConditionDto>()
+            CreateMap<TermAndConditionDto, TermAndCondition>()
                 .ReverseMap(); 
         }
     }
