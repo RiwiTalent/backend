@@ -16,7 +16,7 @@ namespace RiwiTalent.App.Controllers.TermsAndConditions
         }
 
         
-        [HttpPut("terms/{id}")]
+        [HttpPut("terms")]
         public async Task<ActionResult> UpdateTerms(TermAndConditionDto updatedTermsDto)
         {
             try
