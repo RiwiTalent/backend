@@ -1,17 +1,12 @@
-using System.Net;
-using System.Text;
 using RiwiTalent.Services.Repository;
 using DotNetEnv;
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using RiwiTalent.Domain.Services.Interface.Coders;
 using RiwiTalent.Infrastructure.Persistence.Repository;
 using RiwiTalent.Domain.Services.Groups;
 using RiwiTalent.Domain.Services.Interface.Login;
 using RiwiTalent.Domain.Services.Interface.Emails;
 using RiwiTalent.Infrastructure.Persistence.Emails;
-using RiwiTalent.Domain.Services.Interface.Technologies;
 using RiwiTalent.Domain.Services.Interface.Terms;
 using RiwiTalent.Infrastructure.ExternalServices;
 using RiwiTalent.Application.DTOs;
@@ -50,7 +45,6 @@ builder.Services.AddScoped<IGroupCoderRepository, GroupCoderRepository>();
 builder.Services.AddScoped<ICoderStatusHistoryRepository, CoderStatusHistoryRepository>();
 builder.Services.AddTransient<IEmailRepository, EmailRepository>();
 builder.Services.AddTransient<IEmailSelectedRepository, EmailSelectedRepository>();
-builder.Services.AddScoped<ITechnologyRepository, TechnologyRepository>();
 builder.Services.AddScoped<ITermAndConditionRepository, TermAndConditionRepository>();
 builder.Services.AddScoped<ILoginRepository, LoginRepository>();
 
