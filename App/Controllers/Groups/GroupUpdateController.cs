@@ -45,24 +45,20 @@ namespace RiwiTalent.App.Controllers.Groups
         }
 
         //endpoint regenerate token
-        [HttpPatch]
-        [Route("groups/regenerate-token")]
-        public async Task<IActionResult> GenerateToken([FromQuery] NewKeyDto newKeyDto)
+        [HttpPatch("groups/regenerate-token")]
+        public async Task<IActionResult> GenerateToken([FromBody] string Id)
         {
             try
             {
-                await _groupRepository.RegenerateToken(newKeyDto);
-                return Ok("The token is already");
-                
+                await _groupRepository.RegenerateToken(Id);
+                return Ok("El token ha sido regenerado.");
             }
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
-                #pragma warning disable
                 return StatusCode(problemDetails.Status.Value, problemDetails);
-                #pragma warning restore
-                throw;
             }
         }
+
     }
 }
