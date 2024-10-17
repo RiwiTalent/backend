@@ -80,7 +80,7 @@ namespace RiwiTalent.App.Controllers
 
         //Get coder by id
         [HttpGet]
-        [Route("coder/{id}")]
+        [Route("coder/{Id}")]
         public async Task<IActionResult> GetCoderById(string id)
         {
             try
