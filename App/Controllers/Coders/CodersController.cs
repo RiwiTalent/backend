@@ -16,7 +16,7 @@ namespace RiwiTalent.App.Controllers
         /* [Authorize] */
         [HttpGet]
         [Route("coders")]
-        public async Task<IActionResult> GetAllCoders([FromQuery] List<string>? skills)
+        public async Task<IActionResult> GetCoders([FromQuery] List<string>? skills)
         {
             if (!ModelState.IsValid)
             {
@@ -28,7 +28,7 @@ namespace RiwiTalent.App.Controllers
             try
             {
                 // Obtener todos los coders del repositorio
-                var coders = await _coderRepository.GetAllCoders(skills);
+                var coders = await _coderRepository.GetCoders(skills);
                 return Ok(coders);
             }
             catch (Exception ex)

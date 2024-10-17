@@ -48,13 +48,12 @@ namespace RiwiTalent.Services.Repository
             string tokenString = _service.GenerateTokenRandom();
 
             //define a new instance to add uuid into externalkeys -> url
-            Group newGruopCoder = new Group
+            Group newGrupCoder = new Group
             {
                 Id = objectId.ToString(),
                 Name = groupDto.Name,
                 Description = groupDto.Description,
-                Created_At = DateTime.UtcNow,
-                Deleted_At = null,
+                Created_At = DateTime.Now,
                 Status = Status.Active.ToString(),
                 CreatedBy = groupDto.CreatedBy,
                 AssociateEmail = groupDto.AssociateEmail,
@@ -71,7 +70,7 @@ namespace RiwiTalent.Services.Repository
                 },
             };
 
-            await _mongoCollection.InsertOneAsync(newGruopCoder);
+            await _mongoCollection.InsertOneAsync(newGrupCoder);
         }
 
         public async Task<KeyDto> SendToken(KeyDto keyDto)
@@ -176,8 +175,8 @@ namespace RiwiTalent.Services.Repository
                 Id = groups.Id.ToString(),
                 Name = groups.Name,
                 Description = groups.Description,
-                Status = groups.Status/* ,
-                Created_At = groups.Created_At,
+                Status = groups.Status ,
+                Created_At = groups.Created_At.ToString(),/*
                 Delete_At = groups.Deleted_At,
                 ExternalKeys = groups.ExternalKeys */
             });
@@ -226,23 +225,19 @@ namespace RiwiTalent.Services.Repository
             return group != null;
         }
 
-        public async Task Update(GroupCoderDto groupCoderDto)
+        public async Task Update(GroupDto groupDto)
         {
-            //we need filter groups by Id
-            //First we call the method Builders and have access to Filter
-            //Then we can use filter to have access Eq
 
-
-            var existGroup = await _mongoCollection.Find(group => group.Id == groupCoderDto.Id).FirstOrDefaultAsync();
+            var existGroup = await _mongoCollection.Find(group => group.Id == groupDto.Id).FirstOrDefaultAsync();
 
             if(existGroup == null)
             {
                 throw new Exception($"{Error}");
             }
 
-            var groupCoders = _mapper.Map(groupCoderDto, existGroup);
+            var groupCoders = _mapper.Map(groupDto, existGroup);
             var builder = Builders<Group>.Filter;
-            var filter = builder.Eq(group => group.Id, groupCoderDto.Id );
+            var filter = builder.Eq(group => group.Id, groupDto.Id );
 
             await _mongoCollection.ReplaceOneAsync(filter, groupCoders);
         }

@@ -19,9 +19,9 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //Endpoint
         [HttpPut("groups")]
-        public async Task<IActionResult> UpdateGroups([FromBody]GroupCoderDto groupCoderDto)
+        public async Task<IActionResult> UpdateGroups([FromBody]GroupDto groupDto)
         {
-            if(groupCoderDto is null)
+            if(groupDto is null)
             {
                 var instance = Guid.NewGuid().ToString();
                 var problemDetails = StatusError.CreateBadRequest(instance);
@@ -30,7 +30,7 @@ namespace RiwiTalent.App.Controllers.Groups
             
             try
             {
-                await _groupRepository.Update(groupCoderDto);
+                await _groupRepository.Update(groupDto);
                 return Ok("The Group has been updated the correct way");
             }
             catch (Exception ex)

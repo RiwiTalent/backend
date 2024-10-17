@@ -6,7 +6,7 @@ namespace RiwiTalent.Domain.Services.Interface.Coders
     public interface ICoderRepository
     {
 
-        Task<List<Coder>> GetAllCoders(List<string>? skills);
+        Task<List<Coder>> GetCoders(List<string>? skills);
         Task<Pagination<Coder>> GetCodersPagination(int page, int cantRegisters);
         Task Add(CoderDto coderDto);
         Task Update(Coder coder);

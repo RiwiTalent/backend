@@ -14,7 +14,7 @@ namespace RiwiTalent.Domain.Services.Groups
         Task RegenerateToken(NewKeyDto newKeyDto);
         Task<KeyDto> SendToken(KeyDto keyDto);
         Task<GroupDetailsDto> GetGroupInfoById(string groupId);
-        Task Update(GroupCoderDto groupCoderDto);
+        Task Update(GroupDto groupDto);
         // Task DeleteCoderGroup(string id);
         Task DeleteGroup(string groupId);
     }

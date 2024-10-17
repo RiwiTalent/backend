@@ -44,6 +44,8 @@ builder.Services.AddSingleton<MongoDbContext>();
 
 //Services to Interface and Repository
 builder.Services.AddHttpClient();
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5120/") });
+
 builder.Services.AddScoped<ICoderRepository, CoderRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGroupCoderRepository, GroupCoderRepository>();
@@ -101,7 +103,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-/* app.UseHttpsRedirection(); */
+app.UseHttpsRedirection();
 
 //middleware cors
 app.UseCors("PolicyCors");

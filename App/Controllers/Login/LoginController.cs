@@ -24,7 +24,7 @@ namespace RiwiTalent.App.Controllers.Login
         }
 
         [HttpPost("login/{firebaseToken}")]
-        public async Task<IActionResult> Login(string firebaseToken)
+        public async Task<IActionResult> Login([FromBody] string firebaseToken)
         {
             try
             {
