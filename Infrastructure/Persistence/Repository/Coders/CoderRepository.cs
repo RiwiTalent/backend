@@ -27,6 +27,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
         public async Task Add(CoderDto coderDto)
         {
             // Here we add a new coder
+        
             var coder = _mapper.Map<Coder>(coderDto);
             await _mongoCollection.InsertOneAsync(coder);
         }

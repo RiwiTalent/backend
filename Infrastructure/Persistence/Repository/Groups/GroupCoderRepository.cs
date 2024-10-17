@@ -58,15 +58,16 @@ namespace RiwiTalent.Services.Repository
                 Status = Status.Active.ToString(),
                 CreatedBy = groupDto.CreatedBy,
                 AssociateEmail = groupDto.AssociateEmail,
+                AcceptedTerms = false,
                 ExternalKeys = new List<ExternalKey>
                 {
                     new ExternalKey
                     {
-                        Url =  $"https://riwi-talent.onrender.com/{groupDto.Name}/{objectId}",
+                        Url =  $"https://riwi-talent.onrender.com/external-access/{objectId}",
                         Key = tokenString,
                         Status = Status.Active.ToString(),
                         Date_Creation = DateTime.UtcNow,
-                        Date_Expiration = DateTime.UtcNow.AddDays(7)
+                        Date_Expiration = DateTime.UtcNow.AddDays(15)
                     }
                 },
             };
@@ -209,6 +210,7 @@ namespace RiwiTalent.Services.Repository
                 Create_At = group.Created_At,
                 CreatedBy = group.CreatedBy,
                 AssociateEmail = group.AssociateEmail,
+                AcceptedTerms = group.AcceptedTerms,
                 ExternalKeys= group.ExternalKeys,
                 Coders = coderMap
             };
