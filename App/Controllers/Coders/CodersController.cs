@@ -83,14 +83,16 @@ namespace RiwiTalent.App.Controllers
         [Route("coder/{id:length(24)}")]
         public async Task<IActionResult> GetCoderById(string id)
         {
+            
             try
             {
                 var coder = await _coderRepository.GetCoderId(id);
 
-                if (coder is null)
+                if(coder == null)
                 {
-                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
-                    return NotFound(StatusError.CreateNotFound($"The coder with {id} not found", instance));
+                    var instance = Guid.NewGuid().ToString();
+                    var problemDetails = StatusError.CreateBadRequest(instance);
+                    return BadRequest(problemDetails);
                 }
 
                 return Ok(coder);
