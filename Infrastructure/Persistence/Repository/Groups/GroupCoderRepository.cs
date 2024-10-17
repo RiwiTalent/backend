@@ -53,7 +53,7 @@ namespace RiwiTalent.Services.Repository
                 Id = objectId.ToString(),
                 Name = groupDto.Name,
                 Description = groupDto.Description,
-                Created_At = DateTime.Now,
+                Created_At = DateTime.UtcNow,
                 Status = Status.Active.ToString(),
                 CreatedBy = groupDto.CreatedBy,
                 AssociateEmail = groupDto.AssociateEmail,

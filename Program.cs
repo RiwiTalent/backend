@@ -1,6 +1,10 @@
+using System.Net;
+using System.Text;
 using RiwiTalent.Services.Repository;
 using DotNetEnv;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using RiwiTalent.Domain.Services.Interface.Coders;
 using RiwiTalent.Infrastructure.Persistence.Repository;
 using RiwiTalent.Domain.Services.Groups;
@@ -39,8 +43,6 @@ builder.Services.AddSingleton<MongoDbContext>();
 
 //Services to Interface and Repository
 builder.Services.AddHttpClient();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5120/") });
-
 builder.Services.AddScoped<ICoderRepository, CoderRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGroupCoderRepository, GroupCoderRepository>();
@@ -97,7 +99,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+/* app.UseHttpsRedirection(); */
 
 //middleware cors
 app.UseCors("PolicyCors");
