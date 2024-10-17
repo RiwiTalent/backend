@@ -151,9 +151,9 @@ namespace RiwiTalent.Services.Repository
             }
         }
 
-        public async Task RegenerateToken(NewKeyDto newKeyDto)
+        public async Task RegenerateToken(string Id)
         {
-            var group = await _mongoCollection.Find(g => g.Id == newKeyDto.Id).FirstOrDefaultAsync();
+            var group = await _mongoCollection.Find(g => g.Id == Id).FirstOrDefaultAsync();
 
             if(group == null)
                 throw new StatusError.InvalidKeyException("Key isn't valid");
