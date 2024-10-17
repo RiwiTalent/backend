@@ -194,15 +194,17 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
             await _mongoCollection.UpdateOneAsync(filter, update);
         }
 
-        public async Task DeleteCoderGroup(string id)
+        public async Task DeleteCoderOfGroup(string coderId, string groupId)
         {
-            var filterCoder = Builders<Coder>.Filter.Eq(coder => coder.Id, id);
-            var updateStatusAndRelation = Builders<Coder>.Update.Combine(
-                Builders<Coder>.Update.Set(coder => coder.Status, Status.Active.ToString()),
-                Builders<Coder>.Update.Set(coder => coder.GroupId, null)
-            );
+            var filter = Builders<Coder>.Filter.Eq(c => c.Id, coderId);
+            var update = Builders<Coder>.Update.Pull(c => c.GroupId, groupId);
 
-            await _mongoCollection.UpdateOneAsync(filterCoder, updateStatusAndRelation);
+            var result = await _mongoCollection.UpdateOneAsync(filter, update);
+
+            if (result.ModifiedCount == 0)
+            {
+                throw new KeyNotFoundException($"Coder with ID {coderId} or Group ID {groupId} not found.");
+            }
         }
 
         public async Task ReactivateCoder(string id)

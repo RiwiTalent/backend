@@ -163,18 +163,18 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
       await _coderRepository.UpdateCodersSelected(coderGroup);
     }
 
-    public async Task DeleteCoderGroup(string coderId)
+    public async Task DeleteCoderGroup(string coderId, string groupId)
     {
       
       CoderStatusHistory coderStatus = new CoderStatusHistory()
       {
         IdCoder = coderId,
-        IdGroup = "",
-        Status = Status.Active.ToString()
+        IdGroup = groupId,
+        Status = Status.Inactive.ToString()
       };
 
       Add(coderStatus);
-      _coderRepository.DeleteCoderGroup(coderId);
+      _coderRepository.DeleteCoderOfGroup(coderId, groupId);
     }
 
     private IEnumerable<CoderStatusHistory> GetUniqueLastRegisters(BsonDocument filter)

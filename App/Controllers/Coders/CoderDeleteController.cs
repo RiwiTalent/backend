@@ -36,15 +36,20 @@ namespace RiwiTalent.App.Controllers.Coders
 
         [HttpDelete]
         [Route("coder-groups/{id:length(24)}")]
-        public IActionResult DeleteCoderOfGroup(string id)
+        public IActionResult DeleteCoderOfGroup(string coderId, string groupId)
         {
             /* The function has the main principle of search by coder id
                 and then update status the Active to Inactive
             */
             try
             {                
-                _coderRepository.DeleteCoderGroup(id);               
+                _coderRepository.DeleteCoderOfGroup(coderId, groupId);               
                 return Ok(new { Message = "The status of coder has been updated to Active" });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                var problemDetails = StatusError.CreateNotFound(ex.Message, Guid.NewGuid().ToString());
+                return StatusCode(problemDetails.Status.Value, problemDetails);
             }
             catch (Exception ex)
             {

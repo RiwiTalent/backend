@@ -18,7 +18,7 @@ namespace RiwiTalent.Domain.Services.Interface.Coders
         Task UpdateCoderPhoto(string coderId, string photoUrl);
         Task UpdateCoderCv(string coderId, string pdf);
         Task Delete(string id);
-        Task DeleteCoderGroup(string id);
+        Task DeleteCoderOfGroup(string coderId, string groupId);
         Task ReactivateCoder(string id); 
         Task<List<Coder>> GetCodersBySkill(List<string> skill);
         Task<List<Coder>> GetCodersBylanguage(string level);

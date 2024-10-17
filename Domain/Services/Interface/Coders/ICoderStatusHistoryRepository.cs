@@ -14,6 +14,6 @@ namespace RiwiTalent.Domain.Services.Interface.Coders
         // void Add(CoderStatusHistory coder);
         Task AddCodersGrouped(CoderGroupDto coderGroup);
         Task AddCodersSelected(CoderGroupDto coderGroup);
-        Task DeleteCoderGroup(string id);
+        Task DeleteCoderGroup(string coderId, string groupId);
     }
 }
