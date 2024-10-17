@@ -69,7 +69,6 @@ namespace RiwiTalent.App.Controllers.Coders
                 var instance = Guid.NewGuid().ToString();
                 var problemDetails = StatusError.CreateBadRequest(instance);
                 return BadRequest($"{problemDetails}, No file uploaded");
-
             }
 
             try
@@ -101,6 +100,11 @@ namespace RiwiTalent.App.Controllers.Coders
                 await _coderRepository.UpdateCoderPhoto(coderId, urlPhoto);
 
                 return Ok(new { urlPhoto });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                var problemDetails = StatusError.CreateNotFound(ex.Message, Guid.NewGuid().ToString());
+                return StatusCode(problemDetails.Status.Value, problemDetails);
             }
             catch (Exception ex)
             {

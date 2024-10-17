@@ -228,6 +228,20 @@ namespace RiwiTalent.Services.Repository
             return group != null;
         }
 
+        public async Task ReactiveGroup(string id)
+        {
+            var filter = Builders<Group>.Filter.Eq(g => g.Id, id);
+            
+            var groupExists = await _mongoCollection.Find(filter).AnyAsync();
+            if (!groupExists)
+            {
+                throw new KeyNotFoundException($"The group with ID {id} was not found.");
+            }
+
+            var update = Builders<Group>.Update.Set(g => g.Status, Status.Active.ToString());
+            await _mongoCollection.UpdateOneAsync(filter, update);
+        }
+
         public async Task Update(GroupCoderDto groupCoderDto)
         {
             //we need filter groups by Id

@@ -45,18 +45,13 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
             return coder;
         }
 
-        public async Task<Coder> GetCoderName(string name)
+        public async Task<List<Coder>> GetCoderName(string name)
         {
+
             //In this method we get coders by name and we do a control of errors.
-            try
-            {
-                return await _mongoCollection.Find(Coders => Coders.FirstName == name).FirstOrDefaultAsync();
-            }
-            catch (Exception ex)
-            {
-                
-                throw new ApplicationException("Ocurrió un error al obtener el coder", ex);
-            }
+            var filter = Builders<Coder>.Filter.Regex(c => c.FirstName, new MongoDB.Bson.BsonRegularExpression(name, "i"));
+
+            return await _mongoCollection.Find(filter).ToListAsync();
         }
 
         // Metodo para traer los coders
@@ -192,9 +187,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
         public async Task UpdateCodersSelected(CoderGroupDto coderGroup)
         {
             await UpdateCodersProcess(coderGroup, Status.Selected);
-            var coders = await _mongoCollection.Find(x => x.GroupId.ToString() == coderGroup.GroupId && x.Status == Status.Grouped.ToString())
-                .ToListAsync();
-            
+            var coders = await _mongoCollection.Find(x => x.GroupId.Contains(coderGroup.GroupId) && x.Status == Status.Grouped.ToString()).ToListAsync();
 
             await UpdateCodersProcess(coders, Status.Active);
         }
@@ -214,22 +207,31 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
             await _mongoCollection.UpdateOneAsync(filter, update);
         }
 
-        public async Task DeleteCoderGroup(string id)
+        public async Task DeleteCoderOfGroup(string coderId, string groupId)
         {
-            var filterCoder = Builders<Coder>.Filter.Eq(coder => coder.Id, id);
-            var updateStatusAndRelation = Builders<Coder>.Update.Combine(
-                Builders<Coder>.Update.Set(coder => coder.Status, Status.Active.ToString()),
-                Builders<Coder>.Update.Set(coder => coder.GroupId, null)
-            );
+            var filter = Builders<Coder>.Filter.Eq(c => c.Id, coderId);
+            var update = Builders<Coder>.Update.Pull(c => c.GroupId, groupId);
 
-            await _mongoCollection.UpdateOneAsync(filterCoder, updateStatusAndRelation);
+            var result = await _mongoCollection.UpdateOneAsync(filter, update);
+
+            if (result.ModifiedCount == 0)
+            {
+                throw new KeyNotFoundException($"Coder with ID {coderId} or Group ID {groupId} not found.");
+            }
         }
 
         public async Task ReactivateCoder(string id)
         {
             //This Method is the reponsable of update status the coder, first we search by id and then it execute the change Inactive to Active
             
-            var filter = Builders<Coder>.Filter.Eq(c => c.Id, id);           
+            var filter = Builders<Coder>.Filter.Eq(c => c.Id, id);  
+
+            var coderExists = await _mongoCollection.Find(filter).AnyAsync();
+            if (!coderExists)
+            {
+                throw new KeyNotFoundException($"The coder with ID {id} was not found.");
+            }           
+
             var update = Builders<Coder>.Update.Set(c => c.Status, Status.Active.ToString());
             await _mongoCollection.UpdateOneAsync(filter, update);
         }
@@ -363,6 +365,13 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
             //This method have an important responsability of upload photo to each coder
 
             var filter = Builders<Coder>.Filter.Eq(c => c.Id, coderId);
+
+            var coderExists = await _mongoCollection.Find(filter).AnyAsync();
+            if (!coderExists)
+            {
+                throw new KeyNotFoundException($"The coder with ID {coderId} was not found.");
+            }       
+
             var updatePhoto = Builders<Coder>.Update.Set(c => c.Photo, photoUrl);
             await _mongoCollection.UpdateOneAsync(filter, updatePhoto);
         }

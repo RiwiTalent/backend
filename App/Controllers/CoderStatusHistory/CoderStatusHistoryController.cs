@@ -69,6 +69,12 @@ namespace RiwiTalent.App.Controllers
                 string forecastJson = JsonSerializer.Serialize<CoderHistoryDto>(coders, options); */
                 return Ok(coders);
             }
+            catch(KeyNotFoundException ex)
+            {
+                var problemDetails = StatusError.CreateNotFound(ex.Message, Guid.NewGuid().ToString());
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;
+            }
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
@@ -95,6 +101,12 @@ namespace RiwiTalent.App.Controllers
                 var coders = await _coderStatusHistoryRepository.GetGroupHistoryById(id);
                 return Ok(coders);
             }
+            catch(KeyNotFoundException ex)
+            {
+                var problemDetails = StatusError.CreateNotFound(ex.Message, Guid.NewGuid().ToString());
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;
+            }
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);
@@ -105,29 +117,5 @@ namespace RiwiTalent.App.Controllers
             }
         }
 
-        /*
-            Permite listar los coders de un grupo segun el estado, ya sea agrupado o en 
-            proceso
-        */
-        // [HttpGet]
-        // [Route("riwitalent/groupCodersHistory/{groupId}")]
-        // public async Task<IActionResult> GetByGroupId(string groupId, [FromQuery] Status status)
-        // {
-        //     if(!ModelState.IsValid)
-        //     {
-        //         return BadRequest(RiwiTalent.Utils.Exceptions.StatusError.CreateBadRequest());
-        //     }
-
-        //     try
-        //     {
-        //         var coders = await _coderStatusHistoryRepository.GetCompanyCoders(groupId, status);
-        //         return Ok(coders);
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //         throw;
-        //     }
-        // }
     }
 }
