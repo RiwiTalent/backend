@@ -45,13 +45,12 @@ namespace RiwiTalent.App.Controllers.Groups
         }
 
         //endpoint regenerate token
-        // Endpoint para regenerar token
         [HttpPatch("groups/regenerate-token")]
-        public async Task<IActionResult> GenerateToken([FromBody] NewKeyDto newKeyDto)
+        public async Task<IActionResult> GenerateToken([FromBody] string Id)
         {
             try
             {
-                await _groupRepository.RegenerateToken(newKeyDto.Id);
+                await _groupRepository.RegenerateToken(Id);
                 return Ok("El token ha sido regenerado.");
             }
             catch (Exception ex)
