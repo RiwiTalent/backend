@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Models;
 using FluentValidation;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Utils.Exceptions;
-using backend.Models.Dtos;
-using Microsoft.AspNetCore.Authorization;
+using RiwiTalent.Application.DTOs;
+using RiwiTalent.Domain.Services.Groups;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
@@ -23,7 +20,7 @@ namespace RiwiTalent.App.Controllers.Groups
         [HttpPost]
         [Route("groups")]
         // public IActionResult Post([FromBody] GruopCoder groupCoder, CoderDto coderDto)
-        public IActionResult Post([FromBody] GroupDto groupDto)
+        public async Task<IActionResult> Post([FromBody] GroupDto groupDto)
         {
             //we create a new instance to can validate
             if(groupDto is null)
@@ -41,8 +38,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
             try
             {
-                _groupRepository.Add(groupDto);
-
+                await _groupRepository.Add(groupDto);
                 return Ok("The Group has been created successfully");
             }
             catch (Exception ex)
@@ -52,22 +48,6 @@ namespace RiwiTalent.App.Controllers.Groups
             }
         }
 
-        //endpoint regenerate token
-        [HttpPatch]
-        [Route("regeneratetoken")]
-        public async Task<IActionResult> GenerateToken([FromQuery] NewKeyDto newKeyDto)
-        {
-            try
-            {
-                await _groupRepository.RegenerateToken(newKeyDto);
-                return Ok("The token is already");
-                
-            }
-            catch (Exception ex)
-            {
-                var problemDetails = StatusError.CreateInternalServerError(ex);
-                return StatusCode(problemDetails.Status.Value, problemDetails);
-            }
-        }
+        
     }
 }

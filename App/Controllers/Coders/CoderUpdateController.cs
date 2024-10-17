@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Models;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Domain.Entities;
+using RiwiTalent.Domain.Services.Interface.Coders;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Coders
 {
@@ -16,7 +15,7 @@ namespace RiwiTalent.App.Controllers.Coders
 
         //Endpoint
         [HttpPut]
-        [Route("coder")]
+        [Route("coders")]
         public async Task<IActionResult> UpdateCoder(Coder coder)
         {
             if(coder is null)
@@ -40,7 +39,7 @@ namespace RiwiTalent.App.Controllers.Coders
         }
 
         [HttpPatch]
-        [Route("coder/{id:length(24)}/reactivate")]
+        [Route("coders/{id:length(24)}/reactivate")]
         public async Task<IActionResult> Reactivate(string id)
         {
             /* The function has the main principle of search by coder id
@@ -63,6 +62,5 @@ namespace RiwiTalent.App.Controllers.Coders
                 throw;  
             }
         }
-
     }
 }

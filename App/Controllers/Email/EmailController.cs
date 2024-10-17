@@ -1,43 +1,25 @@
-using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Utils.Exceptions;
+using RiwiTalent.Domain.Services.Interface.Emails;
+using RiwiTalent.Shared.Exceptions;
 
 namespace RiwiTalent.App.Controllers.Email
 {
     public class EmailController : Controller
     {
         private readonly IEmailRepository _emailRepository;
-        public EmailController(IEmailRepository emailRepostory)
+        private readonly IEmailSelectedRepository _emailSelectedRepository;
+        public EmailController(IEmailRepository emailRepostory, IEmailSelectedRepository emailSelectedRepository)
         {
             _emailRepository = emailRepostory;
+            _emailSelectedRepository = emailSelectedRepository;
         }
 
-        /* [HttpPost("api/email/send")]
-        public IActionResult SendEmail(EmailDto email)
+        [HttpPost("email/company-process")]
+        public async Task<IActionResult> SendEmail([FromQuery] string id)
         {
             try
             {
-                _emailRepository.SendEmail(email);
-                return Ok(); 
-            }
-            catch (Exception ex)
-            {
-                var problemDetails = StatusError.CreateInternalServerError(ex);
-                return StatusCode(problemDetails.Status.Value, problemDetails);
-                throw;
-            }
-        } */
-
-        [HttpPost("email/send")]
-        public IActionResult SendEmailTesting([FromQuery] string Id)
-        {
-            try
-            {
-                _emailRepository.SendEmailTest(Id);
+                await _emailSelectedRepository.SendEmailAll(id);
                 return Ok("The email has beend delivered"); 
             }
             catch (Exception ex)
@@ -47,6 +29,23 @@ namespace RiwiTalent.App.Controllers.Email
                 throw;
             }
         }
+
+        [HttpPost("email/accept-terms")]
+        public async Task<IActionResult> SendEmailTesting([FromQuery] string Id)
+        {
+            try
+            {
+                await _emailRepository.SendEmailTest(Id);
+                return Ok("The email has beend delivered"); 
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                throw;
+            }
+        }
+
 
 
     }
