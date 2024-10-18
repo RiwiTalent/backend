@@ -7,11 +7,11 @@ namespace RiwiTalent.App.Controllers.Email
     public class EmailController : Controller
     {
         private readonly IEmailRepository _emailRepository;
-        private readonly IEmailSelectedRepository _emailSelectedRepository;
-        public EmailController(IEmailRepository emailRepostory, IEmailSelectedRepository emailSelectedRepository)
+        private readonly IEmailSeleccionadoRepository _emailSeleccionadoRepository;
+        public EmailController(IEmailRepository emailRepostory, IEmailSeleccionadoRepository emailSeleccionadoRepository)
         {
             _emailRepository = emailRepostory;
-            _emailSelectedRepository = emailSelectedRepository;
+            _emailSeleccionadoRepository = emailSeleccionadoRepository;
         }
 
         [HttpPost("email/company-process")]
@@ -19,7 +19,7 @@ namespace RiwiTalent.App.Controllers.Email
         {
             try
             {
-                await _emailSelectedRepository.SendEmailAll(id);
+                await _emailSeleccionadoRepository.SendEmailAll(id);
                 return Ok("The email has beend delivered"); 
             }
             catch (Exception ex)

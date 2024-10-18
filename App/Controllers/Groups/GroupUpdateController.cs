@@ -49,12 +49,12 @@ namespace RiwiTalent.App.Controllers.Groups
         public async Task<IActionResult> ReactivateGroup(string id)
         {
             /* The function has the main principle of search by group id
-                and then update status the Inactive to Active
+                and then update status the Inactivo to Activo
             */
             try
             {
                 await _groupRepository.ReactiveGroup(id);
-                return Ok(new { Message = "The status of group has been updated to Active" });
+                return Ok(new { Message = "The status of group has been updated to Activo" });
             }
             catch (KeyNotFoundException ex)
             {

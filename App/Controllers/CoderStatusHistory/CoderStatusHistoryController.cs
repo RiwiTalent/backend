@@ -12,14 +12,6 @@ namespace RiwiTalent.App.Controllers
             _coderStatusHistoryRepository = coderStatusHistoryRepository;
         }
 
-        //get all process history statues
-        /*
-            {
-                {"jose", "celsia", "grouped"},
-                {"laura", "celsia", "selected"}
-                {"Omar", "", "Active"}
-            }
-        */
         [HttpGet]
         [Route("historystatuses")]
         public async Task<IActionResult> GetAllHistory()

@@ -115,7 +115,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
       // we get both status, such as agruped and selecteds.
       BsonDocument filter;
 
-      if(status == Status.Active)
+      if(status == Status.Activo)
       {
         filter = MongoFilter.FilterByCompany(companyId);
         return GetUniqueLastRegisters(filter);
@@ -125,12 +125,12 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
       return GetUniqueLastRegisters(filter);
     }
 
-    public async Task AddCodersGrouped(CoderGroupDto coderGroup)
+    public async Task AddCodersAgrupado(CoderGroupDto coderGroup)
     {
 
       try
       {
-        await AddCodersProccess(coderGroup, Status.Grouped);
+        await AddCodersProccess(coderGroup, Status.Agrupado);
 
         await _coderRepository.UpdateCodersGroup(coderGroup);
       }
@@ -146,21 +146,21 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
       
     }
 
-    public async Task AddCodersSelected(CoderGroupDto coderGroup)
+    public async Task AddCodersSeleccionado(CoderGroupDto coderGroup)
     {
-      await AddCodersProccess(coderGroup, Status.Selected);
+      await AddCodersProccess(coderGroup, Status.Seleccionado);
 
       // We must to get coders that wasn't selected and put active again
-      IEnumerable<CoderStatusHistory> oldGroupedHistory = await GetCompanyCoders(coderGroup.GroupId, Status.Grouped);
+      IEnumerable<CoderStatusHistory> oldAgrupadoHistory = await GetCompanyCoders(coderGroup.GroupId, Status.Agrupado);
 
-      foreach(CoderStatusHistory coderStatusHistory in oldGroupedHistory)
+      foreach(CoderStatusHistory coderStatusHistory in oldAgrupadoHistory)
       {
         coderStatusHistory.IdGroup = null;
-        coderStatusHistory.Status = Status.Active.ToString();
+        coderStatusHistory.Status = Status.Activo.ToString();
         Add(coderStatusHistory);
       }
 
-      await _coderRepository.UpdateCodersSelected(coderGroup);
+      await _coderRepository.UpdateCodersSeleccionado(coderGroup);
     }
 
     public async Task DeleteCoderGroup(string coderId, string groupId)
@@ -170,7 +170,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
       {
         IdCoder = coderId,
         IdGroup = groupId,
-        Status = Status.Inactive.ToString()
+        Status = Status.Inactivo.ToString()
       };
 
       Add(coderStatus);

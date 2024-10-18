@@ -55,7 +55,7 @@ namespace RiwiTalent.Services.Repository
                 Description = groupDto.Description,
                 Created_At = DateTime.UtcNow,
                 Deleted_At = null,
-                Status = Status.Active.ToString(),
+                Status = Status.Activo.ToString(),
                 CreatedBy = groupDto.CreatedBy,
                 AssociateEmail = groupDto.AssociateEmail,
                 AcceptedTerms = false,
@@ -65,7 +65,7 @@ namespace RiwiTalent.Services.Repository
                     {
                         Url =  $"https://riwi-talent.onrender.com/external-access/{objectId}",
                         Key = tokenString,
-                        Status = Status.Active.ToString(),
+                        Status = Status.Activo.ToString(),
                         Date_Creation = DateTime.UtcNow,
                         Date_Expiration = DateTime.UtcNow.AddDays(15)
                     }
@@ -238,7 +238,7 @@ namespace RiwiTalent.Services.Repository
                 throw new KeyNotFoundException($"The group with ID {id} was not found.");
             }
 
-            var update = Builders<Group>.Update.Set(g => g.Status, Status.Active.ToString());
+            var update = Builders<Group>.Update.Set(g => g.Status, Status.Activo.ToString());
             await _mongoCollection.UpdateOneAsync(filter, update);
         }
 
@@ -267,7 +267,7 @@ namespace RiwiTalent.Services.Repository
         {
             var filter = Builders<Group>.Filter.Eq(c => c.Id, groupId);         
             var updateStatusAndRelation = Builders<Group>.Update.Combine(
-                Builders<Group>.Update.Set(coder => coder.Status, Status.Inactive.ToString()),
+                Builders<Group>.Update.Set(coder => coder.Status, Status.Inactivo.ToString()),
                 Builders<Group>.Update.Set(coder => coder.Deleted_At, DateTime.UtcNow)
             );
 
@@ -288,14 +288,24 @@ namespace RiwiTalent.Services.Repository
 
         public async Task<IEnumerable<Group>> GetGroupsInactive()
         {
-            var filter = Builders<Group>.Filter.In(c => c.Status, new [] { Status.Inactive.ToString()});
+            var filter = Builders<Group>.Filter.In(c => c.Status, new [] { Status.Inactivo.ToString()});
             return await _mongoCollection.Find(filter).ToListAsync();
         }
 
         public async Task<IEnumerable<Group>> GetGroupsActive()
         {
-            var filter = Builders<Group>.Filter.In(c => c.Status, new [] { Status.Active.ToString() });
+            var filter = Builders<Group>.Filter.In(c => c.Status, new [] { Status.Activo.ToString() });
             return await _mongoCollection.Find(filter).ToListAsync();
+        }
+
+        public Task<IEnumerable<Group>> GetGroupsInactivo()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Group>> GetGroupsActivo()
+        {
+            throw new NotImplementedException();
         }
     }
 }

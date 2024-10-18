@@ -14,7 +14,7 @@ using RiwiTalent.Shared.Exceptions;
 namespace RiwiTalent.Infrastructure.Persistence.Emails
 {
     #pragma warning disable
-    public class EmailSelectedRepository : IEmailSelectedRepository
+    public class EmailSeleccionadoRepository : IEmailSeleccionadoRepository
     {
         private readonly IConfiguration _config;
         private readonly IMongoCollection<Coder> _coder;
@@ -22,7 +22,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Emails
         private readonly SendFile _sendFile;
         
     
-        public EmailSelectedRepository(IConfiguration config, SendFile sendFile, MongoDbContext context)
+        public EmailSeleccionadoRepository(IConfiguration config, SendFile sendFile, MongoDbContext context)
         {
             _config = config;
             _sendFile = sendFile;
@@ -68,18 +68,18 @@ namespace RiwiTalent.Infrastructure.Persistence.Emails
             }
         }
 
-        public async Task SendCodersSelectedStaff(string Name, string Email, string groupId)
+        public async Task SendCodersSeleccionadoStaff(string Name, string Email, string groupId)
         {
             var findGroup = await _group.Find(g => g.Id == groupId).FirstOrDefaultAsync();
-            var findSelectedCoders = _coder.Find(c => c.GroupId.Contains(groupId) && c.Status == Status.Selected.ToString()).ToList();
+            var findSeleccionadoCoders = _coder.Find(c => c.GroupId.Contains(groupId) && c.Status == Status.Seleccionado.ToString()).ToList();
 
             if(findGroup == null)
                 throw new StatusError.ObjectIdNotFound("The document not found");
 
-            if(findSelectedCoders == null || !findSelectedCoders.Any())
+            if(findSeleccionadoCoders == null || !findSeleccionadoCoders.Any())
                 throw new StatusError.ObjectIdNotFound("No coders found for the groupId or the coder has not selected yet");
 
-            EmailCoderSelected emailCoderSelected = new EmailCoderSelected();
+            EmailCoderSeleccionado emailCoderSeleccionado = new EmailCoderSeleccionado();
 
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("Riwi", "riwitalen@gmail.com"));
@@ -90,9 +90,9 @@ namespace RiwiTalent.Infrastructure.Persistence.Emails
             var builder = new BodyBuilder();
             StringBuilder emailExternal = new StringBuilder();
 
-            foreach (var coder in findSelectedCoders)
+            foreach (var coder in findSeleccionadoCoders)
             {
-                string emailTemplate = emailCoderSelected.GenerateTemplate(coder, emailCoderSelected.template);
+                string emailTemplate = emailCoderSeleccionado.GenerateTemplate(coder, emailCoderSeleccionado.template);
                 emailExternal.Append(emailTemplate);
             }
             
@@ -143,7 +143,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Emails
 
             var groupId = group.Id;
 
-            await SendCodersSelectedStaff("Staff", group.CreatedBy, groupId.ToString());
+            await SendCodersSeleccionadoStaff("Staff", group.CreatedBy, groupId.ToString());
             await SendEmailExternal("External", group.AssociateEmail);
     
         }
