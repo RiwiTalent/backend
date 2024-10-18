@@ -177,10 +177,10 @@ namespace RiwiTalent.Services.Repository
                 Id = groups.Id.ToString(),
                 Name = groups.Name,
                 Description = groups.Description,
-                Status = groups.Status/* ,
-                Created_At = groups.Created_At,
-                Delete_At = groups.Deleted_At,
-                ExternalKeys = groups.ExternalKeys */
+                Status = groups.Status,
+                CreatedBy = groups.CreatedBy,
+                AssociateEmail = groups.AssociateEmail,
+                AcceptedTerms = groups.AcceptedTerms
             });
 
             return newGroup;
