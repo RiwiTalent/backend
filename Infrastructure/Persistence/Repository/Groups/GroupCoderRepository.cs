@@ -286,16 +286,26 @@ namespace RiwiTalent.Services.Repository
         
         }
 
-        public async Task<IEnumerable<Group>> GetGroupsInactivo()
+        public async Task<IEnumerable<Group>> GetGroupsInactive()
         {
             var filter = Builders<Group>.Filter.In(c => c.Status, new [] { Status.Inactivo.ToString()});
             return await _mongoCollection.Find(filter).ToListAsync();
         }
 
-        public async Task<IEnumerable<Group>> GetGroupsActivo()
+        public async Task<IEnumerable<Group>> GetGroupsActive()
         {
             var filter = Builders<Group>.Filter.In(c => c.Status, new [] { Status.Activo.ToString() });
             return await _mongoCollection.Find(filter).ToListAsync();
+        }
+
+        public Task<IEnumerable<Group>> GetGroupsInactivo()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Group>> GetGroupsActivo()
+        {
+            throw new NotImplementedException();
         }
     }
 }
