@@ -20,7 +20,7 @@ namespace RiwiTalent.Application.DTOs
         public int Age { get; set; }
         public float AssessmentScore { get; set; }
         public string? Cv { get; set; }
-        public string? Status { get; set; } = "Activo";
+        public string? Status { get; set; }
         public string? Stack { get; set; }
         public StandarRiwi? StandarRiwi { get; set; }
         public List<string>? GroupId { get; set; }
