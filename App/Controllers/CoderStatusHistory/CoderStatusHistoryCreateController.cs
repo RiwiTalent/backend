@@ -24,7 +24,7 @@ namespace RiwiTalent.App.Controllers.Coders
 
         //     try
         //     {
-        //         _coderStatusHistoryRepository.AddCodersGrouped(coderHistory);
+        //         _coderStatusHistoryRepository.AddCodersAgrupado(coderHistory);
         //         return Ok("The coder has been created successfully");
         //     }
         //     catch (Exception ex)
@@ -40,7 +40,7 @@ namespace RiwiTalent.App.Controllers.Coders
         {
             try
             {
-                _coderStatusHistoryRepository.AddCodersGrouped(coderGroup);
+                _coderStatusHistoryRepository.AddCodersAgrupado(coderGroup);
                 return Ok("List of coders sucessfully added to group");
             }   
             catch(StatusError.CoderAlreadyInGroup ex)
@@ -59,11 +59,11 @@ namespace RiwiTalent.App.Controllers.Coders
 
         [HttpPost]
         [Route("coders/selected")]
-        public async Task<IActionResult> AddSelectedCoders([FromBody] CoderGroupDto coderGroup)
+        public async Task<IActionResult> AddSeleccionadoCoders([FromBody] CoderGroupDto coderGroup)
         {
             try
             {
-                await _coderStatusHistoryRepository.AddCodersSelected(coderGroup);
+                await _coderStatusHistoryRepository.AddCodersSeleccionado(coderGroup);
                 return Ok("List of coders sucessfully selected by company");
             }
             catch (Exception ex)

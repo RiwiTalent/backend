@@ -2,10 +2,10 @@ using MimeKit;
 
 namespace RiwiTalent.Domain.Services.Interface.Emails
 {
-    public interface IEmailSelectedRepository
+    public interface IEmailSeleccionadoRepository
     {
         Task SendEmail(MimeMessage message);
-        Task SendCodersSelectedStaff(string Name, string Email, string groupId);
+        Task SendCodersSeleccionadoStaff(string Name, string Email, string groupId);
         Task SendEmailExternal(string Name, string Email);
         Task SendEmailAll(string id);
     }

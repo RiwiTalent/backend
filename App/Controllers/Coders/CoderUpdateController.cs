@@ -50,12 +50,12 @@ namespace RiwiTalent.App.Controllers.Coders
         public async Task<IActionResult> Reactivate(string id)
         {
             /* The function has the main principle of search by coder id
-                and then update status the Inactive to Active
+                and then update status the Inactivo to Activo
             */
             try
             {
                 await _coderRepository.ReactivateCoder(id);
-                return Ok(new { Message = "The status of coder has been updated to Active" });
+                return Ok(new { Message = "The status of coder has been updated to Activo" });
             }
             catch (KeyNotFoundException ex)
             {

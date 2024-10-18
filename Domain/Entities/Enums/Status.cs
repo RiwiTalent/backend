@@ -2,10 +2,12 @@ namespace RiwiTalent.Domain.Entities.Enums
 {
     public enum Status
     {
-        Active,
-        Inactive,
+        Activo,
+        Inactivo,
         Defeated,
-        Grouped,
-        Selected,
+        Agrupado,
+        Seleccionado,
     }
+
+
 }

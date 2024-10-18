@@ -25,7 +25,7 @@ namespace RiwiTalent.Domain.Entities
 
         [BsonRepresentation(BsonType.DateTime)]
         public DateTime Date_Update { get; set; }
-        public string? Status { get; set; }
+        public string? Status { get; set; } = "Activo";
 
         [BsonRepresentation(BsonType.ObjectId)]
 

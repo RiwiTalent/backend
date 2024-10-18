@@ -11,7 +11,7 @@ namespace RiwiTalent.Domain.Services.Interface.Coders
         Task Add(CoderDto coderDto);
         Task Update(Coder coder);
         Task UpdateCodersGroup(CoderGroupDto groupCoder);
-        Task UpdateCodersSelected(CoderGroupDto groupCoder);
+        Task UpdateCodersSeleccionado(CoderGroupDto groupCoder);
         Task<Coder> GetCoderId(string id);
         Task<List<Coder>> GetCoderName(string name);
         Task<Coder> FindCoderById(string coderId);

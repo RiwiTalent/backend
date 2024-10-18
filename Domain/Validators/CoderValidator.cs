@@ -1,6 +1,7 @@
 using FluentValidation;
 using RiwiTalent.Application.DTOs;
 
+/* THIS CODE IS FOR REQUIERE SPECIFIC  CODER FIELDS */
 namespace RiwiTalent.Domain.Validators
 {
     public class CoderValidator : AbstractValidator<CoderDto>
@@ -8,13 +9,13 @@ namespace RiwiTalent.Domain.Validators
         public CoderValidator()
         {
             Include(new CoderFirstNameRule());
-            Include(new CoderSecondNameRule());
+            // Include(new CoderSecondNameRule());
             Include(new CoderFirstLastNameRule());
             Include(new CoderSecondLastNameRule());
             Include(new CoderProfessionalDescriptionRule());
-            Include(new CoderEmailRule());
+            // Include(new CoderEmailRule());
             /* Include(new CoderPhotoRule()); */
-            Include(new CoderAgeRule());
+            // Include(new CoderAgeRule());
             /* Include(new CoderCvRule()); */
         }
 
@@ -28,15 +29,17 @@ namespace RiwiTalent.Domain.Validators
 
             }
         }
-        
-        public class CoderSecondNameRule : AbstractValidator<CoderDto>
-        {
-            public CoderSecondNameRule()
-            {
-                RuleFor(coder => coder.SecondName).NotEmpty()
-                                                 .WithMessage("The SecondName is required");
-            }
-        }
+
+
+        /* requiered code for SecondName validation */
+        // public class CoderSecondNameRule : AbstractValidator<CoderDto>
+        // {
+        //     public CoderSecondNameRule()
+        //     {
+        //         RuleFor(coder => coder.SecondName).NotEmpty()
+        //                                          .WithMessage("The SecondName is required");
+        //     }
+        // }
 
         public class CoderFirstLastNameRule : AbstractValidator<CoderDto>
         {
@@ -66,17 +69,17 @@ namespace RiwiTalent.Domain.Validators
                                                                 .WithMessage("The maximum 400 characters");
             }
         }
-
-        public class CoderEmailRule : AbstractValidator<CoderDto>
-        {
-            public CoderEmailRule()
-            {
-                RuleFor(coder => coder.Email).NotEmpty()
-                                                 .WithMessage("The Email is required")
-                                                 .EmailAddress()
-                                                 .WithMessage("The Email isn't with correct format");
-            }
-        }
+        /* requiered code for email validation */
+        // public class CoderEmailRule : AbstractValidator<CoderDto>
+        // {
+        //     public CoderEmailRule()
+        //     {
+        //         RuleFor(coder => coder.Email).NotEmpty()
+        //                                          .WithMessage("The Email is required")
+        //                                          .EmailAddress()
+        //                                          .WithMessage("The Email isn't with correct format");
+        //     }
+        // }
 
         /* public class CoderPhotoRule : AbstractValidator<Coder>
         {
@@ -96,14 +99,15 @@ namespace RiwiTalent.Domain.Validators
             }
         } */
 
-        public class CoderAgeRule : AbstractValidator<CoderDto>
-        {
-            public CoderAgeRule()
-            {
-                RuleFor(coder => coder.Age).NotEmpty()
-                                           .WithMessage("The field Age is required");
-            }
-        }
+        /* requiered code for age validation */
+        // public class CoderAgeRule : AbstractValidator<CoderDto>
+        // {
+        //     public CoderAgeRule()
+        //     {
+        //         RuleFor(coder => coder.Age).NotEmpty()
+        //                                    .WithMessage("The field Age is required");
+        //     }
+        // }
 
         /* public class CoderCvRule : AbstractValidator<CoderDto>
         {

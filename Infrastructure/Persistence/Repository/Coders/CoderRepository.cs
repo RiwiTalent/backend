@@ -181,20 +181,20 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
 
         public async Task UpdateCodersGroup(CoderGroupDto coderGroup)
         {
-            await UpdateCodersProcess(coderGroup, Status.Grouped);
+            await UpdateCodersProcess(coderGroup, Status.Agrupado);
         }
 
-        public async Task UpdateCodersSelected(CoderGroupDto coderGroup)
+        public async Task UpdateCodersSeleccionado(CoderGroupDto coderGroup)
         {
-            await UpdateCodersProcess(coderGroup, Status.Selected);
-            var coders = await _mongoCollection.Find(x => x.GroupId.Contains(coderGroup.GroupId) && x.Status == Status.Grouped.ToString()).ToListAsync();
+            await UpdateCodersProcess(coderGroup, Status.Seleccionado);
+            var coders = await _mongoCollection.Find(x => x.GroupId.Contains(coderGroup.GroupId) && x.Status == Status.Agrupado.ToString()).ToListAsync();
 
-            await UpdateCodersProcess(coders, Status.Active);
+            await UpdateCodersProcess(coders, Status.Activo);
         }
 
         public async Task Delete(string id)
         {
-            //This Method is the reponsable of update status the coder, first we search by id and then it execute the change Active to Inactive
+            //This Method is the reponsable of update status the coder, first we search by id and then it execute the change Activo to Inactivo
 
             var filter = Builders<Coder>.Filter.Eq(c => c.Id, id);
 
@@ -203,7 +203,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
                 throw new StatusError.ObjectIdNotFound("The id not found or no exists");
             }
 
-            var update = Builders<Coder>.Update.Set(c => c.Status, Status.Inactive.ToString());            
+            var update = Builders<Coder>.Update.Set(c => c.Status, Status.Inactivo.ToString());            
             await _mongoCollection.UpdateOneAsync(filter, update);
         }
 
@@ -222,7 +222,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
 
         public async Task ReactivateCoder(string id)
         {
-            //This Method is the reponsable of update status the coder, first we search by id and then it execute the change Inactive to Active
+            //This Method is the reponsable of update status the coder, first we search by id and then it execute the change Inactivo to Activo
             
             var filter = Builders<Coder>.Filter.Eq(c => c.Id, id);  
 
@@ -232,7 +232,7 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
                 throw new KeyNotFoundException($"The coder with ID {id} was not found.");
             }           
 
-            var update = Builders<Coder>.Update.Set(c => c.Status, Status.Active.ToString());
+            var update = Builders<Coder>.Update.Set(c => c.Status, Status.Activo.ToString());
             await _mongoCollection.UpdateOneAsync(filter, update);
         }
         
@@ -315,13 +315,13 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
 
         private Coder UpdateCoderInfo(Coder coder, Status status, string groupId)
         {
-            if(status.Equals(Status.Active))
+            if(status.Equals(Status.Activo))
             {
                 coder.GroupId = null;   
-                coder.Status = Status.Active.ToString();
+                coder.Status = Status.Activo.ToString();
             }
 
-            if(status.Equals(Status.Selected) || status.Equals(Status.Grouped))
+            if(status.Equals(Status.Seleccionado) || status.Equals(Status.Agrupado))
             {
                 if (coder.GroupId == null)
                 {

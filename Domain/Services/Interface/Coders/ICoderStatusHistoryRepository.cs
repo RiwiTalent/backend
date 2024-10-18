@@ -12,8 +12,8 @@ namespace RiwiTalent.Domain.Services.Interface.Coders
         Task<IEnumerable<CoderStatusHistory>> GetCompanyCoders(string id, Status status);
         // Task<Pagination<Coder>> GetCodersPagination(int page, int cantRegisters);
         // void Add(CoderStatusHistory coder);
-        Task AddCodersGrouped(CoderGroupDto coderGroup);
-        Task AddCodersSelected(CoderGroupDto coderGroup);
+        Task AddCodersAgrupado(CoderGroupDto coderGroup);
+        Task AddCodersSeleccionado(CoderGroupDto coderGroup);
         Task DeleteCoderGroup(string coderId, string groupId);
     }
 }
