@@ -35,7 +35,7 @@ namespace RiwiTalent.App.Controllers.Coders
         }
 
         [HttpDelete]
-        [Route("coder-groups/{id:length(24)}")]
+        [Route("coder-groups")]
         public IActionResult DeleteCoderOfGroup(string coderId, string groupId)
         {
             /* The function has the main principle of search by coder id
@@ -48,6 +48,7 @@ namespace RiwiTalent.App.Controllers.Coders
             }
             catch (KeyNotFoundException ex)
             {
+                #pragma warning disable
                 var problemDetails = StatusError.CreateNotFound(ex.Message, Guid.NewGuid().ToString());
                 return StatusCode(problemDetails.Status.Value, problemDetails);
             }

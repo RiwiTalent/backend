@@ -222,12 +222,10 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
 
             coder.GroupId.Add(coderGroup.GroupId.ToString());
 
-            await _coderRepository.Update(coder);
           }
-          else
-          {
-            throw new StatusError.CoderAlreadyInGroup($"The coder with id {coderId} is alredy exists {coderGroup.GroupId}.");
-          }
+
+          coderStatusHistory.Status = status.ToString();
+          await _coderRepository.Update(coder);
         }
         else
         {

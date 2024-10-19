@@ -103,6 +103,7 @@ namespace RiwiTalent.App.Controllers.Coders
             }
             catch (KeyNotFoundException ex)
             {
+                #pragma warning disable
                 var problemDetails = StatusError.CreateNotFound(ex.Message, Guid.NewGuid().ToString());
                 return StatusCode(problemDetails.Status.Value, problemDetails);
             }
