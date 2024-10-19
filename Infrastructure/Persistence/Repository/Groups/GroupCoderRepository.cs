@@ -176,10 +176,9 @@ namespace RiwiTalent.Services.Repository
                 Id = groups.Id.ToString(),
                 Name = groups.Name,
                 Description = groups.Description,
-                Status = groups.Status/* ,
-                Created_At = groups.Created_At,
-                Delete_At = groups.Deleted_At,
-                ExternalKeys = groups.ExternalKeys */
+                Status = groups.Status,
+                CreatedBy = groups.CreatedBy,
+                Created_At = groups.Created_At = DateTime.UtcNow
             });
 
             return newGroup;
@@ -206,7 +205,7 @@ namespace RiwiTalent.Services.Repository
                 Name = group.Name,
                 Description = group.Description,
                 Status = group.Status,
-                Create_At = group.Created_At,
+                Created_At = group.Created_At,
                 CreatedBy = group.CreatedBy,
                 AssociateEmail = group.AssociateEmail,
                 ExternalKeys= group.ExternalKeys,
