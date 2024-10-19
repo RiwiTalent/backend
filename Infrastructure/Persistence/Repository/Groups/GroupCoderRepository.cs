@@ -179,8 +179,7 @@ namespace RiwiTalent.Services.Repository
                 Description = groups.Description,
                 Status = groups.Status,
                 CreatedBy = groups.CreatedBy,
-                AssociateEmail = groups.AssociateEmail,
-                AcceptedTerms = groups.AcceptedTerms
+                Created_At = groups.Created_At = DateTime.UtcNow
             });
 
             return newGroup;
@@ -207,7 +206,7 @@ namespace RiwiTalent.Services.Repository
                 Name = group.Name,
                 Description = group.Description,
                 Status = group.Status,
-                Create_At = group.Created_At,
+                Created_At = group.Created_At,
                 CreatedBy = group.CreatedBy,
                 AssociateEmail = group.AssociateEmail,
                 AcceptedTerms = group.AcceptedTerms,
