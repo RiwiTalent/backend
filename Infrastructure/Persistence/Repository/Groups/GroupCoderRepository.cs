@@ -180,7 +180,9 @@ namespace RiwiTalent.Services.Repository
                 Description = groups.Description,
                 Status = groups.Status,
                 CreatedBy = groups.CreatedBy,
-                Created_At = groups.Created_At = DateTime.UtcNow
+                Created_At = groups.Created_At = DateTime.UtcNow,
+                AssociateEmail = groups.AssociateEmail,
+                AcceptedTerms = groups.AcceptedTerms
             });
 
             return newGroup;
