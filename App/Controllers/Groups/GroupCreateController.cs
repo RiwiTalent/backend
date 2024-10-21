@@ -4,6 +4,8 @@ using RiwiTalent.Application.DTOs;
 using RiwiTalent.Domain.Services.Groups;
 using RiwiTalent.Shared.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using CloudinaryDotNet.Actions;
+using CloudinaryDotNet;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
@@ -11,10 +13,12 @@ namespace RiwiTalent.App.Controllers.Groups
     {
         private readonly IValidator<GroupDto> _groupValidator;
         private readonly IGroupCoderRepository _groupRepository;
-        public GroupCreateController(IGroupCoderRepository groupRepository, IValidator<GroupDto> groupValidator)
+        private readonly Cloudinary _cloudinary;
+        public GroupCreateController(IGroupCoderRepository groupRepository, IValidator<GroupDto> groupValidator, Cloudinary cloudinary)
         {
             _groupRepository = groupRepository;
             _groupValidator = groupValidator;
+            _cloudinary = cloudinary;
         }
 
         //endpoint
@@ -50,6 +54,63 @@ namespace RiwiTalent.App.Controllers.Groups
                 #pragma warning restore
                 throw;
             }
+        }
+
+        //upload photo group
+        [HttpPost("photo/{groupId}")]
+        public async Task<IActionResult> UploadGroupPhoto(string groupId, IFormFile file)
+        {   
+            if(file == null || file.Length == 0)
+            {
+                var instance = Guid.NewGuid().ToString();
+                var problemDetails = StatusError.CreateBadRequest(instance);
+                return BadRequest($"{problemDetails}, No file uploaded");
+            }
+
+            try
+            {
+                var uploadResult = new ImageUploadResult();
+
+                using(var stream = file.OpenReadStream())
+                {
+                    var uploadParams = new ImageUploadParams()
+                    {
+                        File = new FileDescription(file.FileName, stream),
+                        Transformation = new Transformation().Width(250)
+                                                            .Height(300)
+                                                            .Crop("scale")
+                                                            .Chain()
+                                                            .Quality("auto")
+                                                            .Chain()
+                                                            .FetchFormat("auto")
+                    };
+
+                    uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                }
+
+                if(uploadResult.Error != null)
+                    return BadRequest(uploadResult.Error.Message);
+                
+                var urlPhoto = uploadResult.SecureUrl.AbsoluteUri;
+                await _groupRepository.UpdateGroupPhoto(groupId, urlPhoto);
+
+                return Ok(new { urlPhoto });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                #pragma warning disable
+                var problemDetails = StatusError.CreateNotFound(ex.Message, Guid.NewGuid().ToString());
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = StatusError.CreateInternalServerError(ex);
+                #pragma warning disable
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+                #pragma warning restore
+                throw;
+            }
+
         }
 
         

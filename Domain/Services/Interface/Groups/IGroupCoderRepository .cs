@@ -7,15 +7,16 @@ namespace RiwiTalent.Domain.Services.Groups
     public interface IGroupCoderRepository 
     {
         Task<IEnumerable<GroupCoderDto>> GetGroupCoders();
-        Task<IEnumerable<Group>> GetGroupsInactive();
-        Task<IEnumerable<Group>> GetGroupsActive();
+        Task<IEnumerable<Group>> GetGroupsInactivo();
+        Task<IEnumerable<Group>> GetGroupsActivo();
         Task<Group> GetGroupByName(string name);
         Task Add(GroupDto groupDto);
+        Task UpdateGroupPhoto(string groupId, string photoUrl);
         Task RegenerateToken(string id);
         Task<KeyDto> SendToken(KeyDto keyDto);
         Task<GroupDetailsDto> GetGroupInfoById(string groupId);
         Task Update(GroupCoderDto groupCoderDto);
-        // Task DeleteCoderGroup(string id);
+        Task ReactiveGroup(string id);
         Task DeleteGroup(string groupId);
     }
 }

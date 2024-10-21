@@ -17,12 +17,12 @@ namespace RiwiTalent.App.Controllers.Coders
         public async Task<IActionResult> Delete(string id)
         {
             /* The function has the main principle of search by coder id
-                and then update status the Active to Inactive
+                and then update status the Activo to Inactivo
             */
             try
             {                
                 await _coderRepository.Delete(id);               
-                return Ok(new { Message = "The status of coder has been updated to Inactive" });
+                return Ok(new { Message = "The status of coder has been updated to Inactivo" });
             }
             catch (Exception ex)
             {
@@ -35,16 +35,22 @@ namespace RiwiTalent.App.Controllers.Coders
         }
 
         [HttpDelete]
-        [Route("coder-groups/{id:length(24)}")]
-        public IActionResult DeleteCoderOfGroup(string id)
+        [Route("coder-groups")]
+        public IActionResult DeleteCoderOfGroup(string coderId, string groupId)
         {
             /* The function has the main principle of search by coder id
-                and then update status the Active to Inactive
+                and then update status the Activo to Inactivo
             */
             try
             {                
-                _coderRepository.DeleteCoderGroup(id);               
-                return Ok(new { Message = "The status of coder has been updated to Active" });
+                _coderRepository.DeleteCoderOfGroup(coderId, groupId);               
+                return Ok(new { Message = "The status of coder has been updated to Activo" });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                #pragma warning disable
+                var problemDetails = StatusError.CreateNotFound(ex.Message, Guid.NewGuid().ToString());
+                return StatusCode(problemDetails.Status.Value, problemDetails);
             }
             catch (Exception ex)
             {

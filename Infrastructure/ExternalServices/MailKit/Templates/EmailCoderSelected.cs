@@ -3,7 +3,7 @@ using RiwiTalent.Domain.Entities;
 
 namespace RiwiTalent.Infrastructure.ExternalServices.MailKit.Templates;
 
-public class EmailCoderSelected
+public class EmailCoderSeleccionado
 {
 
  	public string template = @"

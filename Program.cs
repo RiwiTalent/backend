@@ -44,7 +44,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGroupCoderRepository, GroupCoderRepository>();
 builder.Services.AddScoped<ICoderStatusHistoryRepository, CoderStatusHistoryRepository>();
 builder.Services.AddTransient<IEmailRepository, EmailRepository>();
-builder.Services.AddTransient<IEmailSelectedRepository, EmailSelectedRepository>();
+builder.Services.AddTransient<IEmailSeleccionadoRepository, EmailSeleccionadoRepository>();
 builder.Services.AddScoped<ITermAndConditionRepository, TermAndConditionRepository>();
 builder.Services.AddScoped<ILoginRepository, LoginRepository>();
 

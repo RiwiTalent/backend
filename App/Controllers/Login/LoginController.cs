@@ -33,6 +33,11 @@ namespace RiwiTalent.App.Controllers.Login
                 return Ok(new { Token = res.Access_token });
                 #pragma warning restore
             }
+            catch (KeyNotFoundException ex)
+            {
+                var problemDetails = StatusError.CreateNotFound($"No token found by {firebaseToken} or not exist.", Guid.NewGuid().ToString());
+                return StatusCode(problemDetails.Status.Value, problemDetails);
+            }
             catch (Exception ex)
             {
                 var problemDetails = StatusError.CreateInternalServerError(ex);

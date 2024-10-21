@@ -14,12 +14,11 @@ namespace RiwiTalent.App.Controllers
 
         //get all coders
         /* [Authorize] */
-
         [HttpGet]
         [Route("coders")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetCoders([FromQuery] List<string>? skills)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 var instance = Guid.NewGuid().ToString();
                 var problemDetails = StatusError.CreateBadRequest(instance);
@@ -28,7 +27,8 @@ namespace RiwiTalent.App.Controllers
 
             try
             {
-                var coders = await _coderRepository.GetCoders();
+                // Obtener todos los coders del repositorio
+                var coders = await _coderRepository.GetCoders(skills);
                 return Ok(coders);
             }
             catch (Exception ex)
@@ -80,17 +80,19 @@ namespace RiwiTalent.App.Controllers
 
         //Get coder by id
         [HttpGet]
-        [Route("coder/{id}")]
+        [Route("coder/{id:length(24)}")]
         public async Task<IActionResult> GetCoderById(string id)
         {
+            
             try
             {
                 var coder = await _coderRepository.GetCoderId(id);
 
-                if (coder is null)
+                if(coder == null)
                 {
-                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
-                    return NotFound(StatusError.CreateNotFound($"The coder with {id} not found", instance));
+                    var instance = Guid.NewGuid().ToString();
+                    var problemDetails = StatusError.CreateBadRequest(instance);
+                    return BadRequest(problemDetails);
                 }
 
                 return Ok(coder);
@@ -114,10 +116,10 @@ namespace RiwiTalent.App.Controllers
             {
                 var coder = await _coderRepository.GetCoderName(name);
 
-                if (coder is null)
+                if (coder is null || !coder.Any())
                 {
-                    var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
-                    return NotFound(StatusError.CreateNotFound($"The coder {name} not found.", instance));
+                    var problemDetails = StatusError.CreateNotFound($"No coders found with the name {name}.", Guid.NewGuid().ToString());
+                    return StatusCode(problemDetails.Status.Value, problemDetails);
                 }
 
                 return Ok(coder);
@@ -184,5 +186,24 @@ namespace RiwiTalent.App.Controllers
                 throw;
             }
         }
+
+        // [HttpPost("filterBySkills")]
+        // public async Task<IActionResult> FilterCodersBySkills([FromBody] List<string> selectedSkills)
+        // {
+        //     try
+        //     {
+        //         // Llamada asíncrona al repositorio
+        //         var filteredCoders = await _coderRepository.FilterBySkills(selectedSkills);
+
+        //         // Devuelve los coders filtrados en el cuerpo de la respuesta
+        //         return Ok(filteredCoders);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         // Manejo de errores mediante el objeto ProblemDetails
+        //         var problemDetails = StatusError.CreateInternalServerError(ex);
+        //         return StatusCode(problemDetails.Status.Value, problemDetails);
+        //     }
+        // }
     }
 }

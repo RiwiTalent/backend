@@ -16,6 +16,7 @@ namespace RiwiTalent.Application.DTOs
         public string? CreatedBy { get; set; }
         public DateTime Created_At { get; set; }
         public string? AssociateEmail { get; set; }
+        public bool? AcceptedTerms { get; set; }
         public DateTime Expiration_At { get; set; }
     }
 }

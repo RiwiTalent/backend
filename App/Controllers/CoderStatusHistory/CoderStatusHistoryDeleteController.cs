@@ -14,12 +14,12 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //endpoint
         [HttpDelete]
-        [Route("coders/groups/{id:length(24)}")]
-        public async Task<IActionResult> DeleteCoder(string id)
+        [Route("coders/{coderId}/group/{groupId}")]
+        public async Task<IActionResult> DeleteCoder(string coderId, string groupId)
         {
             try
             {
-                await _coderStatusHistoryRepository.DeleteCoderGroup(id);
+                await _coderStatusHistoryRepository.DeleteCoderGroup(coderId, groupId);
                 return Ok("The coder has been deleted successfuly");
             }
             catch (Exception ex)

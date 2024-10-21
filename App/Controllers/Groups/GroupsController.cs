@@ -48,11 +48,11 @@ namespace RiwiTalent.App.Controllers.Groups
 
         [HttpGet]
         [Route("groups/inactive")]
-        public async Task<IActionResult> GetGroupsInactive()
+        public async Task<IActionResult> GetGroupsInactivo()
         {
             try
             {
-                var groupList = await _groupRepository.GetGroupsInactive();
+                var groupList = await _groupRepository.GetGroupsInactivo();
                 if (groupList == null)
                 {
                     return NotFound("There are no inactive groups.");
@@ -71,11 +71,11 @@ namespace RiwiTalent.App.Controllers.Groups
 
         [HttpGet]
         [Route("groups/active")]
-        public async Task<IActionResult> GetGroupsActive()
+        public async Task<IActionResult> GetGroupsActivo()
         {
             try
             {
-                var groupList = await _groupRepository.GetGroupsActive();
+                var groupList = await _groupRepository.GetGroupsActivo();
                 if (groupList == null)
                 {
                     return NotFound("There are no active groups.");

@@ -35,7 +35,7 @@ public class LoginRepository : ILoginRepository
             }
             else
             {
-                return null;
+                throw new KeyNotFoundException($"El token {response} es incorrecto o no existe.");
             }
         }
         catch (Exception e)
