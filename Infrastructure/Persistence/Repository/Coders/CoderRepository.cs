@@ -385,6 +385,17 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
             await _mongoCollection.UpdateOneAsync(filter, updatePdfCv);
         }
 
+        public async Task<string> GetCoderCv(string coderId)
+        {
+            var filter = Builders<Coder>.Filter.Eq(c => c.Id, coderId);
+
+            var findCv = Builders<Coder>.Projection.Include(c => c.Cv).Exclude(c => c.Id);
+
+            var cvCoder = await _mongoCollection.Find(filter).Project<Coder>(findCv).FirstOrDefaultAsync();
+
+            return cvCoder?.Cv ?? throw new Exception("CV not found or Coder does not exist");
+        }
+
         // public async Task<List<Coder>> FilterBySkills(List<string> selectedSkills)
         // {
         //     if (selectedSkills == null || !selectedSkills.Any())

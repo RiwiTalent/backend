@@ -41,6 +41,14 @@ namespace RiwiTalent.App.Controllers
             }
         }
 
+        //Get cv
+        [HttpGet("{coderId}/cv")]
+        public async Task<IActionResult> GetCv(string coderId)
+        {
+            var coder = await _coderRepository.GetCoderCv(coderId);
+            return Ok(coder);
+        }
+
 
         //Get all coders pagination
         [HttpGet]

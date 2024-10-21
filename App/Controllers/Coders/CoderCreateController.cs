@@ -80,7 +80,7 @@ namespace RiwiTalent.App.Controllers.Coders
                     var uploadParams = new ImageUploadParams()
                     {
                         File = new FileDescription(file.FileName, stream),
-                        Transformation = new Transformation().Gravity("face")
+                        Transformation = new Transformation()
                                                             .Width(250)
                                                             .Height(300)
                                                             .Crop("scale")
@@ -140,7 +140,7 @@ namespace RiwiTalent.App.Controllers.Coders
                     var uploadParams = new RawUploadParams()
                     {
                         File = new FileDescription(file.Name, stream),
-                        PublicId = $"cv_{coderId}_document" + ".pdf"
+                        PublicId = $"cv_{coderId}_document"
                     };
 
                     uploadResult = await _cloudinary.UploadAsync(uploadParams);
