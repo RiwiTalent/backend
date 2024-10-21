@@ -57,7 +57,7 @@ namespace RiwiTalent.App.Controllers.Groups
         }
 
         //upload photo group
-        [HttpPost("photo/{groupId}")]
+        [HttpPost("group/photo/{groupId}")]
         public async Task<IActionResult> UploadGroupPhoto(string groupId, IFormFile file)
         {   
             if(file == null || file.Length == 0)
@@ -76,12 +76,11 @@ namespace RiwiTalent.App.Controllers.Groups
                     var uploadParams = new ImageUploadParams()
                     {
                         File = new FileDescription(file.FileName, stream),
-                        Transformation = new Transformation().Width(250)
-                                                            .Height(300)
-                                                            .Crop("scale")
-                                                            .Chain()
+                        Transformation = new Transformation().Gravity("face")
+                                                            .Width(200)
+                                                            .Height(200)
+                                                            .Crop("fill")
                                                             .Quality("auto")
-                                                            .Chain()
                                                             .FetchFormat("auto")
                     };
 

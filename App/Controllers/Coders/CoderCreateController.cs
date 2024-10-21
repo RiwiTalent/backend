@@ -61,7 +61,7 @@ namespace RiwiTalent.App.Controllers.Coders
         }
 
         //upload photo
-        [HttpPost("upload-photo/{coderId}")]
+        [HttpPost("coder/photo/{coderId}")]
         public async Task<IActionResult> UploadCoderPhoto(string coderId, IFormFile file)
         {   
             if(file == null || file.Length == 0)
@@ -81,12 +81,10 @@ namespace RiwiTalent.App.Controllers.Coders
                     {
                         File = new FileDescription(file.FileName, stream),
                         Transformation = new Transformation().Gravity("face")
-                                                            .Width(250)
-                                                            .Height(300)
-                                                            .Crop("scale")
-                                                            .Chain()
+                                                            .Width(200)
+                                                            .Height(200)
+                                                            .Crop("fill") 
                                                             .Quality("auto")
-                                                            .Chain()
                                                             .FetchFormat("auto")
                     };
 
