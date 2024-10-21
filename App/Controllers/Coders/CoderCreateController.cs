@@ -83,7 +83,7 @@ namespace RiwiTalent.App.Controllers.Coders
                         Transformation = new Transformation()
                                                             .Width(250)
                                                             .Height(300)
-                                                            .Crop("scale")
+                                                            .Crop("fill")
                                                             .Chain()
                                                             .Quality("auto")
                                                             .FetchFormat("auto")
