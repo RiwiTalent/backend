@@ -57,7 +57,7 @@ namespace RiwiTalent.App.Controllers.Groups
         }
 
         //upload photo group
-        [HttpPost("photo/{groupId}")]
+        [HttpPost("groups/photo/{groupId}")]
         public async Task<IActionResult> UploadGroupPhoto(string groupId, IFormFile file)
         {   
             if(file == null || file.Length == 0)
