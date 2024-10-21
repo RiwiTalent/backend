@@ -11,6 +11,7 @@ namespace RiwiTalent.Domain.Services.Groups
         Task<IEnumerable<Group>> GetGroupsActivo();
         Task<Group> GetGroupByName(string name);
         Task Add(GroupDto groupDto);
+        Task UpdateGroupPhoto(string groupId, string photoUrl);
         Task RegenerateToken(string id);
         Task<KeyDto> SendToken(KeyDto keyDto);
         Task<GroupDetailsDto> GetGroupInfoById(string groupId);

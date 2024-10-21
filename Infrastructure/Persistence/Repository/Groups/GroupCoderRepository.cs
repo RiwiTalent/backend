@@ -176,6 +176,7 @@ namespace RiwiTalent.Services.Repository
             {
                 Id = groups.Id.ToString(),
                 Name = groups.Name,
+                Photo = groups.Photo,
                 Description = groups.Description,
                 Status = groups.Status,
                 CreatedBy = groups.CreatedBy,
@@ -204,6 +205,7 @@ namespace RiwiTalent.Services.Repository
             {
                 Id = group.Id.ToString(),
                 Name = group.Name,
+                Photo = group.Photo,
                 Description = group.Description,
                 Status = group.Status,
                 Created_At = group.Created_At,
@@ -305,6 +307,13 @@ namespace RiwiTalent.Services.Repository
         public Task<IEnumerable<Group>> GetGroupsActivo()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task UpdateGroupPhoto(string groupId, string photoUrl)
+        {
+            var filter = Builders<Group>.Filter.Eq(g => g.Id, groupId);
+            var updatePhoto = Builders<Group>.Update.Set(g => g.Photo, photoUrl);
+            await _mongoCollection.UpdateOneAsync(filter, updatePhoto);
         }
     }
 }
