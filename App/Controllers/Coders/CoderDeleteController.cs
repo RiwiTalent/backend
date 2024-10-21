@@ -13,7 +13,7 @@ namespace RiwiTalent.App.Controllers.Coders
         }
     
         [HttpDelete]
-        [Route("coders/{id:length(24)}")]
+        [Route("coders/")]
         public async Task<IActionResult> Delete(string id)
         {
             /* The function has the main principle of search by coder id
