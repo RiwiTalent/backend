@@ -162,18 +162,20 @@ namespace RiwiTalent.App.Controllers
             
         }
 
-        //Get coder by language level in english
+ 
+        // Get coders by language levels in English
         [HttpGet]
-        [Route("coders/language-level={level}")]
-        public async Task<IActionResult> GetCodersByLanguage([FromRoute] string level, string language = "English")
+        [Route("coders/langauges")]
+        public async Task<IActionResult> GetCodersByLanguage([FromQuery] List<string> levels, string language = "English")
         {
             try
             {
-                var coders = await _coderRepository.GetCodersBylanguage(level);
+                // Llama al repositorio con la lista de niveles
+                var coders = await _coderRepository.GetCodersByLanguage(levels, language);
                 if (coders is null || !coders.Any())
                 {
                     var instance = HttpContext.Request.Path + HttpContext.Request.QueryString;
-                    return NotFound(StatusError.CreateNotFound("There isn't coder with those language level.", instance));
+                    return NotFound(StatusError.CreateNotFound("There isn't any coder with those language levels.", instance));
                 }
                 return Ok(coders);
             }
@@ -186,6 +188,7 @@ namespace RiwiTalent.App.Controllers
                 throw;
             }
         }
+
 
         // [HttpPost("filterBySkills")]
         // public async Task<IActionResult> FilterCodersBySkills([FromBody] List<string> selectedSkills)

@@ -21,7 +21,10 @@ namespace RiwiTalent.Domain.Services.Interface.Coders
         Task DeleteCoderOfGroup(string coderId, string groupId);
         Task ReactivateCoder(string id); 
         Task<List<Coder>> GetCodersBySkill(List<string> skill);
-        Task<List<Coder>> GetCodersBylanguage(string level);
+        // Interfaz
+        Task<List<Coder>> GetCodersByLanguage(List<string> levels, string language);
+
+
         // Task<List<Coder>> FilterBySkills(List<string> selectedSkills);
     }
 }
