@@ -165,7 +165,7 @@ namespace RiwiTalent.App.Controllers
  
         // Get coders by language levels in English
         [HttpGet]
-        [Route("coders/langauges")]
+        [Route("coders/languages")]
         public async Task<IActionResult> GetCodersByLanguage([FromQuery] List<string> levels, string language = "English")
         {
             try
