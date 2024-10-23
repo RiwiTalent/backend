@@ -407,4 +407,4 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
         //     return await _mongoCollection.Find(filter).ToListAsync();
         // }
     }
-}
+}   
