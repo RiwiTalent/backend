@@ -259,21 +259,21 @@ namespace RiwiTalent.Infrastructure.Persistence.Repository
                 throw new ApplicationException("There is no coder with those languages.");
             }
         }
-
-        public async Task<List<Coder>> GetCodersBylanguage(string level)
+        public async Task<List<Coder>> GetCodersByLanguage(List<string> levels, string language)
         {
-            try
-            {
-                var filter = Builders<Coder>.Filter.Eq(c => c.LanguageSkills.Language_Level, level);
-                return await _mongoCollection.Find(filter).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                
-                throw new ApplicationException("An error occurred getting coder", ex);
-                
-            }
+            // Crea un filtro para buscar coders que coincidan con los niveles de idioma y el idioma proporcionado
+            var filter = Builders<Coder>.Filter.And(
+                Builders<Coder>.Filter.Ne(c => c.LanguageSkills, null),
+                Builders<Coder>.Filter.In(c => c.LanguageSkills.Language_Level, levels),
+                Builders<Coder>.Filter.Eq(c => c.LanguageSkills.Language, language)
+            );
+
+            // Busca los coders que coinciden con el filtro
+            var coders = await _mongoCollection.Find(filter).ToListAsync();
+            return coders;
         }
+
+
 
         private async Task UpdateCodersProcess(CoderGroupDto coderGroup, Status status)
         {
